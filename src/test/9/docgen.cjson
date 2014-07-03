@@ -1,0 +1,32 @@
+﻿contentDirectory: "../1"
+
+lowestFileElementRank: "book"
+
+olinks: {
+  homepage: "http://freemarker.org/"
+  api: "api/index.html"
+}
+
+internalBookmarks: {
+  "Index": alphaidx
+  "Glossary": gloss
+  "Reference": ref
+  "FAQ": app_faq
+  "Bőregér": test_target
+}
+
+externalBookmarks: {
+  "API": "api/index.html"
+  "Home": "../index.html"
+}
+
+validation: {
+  programlistingsRequireRole
+  // programlistingsRequireLanguage
+}
+
+eclipse: {
+  link_to: "freemarker-toc.xml#ManualLink"
+}
+
+showXXELogo

@@ -1,0 +1,6 @@
+contentDirectory: "../2"
+validation: {
+  outputFilesCanUseAutoID
+}
+
+lowestFileElementRank: book

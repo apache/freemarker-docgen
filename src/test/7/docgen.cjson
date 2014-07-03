@@ -1,0 +1,5 @@
+contentDirectory: "../6"
+
+validation: {
+  outputFilesCanUseAutoID 
+}

@@ -1,0 +1,38 @@
+XMLmind XML Editor addon for Docgen
+===================================
+
+This addon customizes the bundled DocBook 5 configuration so that it
+will be better for editing documentations conforming to the Docgen
+conventions. The customization will only affect the documents that has
+conformance="docgen" in their root element, not all DocBook documents.
+
+It will also add a Ctrl+Alt+C for copying selection as plain text.
+
+Requires at least XXE 4.2.1. Last tested on 5.3.0.
+
+
+How to install
+--------------
+
+Just copy the docbook-for-freemarker directory into "addon"
+subdirectory of your XXE user preferences directory, which is
+(usually):
+
+On UNIX:
+  $HOME/.xxe/addon
+  
+On Windows XP:
+  C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor4\addon
+  (replace %USERNAME% with your user name that you see in the Windows start menu)
+
+Then restart XXE if it was running. From now on all DocBook 5 XML-s
+whose root element has a conformance="docgen" attribute will be opened
+with this addon. Other DocBook documents are not affected.
+
+
+How to update the addon
+-----------------------
+
+Repeat the installation procedure (overwrite the files), then you have
+to clear the Quick Start cache through the XXE menu:
+"Options" -> "Preferences" -> "Advanced" -> "Cached data".

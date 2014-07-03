@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<configuration name="DocBook 5 for Docgen"
+  xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"
+  xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <include location="xxe-config:docbook5/docbook5.xxe"/>
+
+  <detect>
+    <and>
+      <rootElementNamespace>http://docbook.org/ns/docbook</rootElementNamespace>
+      <rootElementAttribute localName="conformance" value="docgen" />
+    </and>
+  </detect>
+
+  <css name="DocBook for Docgen" location="docbook-for-docgen.css" />
+
+  <windowLayout>
+    <center css="DocBook for Docgen" />
+    <left css="Table of contents" size="0.25" />
+  </windowLayout>
+
+  <binding>
+    <keyPressed code="C" modifiers="ctrl alt" />
+    <command name="copyChars" parameter="[separateParagraphs]" />
+  </binding>
+
+</configuration>

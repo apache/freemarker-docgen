@@ -1,0 +1,7 @@
+validation: {
+  outputFilesCanUseAutoID 
+}
+
+lowestFileElementRank: book
+
+numberedSections

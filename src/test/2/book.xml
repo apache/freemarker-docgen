@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book conformance="docgen" version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <title>The test book</title>
+
+  <chapter>
+    <title>Testing some elements</title>
+
+    <section>
+      <title>Footers</title>
+
+      <para>Blah blah<footnote>
+          <para>First footnote. Footnote content is inserted into the DocBook
+          XML at the point of the reference, but visually it's usually moved
+          out from that context, to the bottom of the page. Anyway, I'm just
+          saying that so we will have a multi-line footnote, which may
+          triggers some browser bugs or otherwise give a good preview of how
+          longer footnotes look.</para>
+        </footnote>, blah blah<footnote>
+          <para>Second footnote.</para>
+
+          <para>A footnote may contains multiple paras, or even
+          listings:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Blah</para>
+            </listitem>
+
+            <listitem>
+              <para>Blah blah</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>and...</para>
+
+          <programlisting language="Java">System.out.println("... even programlistings!");
+return 0;</programlisting>
+        </footnote>more bla bla<footnote>
+          <para>Third footnote.</para>
+        </footnote></para>
+    </section>
+
+    <section xml:id="prg">
+      <title>Program listings</title>
+
+      <para>Two <literal>programlisting</literal>-s following each other
+      should have proper vertical space between:</para>
+
+      <programlisting language="XML">&lt;foo /&gt;</programlisting>
+
+      <programlisting language="XML">&lt;bar /&gt;</programlisting>
+
+      <para>These are not too long:</para>
+
+      <programlisting language="unknown">123456789012345678901234567890123456789012345678
+123456789012345<indexterm>
+          <primary>this doesn't count</primary>
+        </indexterm>678901234567890123456789012345678
+12345678901234567890123456789012345<!--footnote>
+          <para>This doesn't count either. Not even this:</para>
+
+          <programlisting language="unknown">123456789012345678901234567890123456789012345678
+Hogy nekem mikre nincs időm odafigyelni...</programlisting>
+        </footnote-->6789012345678</programlisting>
+
+      <para>Empty lines test:</para>
+
+      <programlisting language="unknown">No empty line v1</programlisting>
+
+      <programlisting language="unknown">No empty line v2
+</programlisting>
+
+      <programlisting language="unknown">Empty line after v1
+
+</programlisting>
+
+      <programlisting language="unknown">Empty line after v2
+ </programlisting>
+
+      <programlisting language="unknown">
+Empty line before</programlisting>
+
+      <programlisting language="unknown">
+
+Two empty lines before</programlisting>
+
+      <para>Some more spacing tests:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Blah blah</para>
+        </listitem>
+
+        <listitem>
+          <para>Blah blah</para>
+        </listitem>
+
+        <listitem>
+          <para>Blah:</para>
+
+          <informaltable border="1">
+            <tr>
+              <td>a</td>
+
+              <td>b</td>
+            </tr>
+
+            <tr>
+              <td>c</td>
+
+              <td>d</td>
+            </tr>
+          </informaltable>
+
+          <informaltable border="1">
+            <tr>
+              <td>a</td>
+
+              <td>b</td>
+            </tr>
+
+            <tr>
+              <td>c</td>
+
+              <td>d</td>
+            </tr>
+          </informaltable>
+        </listitem>
+
+        <listitem>
+          <para>Blah blah</para>
+        </listitem>
+
+        <listitem>
+          <para>Blah:</para>
+
+          <programlisting language="unknown">Code</programlisting>
+
+          <programlisting language="unknown">Code</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Blah</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section xml:id="xrefs">
+      <title>XREF-s</title>
+
+      <para>An xref-s with automatically generated labels:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>In this chapter: <xref linkend="prg" /></para>
+        </listitem>
+
+        <listitem>
+          <para>In another chapter: <xref
+          linkend="yet_another_section" /></para>
+        </listitem>
+
+        <listitem>
+          <para>And myself: <xref linkend="xrefs" /></para>
+        </listitem>
+      </itemizedlist>
+
+      <para>An xref with explicit label: <xref linkend="tables" /></para>
+    </section>
+
+    <section xreflabel="I'm an explicit XRef label" xml:id="tables">
+      <title>Tables</title>
+
+      <para>A simple table:</para>
+
+      <informaltable border="1">
+        <tr>
+          <td>a</td>
+
+          <td>b</td>
+        </tr>
+
+        <tr>
+          <td>c</td>
+
+          <td>d</td>
+        </tr>
+      </informaltable>
+
+      <para>Not so simple tables:</para>
+
+      <informaltable border="1">
+        <tr>
+          <th>ThisIsTheHead1</th>
+
+          <th>ThisIsTheHead 2</th>
+        </tr>
+
+        <tr>
+          <td colspan="2">2 columns in one cell</td>
+        </tr>
+
+        <tr>
+          <td align="left">left</td>
+
+          <td rowspan="3">3 rows in once cell</td>
+        </tr>
+
+        <tr>
+          <td align="center">center</td>
+        </tr>
+
+        <tr>
+          <td align="right">right</td>
+        </tr>
+
+        <tr>
+          <td>default left</td>
+
+          <td>default left</td>
+        </tr>
+      </informaltable>
+
+      <informaltable border="1">
+        <colgroup align="right">
+          <col />
+
+          <col align="center" />
+
+          <col align="right" />
+        </colgroup>
+
+        <tr>
+          <td>right</td>
+
+          <td>center</td>
+
+          <td>right</td>
+
+          <td>default left</td>
+        </tr>
+
+        <tr>
+          <td>right</td>
+
+          <td colspan="2">center</td>
+
+          <td>default left</td>
+        </tr>
+
+        <tr>
+          <td
+          colspan="4">right_aligned_horizontal_stretcher__right_aligned_horizontal_stretcher__right_aligned_horizontal_stretcher__right_aligned_horizontal_stretcher__</td>
+        </tr>
+      </informaltable>
+
+      <informaltable border="1">
+        <colgroup>
+          <col align="left" valign="top" />
+
+          <col align="center" valign="middle" />
+
+          <col align="right" valign="bottom" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td colspan="1" rowspan="4">center-middle</td>
+
+            <td>right-bottom</td>
+          </tr>
+
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td>right-bottom</td>
+          </tr>
+
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td>right-bottom</td>
+          </tr>
+
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td>right-bottom</td>
+          </tr>
+
+          <tr>
+            <td colspan="3">left-top</td>
+          </tr>
+        </thead>
+
+        <tfoot>
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td>center-middle</td>
+
+            <td>right-bottom</td>
+          </tr>
+        </tfoot>
+
+        <tbody>
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td>center-middle</td>
+
+            <td>right-bottom</td>
+          </tr>
+
+          <tr>
+            <td><para>left-top</para><para>.</para></td>
+
+            <td colspan="2">center-middle</td>
+          </tr>
+
+          <tr>
+            <td align="center"
+            colspan="3"><para>__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher</para><para>I'm
+            center aligned horizontally.</para></td>
+          </tr>
+
+          <tr align="center">
+            <td
+            colspan="3"><para>__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher__horizontal_stretcher</para><para>I'm
+            NOT center aligned horizontally, because the
+            <literal>col</literal> is stronger.</para></td>
+          </tr>
+        </tbody>
+      </informaltable>
+    </section>
+
+    <section>
+      <title>HTML anchors</title>
+
+      <para xml:id="a1">I'm an anchored para.</para>
+
+      <informaltable border="1" xml:id="a2">
+        <tr>
+          <td>I'm</td>
+
+          <td>an</td>
+        </tr>
+
+        <tr>
+          <td>anchored</td>
+
+          <td>table</td>
+        </tr>
+      </informaltable>
+
+      <mediaobject xml:id="a3">
+        <imageobject>
+          <imagedata fileref="test.gif"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <programlisting language="XML" xml:id="a4">I'm anchored</programlisting>
+
+      <itemizedlist xml:id="a5">
+        <listitem xml:id="a6">
+          <para>Anchored <literal>listitem</literal> in anchored
+          <literal>itemizedlist</literal></para>
+        </listitem>
+      </itemizedlist>
+
+      <orderedlist xml:id="a7">
+        <listitem xml:id="a8">
+          <para>Anchored <literal>listitem</literal> in anchored
+          <literal>orderdlist</literal></para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>In-line literals</title>
+
+      <para>Special literals: <package>java.util</package>,
+      <classname>java.util.Map</classname>,
+      <methodname>Map.get</methodname></para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Just for the sake of structure</title>
+
+    <para>There are no sections here, just us,
+    <literal>para</literal>-s.</para>
+  </chapter>
+
+  <chapter>
+    <title>Yet another chapter</title>
+
+    <section xml:id="yet_another_section">
+      <title>Yet another section</title>
+
+      <para>Blah. And an xref: <xref linkend="simple" /></para>
+    </section>
+
+    <section>
+      <title>Yet yet another section</title>
+
+      <simplesect xml:id="simple">
+        <title>A simple section</title>
+
+        <para>Blah.</para>
+      </simplesect>
+    </section>
+  </chapter>
+</book>

@@ -1,0 +1,26 @@
+// charset: ISO-8859-2
+
+contentDirectory: "../1"
+
+validation: {
+  outputFilesCanUseAutoID 
+}
+
+olinks: {
+  homepage: "http://freemarker.org/"
+  api: "api/index.html"
+}
+
+internalBookmarks: {
+  "Index": alphaidx
+  "Glossary": gloss
+  "Reference": ref
+  "FAQ": app_faq
+  "Bõregér": test_target
+}
+
+maxTOFDisplayDepth: 2
+lowestPageTOCElementRank: simplesect
+numberedSections
+
+disableJavaScript

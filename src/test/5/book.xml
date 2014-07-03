@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book conformance="docgen" version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <title>Test</title>
+
+  <part>
+    <title>The something</title>
+
+    <chapter>
+      <title>The something</title>
+
+      <para>Once you create a dozen or more local tasks, you might want to
+      organize them by creating categories. If you create a task and do not
+      have a category selected in the Task List, the task is placed in the
+      Uncategorized container. You can move a task you've created to another
+      category using the Move to pop-up menu in the Task List or task editor
+      or via drag-and-drop.</para>
+
+      <section xml:id="s1">
+        <title>The something</title>
+
+        <para>Once you create a dozen or more local tasks, you might want to
+        organize them by creating categories. If you create a task and do not
+        have a category selected in the Task List, the task is placed in the
+        Uncategorized container. You can move a task you've created to another
+        category using the Move to pop-up menu in the Task List or task editor
+        or via drag-and-drop.</para>
+
+        <section xml:id="s2">
+          <title>The something</title>
+
+          <para>Once you create a dozen or more local tasks, you might want to
+          organize them by creating categories. If you create a task and do
+          not have a category selected in the Task List, the task is placed in
+          the Uncategorized container. You can move a task you've created to
+          another category using the Move to pop-up menu in the Task List or
+          task editor or via drag-and-drop.</para>
+
+          <section xml:id="s3">
+            <title>The something</title>
+
+            <para>Once you create a dozen or more local tasks, you might want
+            to organize them by creating categories. If you create a task and
+            do not have a category selected in the Task List, the task is
+            placed in the Uncategorized container. You can move a task you've
+            created to another category using the Move to pop-up menu in the
+            Task List or task editor or via drag-and-drop.</para>
+
+            <simplesect>
+              <title>The something</title>
+
+              <para>Once you create a dozen or more local tasks, you might
+              want to organize them by creating categories. If you create a
+              task and do not have a category selected in the Task List, the
+              task is placed in the Uncategorized container. You can move a
+              task you've created to another category using the Move to pop-up
+              menu in the Task List or task editor or via
+              drag-and-drop.</para>
+            </simplesect>
+          </section>
+        </section>
+
+        <section>
+          <title>The something</title>
+
+          <para>Once you create a dozen or more local tasks, you might want to
+          organize them by creating categories. If you create a task and do
+          not have a category selected in the Task List, the task is placed in
+          the Uncategorized container. You can move a task you've created to
+          another category using the Move to pop-up menu in the Task List or
+          task editor or via drag-and-drop.</para>
+        </section>
+      </section>
+    </chapter>
+
+    <chapter>
+      <title>The something</title>
+
+      <para>Once you create a dozen or more local tasks, you might want to
+      organize them by creating categories. If you create a task and do not
+      have a category selected in the Task List, the task is placed in the
+      Uncategorized container. You can move a task you've created to another
+      category using the Move to pop-up menu in the Task List or task editor
+      or via drag-and-drop.</para>
+    </chapter>
+
+    <article>
+      <title>Art in chapter</title>
+
+      <para>asdasdsa</para>
+
+      <section>
+        <title>A section</title>
+
+        <para>blaasdsad</para>
+      </section>
+
+      <section>
+        <title>Another section</title>
+
+        <para>asdasdsa</para>
+      </section>
+
+      <appendix>
+        <title>An appendix</title>
+
+        <para>asdasdsda</para>
+      </appendix>
+
+      <appendix>
+        <title>Another appendix</title>
+
+        <para>asdasdsa</para>
+      </appendix>
+    </article>
+
+    <article>
+      <title>Art 2 in chapter</title>
+
+      <para>asdasd</para>
+    </article>
+
+    <article>
+      <title>Art 3 in chapter</title>
+
+      <para>asdasds</para>
+    </article>
+
+    <article>
+      <title>Art 4 in chapter</title>
+
+      <para>asdassd</para>
+    </article>
+  </part>
+
+  <article>
+    <title>Article in the book</title>
+
+    <para>fsfdffddf</para>
+  </article>
+
+  <part>
+    <title>The something</title>
+
+    <chapter>
+      <title>The something</title>
+
+      <section>
+        <title>The something</title>
+
+        <section>
+          <title>The something</title>
+
+          <section>
+            <title>The something</title>
+
+            <simplesect>
+              <title>The something</title>
+
+              <para>Once you create a dozen or more local tasks, you might
+              want to organize them by creating categories. If you create a
+              task and do not have a category selected in the Task List, the
+              task is placed in the Uncategorized container. You can move a
+              task you've created to another category using the Move to pop-up
+              menu in the Task List or task editor or via
+              drag-and-drop.</para>
+            </simplesect>
+          </section>
+        </section>
+      </section>
+    </chapter>
+
+    <article>
+      <title>The something article</title>
+
+      <para>fdsfsdf</para>
+
+      <note>
+        <para>Blah</para>
+      </note>
+
+      <section>
+        <title>The something</title>
+
+        <para>Once you create a dozen or more local tasks, you might want to
+        organize them by creating categories. If you create a task and do not
+        have a category selected in the Task List, the task is placed in the
+        Uncategorized container. You can move a task you've created to another
+        category using the Move to pop-up menu in the Task List or task editor
+        or via drag-and-drop.</para>
+      </section>
+
+      <section>
+        <title>The something</title>
+
+        <para>Once you create a dozen or more local tasks, you might want to
+        organize them by creating categories. If you create a task and do not
+        have a category selected in the Task List, the task is placed in the
+        Uncategorized container. You can move a task you've created to another
+        category using the Move to pop-up menu in the Task List or task editor
+        or via drag-and-drop.</para>
+      </section>
+    </article>
+
+    <appendix>
+      <title>The something</title>
+
+      <para>Once you create a dozen or more local tasks, you might want to
+      organize them by creating categories. If you create a task and do not
+      have a category selected in the Task List, the task is placed in the
+      Uncategorized container. You can move a task you've created to another
+      category using the Move to pop-up menu in the Task List or task editor
+      or via drag-and-drop.</para>
+    </appendix>
+
+    <appendix>
+      <title>The something</title>
+
+      <para>Once you create a dozen or more local tasks, you might want to
+      organize them by creating categories. If you create a task and do not
+      have a category selected in the Task List, the task is placed in the
+      Uncategorized container. You can move a task you've created to another
+      category using the Move to pop-up menu in the Task List or task editor
+      or via drag-and-drop.</para>
+    </appendix>
+  </part>
+
+  <appendix>
+    <title>The something</title>
+
+    <para>Once you create a dozen or more local tasks, you might want to
+    organize them by creating categories. If you create a task and do not have
+    a category selected in the Task List, the task is placed in the
+    Uncategorized container. You can move a task you've created to another
+    category using the Move to pop-up menu in the Task List or task editor or
+    via drag-and-drop.</para>
+  </appendix>
+
+  <appendix>
+    <title>The something</title>
+
+    <para>Once you create a dozen or more local tasks, you might want to
+    organize them by creating categories. If you create a task and do not have
+    a category selected in the Task List, the task is placed in the
+    Uncategorized container. You can move a task you've created to another
+    category using the Move to pop-up menu in the Task List or task editor or
+    via drag-and-drop.</para>
+
+    <section>
+      <title>The something</title>
+
+      <para>Some text is here, so the vertical spacings are more
+      visible.</para>
+
+      <para>Some text is here, so the vertical spacings are more
+      visible.</para>
+
+      <section>
+        <title>The something</title>
+
+        <para>Some text is here, so the vertical spacings are more
+        visible.</para>
+
+        <para>Some text is here, so the vertical spacings are more
+        visible.</para>
+
+        <section>
+          <title>The something</title>
+
+          <para>Some text is here, so the vertical spacings are more
+          visible.</para>
+
+          <para>Some text is here, so the vertical spacings are more
+          visible.</para>
+
+          <simplesect>
+            <title>The simple section</title>
+
+            <para>Some text is here, so the vertical spacings are more
+            visible.</para>
+
+            <para>Some text is here, so the vertical spacings are more
+            visible.</para>
+          </simplesect>
+        </section>
+      </section>
+    </section>
+  </appendix>
+</book>

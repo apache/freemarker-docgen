@@ -1,0 +1,10 @@
+// charset: ISO-8859-1
+validation: {
+  programlistingsRequireLanguage
+  outputFilesCanUseAutoID
+  maximumProgramlistingWidth: 48
+}
+
+timeZone: "GMT+01"
+generateEclipseTOC
+showEditoralNotes

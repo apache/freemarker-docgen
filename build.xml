@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project basedir="." default="jar" name="docgen"
+    xmlns:ivy="antlib:org.apache.ivy.ant"
+    xmlns:docgen="http://freemarker.org/docgen"
+    xmlns:u="http://freemarker.org/ant-utils"
+>
+
+  <!-- ================================================================== -->
+  <!-- Properties and filtering                                           -->
+  <!-- ================================================================== -->
+
+  <!-- Ivy project coordinates: -->
+  <property name="moduleOrg" value="org.freemarker" />
+  <property name="moduleName" value="docgen" />
+  <property name="moduleBranch" value="1.0" />
+  
+  <!-- Will be overidden on the server: -->
+  <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
+  
+  <property file="build.properties" />
+  
+  <!-- When boot.classpath is missing, this is the default: -->
+  <property name="boot.classpath" value="${sun.boot.class.path}" />
+  <!-- Checking the correctness of the boot.classpath -->
+  <available classpath="${boot.classpath}"
+    classname="java.lang.Object" ignoresystemclasses="true" 
+    property="boot.classpath.correct"
+  />
+
+  <property file="src/main/org/freemarker/docgen/version.properties" />
+
+  <tstamp>
+    <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss z"
+      timezone="GMT"
+    />
+  </tstamp>
+  <filter token="version" value="${version}" />
+  <filter token="buildTimestamp" value="${timestamp}" />
+
+  <!-- ================================================================== -->
+  <!-- Paths                                                              -->
+  <!-- ================================================================== -->
+
+  <!-- Classpath-es (dependencies) separately for each module -->
+  
+  <!-- Needed for purely technical resons... -->
+  <path id="classpath.empty" />
+
+  <!-- ================================================================== -->
+  <!-- Task definitions                                                   -->
+  <!-- ================================================================== -->
+
+  <!--
+    A customized and extended version of the standrad javac task.
+    It copies non-java files (resources).
+  -->
+  <macrodef name="javacAndCopyResources" uri="http://freemarker.org/ant-utils">
+    <attribute name="srcDir" />
+    <attribute name="destDir" />
+    <attribute name="classpath" default="" />
+    <attribute name="classpathRef" default="classpath.empty" />
+    <sequential>
+      <fail unless="boot.classpath.correct"><!--
+        -->The "boot.classpath" property value (${boot.classpath}) <!--
+        -->seems to be an incorrect boot classpath. Please fix it in <!--
+        -->the &lt;projectDir>/build.properties file, or wherever you <!--
+        -->set it.<!--
+      --></fail>
+      <echo level="info">Using boot classpath: ${boot.classpath}</echo>
+      
+      <mkdir dir="@{destDir}" />
+      
+      <javac
+        srcdir="@{srcDir}"
+        destDir="@{destDir}"
+        deprecation="on"
+        debug="on"
+        source="1.5"
+        target="1.5"
+        classpath="@{classpath}"
+        classpathRef="@{classpathRef}"
+        bootclasspath="${boot.classpath}"
+      />
+      
+      <copy todir="@{destDir}" filtering="true" includeEmptyDirs="false">
+        <fileset dir="@{srcDir}">
+          <include name="**/*.properties" />
+        </fileset>
+      </copy>
+      <copy todir="@{destDir}" filtering="false" includeEmptyDirs="false">
+        <fileset dir="@{srcDir}">
+          <exclude name="**/*.java" />
+          <exclude name="**/package.html" />
+          <exclude name="**/overview.html" />
+          <exclude name="**/*.properties" />
+        </fileset>
+      </copy>
+    </sequential>
+  </macrodef>
+
+  <!--
+    A customized version of the standrad javadoc task.
+  -->
+  <macrodef name="javadoc" uri="http://freemarker.org/ant-utils">
+    <attribute name="title" />
+    <attribute name="srcDir" />  <!-- "main" usually -->
+    <attribute name="packageNames" default="*" />
+    <attribute name="excludePackages" default="non.such.package" />
+    <attribute name="destDir" />
+    <attribute name="classpath" default="" />
+    <attribute name="classpathRef" default="classpath.empty" />
+    <sequential>
+      <echo level="info"><!--
+        -->Javadoc generation for: @{title}<!--
+      --></echo>
+      
+      <u:provideEmptyDir dir="@{destDir}" />
+      <javadoc
+        sourcepath="@{srcDir}"
+        destdir="@{destDir}"
+        doctitle="@{title}"
+        packagenames="@{packageNames}"
+        excludepackagenames="@{excludePackages}"
+        windowtitle="@{title}"
+        overview="@{srcDir}/overview.html"
+        version="false"
+        author="false"
+        charset="UTF-8"
+        docencoding="UTF-8"
+        locale="en_US"
+        use="yes"
+        failonerror="yes"
+        classpath="@{classpath}"
+        classpathRef="@{classpathRef}"
+      />
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="provideEmptyDir" uri="http://freemarker.org/ant-utils">
+    <attribute name="dir" />
+    <sequential>
+      <mkdir dir="@{dir}" />
+      <delete includeEmptyDirs="true">
+        <fileset dir="@{dir}" includes="**/*" defaultexcludes="no" />
+      </delete>
+    </sequential>
+  </macrodef>
+
+  
+  <!-- ================================================================== -->
+  <!-- Targets                                                            -->
+  <!-- ================================================================== -->
+  
+  <target name="init">
+    <condition property="deps.available">
+      <available file=".ivy" />
+    </condition>
+    <antcall target="_autoget-deps" />
+  </target>
+  
+  <target name="classes" depends="init"
+    description='Compile + resource copy'
+  >
+    <u:provideEmptyDir dir="build/classes" />
+    <ivy:cachepath pathid="ivy.dep" />
+    <u:javacAndCopyResources
+      srcDir="src/main"
+      destDir="build/classes"
+      classpathref="ivy.dep"
+    />
+  </target>
+
+  <target name="jar" depends="classes"
+      description='Build "build/docgen.jar".'
+  >
+    <mkdir dir="build/artifacts" />
+    <jar jarfile="build/artifacts/docgen.jar">
+      <fileset dir="build/classes" />
+      <manifest>
+        <attribute
+          name="Main-Class"
+          value="org.freemarker.docgen.TransformCommandLine"
+        />
+        <attribute
+          name="Class-Path"
+          value="freemarker.jar jing.jar"
+        />
+        <attribute name="Specification-Version" value="${version}" />
+        <attribute name="Implementation-Version" value="${version}" />
+      </manifest>
+    </jar>
+    
+    <mkdir dir="build/lib" />
+    <ivy:retrieve pattern="build/lib/[artifact].[ext]" />
+    <copy file="build/artifacts/docgen.jar" todir="build/lib" />
+  </target>
+
+  <target name="javadoc" depends="init"
+    description="Build the JavaDoc."
+  >
+    <ivy:cachepath pathid="ivy.dep" />
+    <u:javadoc   
+      title="Docgen API"
+      srcdir="src/main"
+      destDir="build/api"
+      classpathref="ivy.dep"
+    />
+  </target>
+
+  <target name="all" depends="jar, javadoc"
+    description='Build "docgen.jar" + javadocs'
+  />
+  
+  <target name="clean" description='Delete output files.'>
+    <u:provideEmptyDir dir="build" />
+    <delete file="build/docgen.jar" />
+  </target>
+  
+  <target name="test" depends="jar">
+    <echo>***************************************</echo>
+    <echo>* Now issue this in the command-line: *</echo>
+    <echo>* ant -f test.xml           *</echo>
+    <echo>***************************************</echo>
+  </target>
+
+  <target name="archive"
+      description='Archives project into the "archive" directory.'>
+    <mkdir dir="archive" />
+    <tstamp>
+      <format property="tstamp" pattern="yyyyMMdd-HHmm" />
+    </tstamp>
+    <delete file="archive/docgen-${tstamp}.tar" />
+    <delete file="archive/docgen-${tstamp}.tar.bz2" />
+    <tar tarfile="archive/docgen-${tstamp}.tar"
+      basedir="."
+      longfile="gnu"
+      excludes="build/** .build/** **/*.class **/*.jar archive/** lib/**"
+    />
+    <bzip2 src="archive/docgen-${tstamp}.tar"
+      zipfile="archive/docgen-${tstamp}.tar.bz2"
+    />
+    <delete file="archive/docgen-${tstamp}.tar" />
+  </target>
+
+  <target name="artifacts" depends="jar"
+    description="Creates the artifacts for Ivy."
+  />
+  
+  
+  <!-- ================================================================== -->
+  <!-- Dependency management (keep it exactly identical for all projects) -->
+  <!-- ================================================================== -->
+  
+  <target name="_autoget-deps" unless="deps.available">
+    <antcall target="update-deps" />
+  </target>
+  
+  <target name="update-deps"
+    description="Gets the latest version of the dependencies from the Web"
+  >
+    <echo>Getting dependencies...</echo>
+    <echo>-------------------------------------------------------</echo>
+    <ivy:settings id="remote" url="http://freemarker.org/repos/ivy/ivysettings-remote.xml" />
+    <!-- Build an own repository that will serve us even offline: -->
+    <ivy:retrieve settingsRef="remote" sync="true"
+      ivypattern=".ivy.part/repo/[organisation]/[module]/ivy-[revision].xml"
+      pattern=".ivy.part/repo/[organisation]/[module]/[artifact]-[revision].[ext]"
+    />
+    <echo>-------------------------------------------------------</echo>
+    <echo>*** Successfully acquired dependencies from the Web ***</echo>
+    <echo>Eclipse users: Now right-click on ivy.xml and Resolve! </echo>
+    <echo>-------------------------------------------------------</echo>
+    <!-- Only now that we got all the dependencies will we delete anything. -->
+    <!-- Thus a net or repo outage doesn't left us without the dependencies. -->
+
+    <!-- Save the resolution cache from the soon coming <delete>: -->
+    <move todir=".ivy.part/update-deps-reso-cache">
+      <fileset dir=".ivy/update-deps-reso-cache" />
+    </move>
+    <!-- Drop all the old stuff: -->
+    <delete dir=".ivy" />
+    <!-- And use the new stuff instead: -->
+    <move todir=".ivy">
+      <fileset dir=".ivy.part" />
+    </move>
+  </target>
+
+  <!-- Do NOT call this from 'clean'; offline guys would stuck after that. -->
+  <target name="clean-deps"
+    description="Deletes all dependencies"
+  >
+    <delete dir=".ivy" />
+  </target>
+
+  <target name="publish-override" depends="artifacts"
+    description="Ivy-publishes THIS project locally as an override"
+  >
+    <ivy:resolve />
+    <ivy:publish
+      pubrevision="${moduleBranch}-branch-head"
+      overwrite="true" forcedeliver="true"
+      resolver="freemarker-devel-local-override"
+    >
+      <artifacts pattern="build/artifacts/[artifact].[ext]" />
+    </ivy:publish>
+    <echo>-------------------------------------------------------</echo>
+    <echo>*** Don't forget to `ant unpublish-override` later! ***</echo>
+  </target>
+
+  <target name="unpublish-override"
+    description="Undoes publish-override (made in THIS project)"
+  >
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override/${moduleOrg}/${moduleName}" />
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache/${moduleOrg}/${moduleName}" />
+  </target>  
+
+  <target name="unpublish-override-all"
+    description="Undoes publish-override-s made in ALL projects"
+  >
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache" />
+  </target>  
+
+  <target name="uninstall"
+    description="Deletes external files created by FreeMarker developement"
+  >
+    <delete dir="${user.home}/.ivy2/freemarker-devel-cache" />
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
+    <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache " />
+  </target>
+
+  <target name="report-deps"
+    description="Creates a HTML document that summarizes the dependencies."
+  >
+    <mkdir dir="build/deps-report" />
+    <ivy:resolve />
+    <ivy:report todir="build/deps-report" />
+  </target>
+  
+  <!--
+    This meant to be called on the Continuous Integration server, so the
+    integration builds appear in the freemarker.org public Ivy repository.
+    The artifacts must be already built.
+  -->
+  <target name="server-publish-last-build"
+    description="(For the Continuous Integration server only)"
+  >
+    <delete dir="build/dummy-server-ivy-repo" />
+    <ivy:resolve />
+    <ivy:publish
+      pubrevision="${moduleBranch}-branch-head"
+      overwrite="true" forcedeliver="true"
+      resolver="server-publishing-target"
+    >
+      <artifacts pattern="build/artifacts/[artifact].[ext]" />
+    </ivy:publish>
+  </target>
+  
+</project>

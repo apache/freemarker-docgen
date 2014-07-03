@@ -1,0 +1,67 @@
+<!--
+  This is separated from the build.xml to prevent the classloading mess caused
+  by that build.xml (re)creates lib/docgen.jar.
+  
+  Invoke this as:
+    ant -f test.xml
+-->
+<project name="docgen-test" default="test" xmlns:docgen="http://freemarker.org/docgen">
+
+  <taskdef resource="org/freemarker/docgen/antlib.properties"
+      uri="http://freemarker.org/docgen"
+      classpath="build/lib/docgen.jar"
+  />
+
+  <target name="test">
+    <mkdir dir="build/test" />
+    <delete includeEmptyDirs="true">
+      <fileset dir="build/test" includes="**/*" defaultexcludes="no" />
+    </delete>
+
+    <docgen:transform
+        srcdir="src/test/9" destdir="build/test/9"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/8" destdir="build/test/8"
+        generateEclipseToC="true"
+    />
+
+    <docgen:transform
+        srcdir="src/test/7" destdir="build/test/7"
+        generateEclipseToC="true"
+    />
+
+    <docgen:transform
+        srcdir="src/test/6" destdir="build/test/6"
+        generateEclipseToC="true"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/5" destdir="build/test/5"
+        generateEclipseToC="true"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/4" destdir="build/test/4"
+        generateEclipseToC="true"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/3" destdir="build/test/3"
+        generateEclipseToC="true"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/2" destdir="build/test/2"
+        generateEclipseToC="true"
+    />
+    
+    <docgen:transform
+        srcdir="src/test/1" destdir="build/test/1"
+        generateEclipseToC="true"
+    />
+    
+  </target>
+
+</project>
