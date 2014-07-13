@@ -7,8 +7,9 @@ conventions. The customization will only affect the documents that has
 conformance="docgen" in their root element, not all DocBook documents.
 
 It will also add a Ctrl+Alt+C for copying selection as plain text.
+(Not needed since XXE 5.5.)
 
-Requires at least XXE 4.2.1. Last tested on 5.3.0.
+Requires at least XXE 4.2.1. Last tested on 6.0.0.
 
 
 How to install
@@ -22,8 +23,9 @@ On UNIX:
   $HOME/.xxe/addon
   
 On Windows XP:
-  C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor4\addon
-  (replace %USERNAME% with your user name that you see in the Windows start menu)
+  C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor<V>\addon
+  (replace %USERNAME% with your user name that you see in the Windows start menu,
+  <V> with the XEE major version.)
 
 Then restart XXE if it was running. From now on all DocBook 5 XML-s
 whose root element has a conformance="docgen" attribute will be opened
