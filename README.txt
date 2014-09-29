@@ -7,7 +7,7 @@ What is this?
 Docgen is originally the sub-project of FreeMarker that is used to generate
 HTML pages from the DocBook 5 XML that the FreeMarker Manual is written in. As
 such, it's not a general purpose DocBook 5 to HTML converter, however, we use
-it for other projects as well, so it's not entierly specialized either.
+it for other projects as well, so it's not entirely specialized either.
 
 
 How to use it?
