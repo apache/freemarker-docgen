@@ -11,26 +11,26 @@ import org.apache.tools.ant.Task;
  * 
  * <p>Usage example:
  *<pre>
-&lt;project ... xmlns:docgen="http://freemarker.org/docgen">
+&lt;project ... xmlns:docgen="http://freemarker.org/docgen"&gt;
 
   &lt;taskdef resource="org/freemarker/docgen/antlib.properties"
       uri="http://freemarker.org/docgen"
       classpath="<i>DOCGEN_HOME</i>/lib/docgen.jar"
-  />
+  /&gt;
 
-  &lt;target ...>
-    &lt;!-- If you want to ensure that the destination directory is empty: -->
-    &lt;mkdir dir="<i>DEST_DIR</i>" />
-    &lt;delete includeEmptyDirs="true">
+  &lt;target ...&gt;
+    &lt;!-- If you want to ensure that the destination directory is empty: --&gt;
+    &lt;mkdir dir="<i>DEST_DIR</i>" /&gt;
+    &lt;delete includeEmptyDirs="true"&gt;
       &lt;fileset dir="<i>DEST_DIR</i>" includes="**<!--
-          -->/*" defaultexcludes="no" />
-    &lt;/delete>
+          -->/*" defaultexcludes="no" /&gt;
+    &lt;/delete&gt;
     
     <b>&lt;docgen:transform <!--
-           -->srcdir="<i>SRC_DIR</i>" destdir="<i>DEST_DIR</i>" /></b>
-  &lt;/target>
+           -->srcdir="<i>SRC_DIR</i>" destdir="<i>DEST_DIR</i>" /&gt;</b>
+  &lt;/target&gt;
 
-&lt;/project>
+&lt;/project&gt;
 </pre>
  */
 public final class TransformAntTask extends Task {

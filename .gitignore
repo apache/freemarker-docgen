@@ -4,4 +4,5 @@
 /build.properties
 /archive/
 
+.DS_Store
 src/manual/book.xml~
