@@ -180,7 +180,7 @@ import freemarker.template.utility.StringUtil;
  *            The lowest document structure element "rank" for which a
  *            "Page Contents" ToC entry will be created.
  *            
- *            <p>About "ranks" see <a name="setting_lowestFileElementRank">the
+ *            <p>About "ranks" see <a href="#setting_lowestFileElementRank">the
  *            <tt>lowestFileElementRank</tt> setting</a>.
  *            
  *            <p>The default value is <tt>section3</tt>.
@@ -263,7 +263,7 @@ import freemarker.template.utility.StringUtil;
  * 
  * <p><b><font size="+1"><a name="cjsonLanguage"></a>
  *   The CJSON language
- * </b></font></p>
+ * </font></b></p>
  * 
  * <p>It's JSON extended with some features that make it more convenient for
  * configuration files:
@@ -317,7 +317,7 @@ import freemarker.template.utility.StringUtil;
  *       of the file (whichever comes first) all kind of characters can occur,
  *       and they will all belong to the charset name (which will be
  *       interpreted after trimming surrounding whitespace).
- * <ul>
+ * </ul>
  * </blockquote>
  */
 public final class Transform {
