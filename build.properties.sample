@@ -1,4 +1,4 @@
-# Should point to the rt.jar of J2SE 1.5.
+# Should point to the rt.jar of Java 8.
 # You may comment this property out, but for releases it should be set,
-# so J2SE 1.5 incompatibilities will cause compilation-time errors.
-boot.classpath=C:/Program Files/Java/jdk1.5.0_16/jre/lib/rt.jar
+# so Java 8 incompatibilities will cause compilation-time errors.
+boot.classpath=C:/Program Files/Java/jdk1.8.0/jre/lib/rt.jar
