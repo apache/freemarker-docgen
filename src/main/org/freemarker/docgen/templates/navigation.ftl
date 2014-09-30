@@ -93,9 +93,9 @@
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
     <div class="pagers">
       <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
-      <@pagerButton "Next page", nextFileElement!null, false />
-      <@pagerButton "Previous page", previousFileElement!null />
-      <@pagerButton "Parent page", parentFileElement!null />
+      <@pagerButton "Next page", nextFileElement!, false />
+      <@pagerButton "Previous page", previousFileElement! />
+      <@pagerButton "Parent page", parentFileElement! />
       <@pagerButton "Contents", rootElement />
       <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
     </div>
@@ -104,11 +104,11 @@
 
 <#macro pagerButton label element labelOnly=true>
   <div class="pagerButton"><#t>
-    <#if element??>
+    <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>
       <#local curHref = CreateLinkFromNode(.node)>
     </#if>
-    <#if element?? && href != curHref>
+    <#if element?has_content && href != curHref>
       <a href="${href?html}"><#t>
         <#if !labelOnly>
           <span class="hideA">${label?html}:${' '}</span><#t>
