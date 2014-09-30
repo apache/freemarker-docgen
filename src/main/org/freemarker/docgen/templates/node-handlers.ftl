@@ -97,7 +97,7 @@
     <#local packed=.node.@spacing[0]! = "compact"> 
     <#local prevCompactPara=compactPara>
     <#if packed>
-       <#set compactPara = true>
+       <#assign compactPara = true>
     </#if>
     <@CantBeNestedIntoP>
     <div class="itemizedlist">
@@ -118,7 +118,7 @@
         </ul><#t>
     </div>
     </@CantBeNestedIntoP>
-    <#set compactPara = prevCompactPara>
+    <#assign compactPara = prevCompactPara>
 </#macro>
 
 <#macro link>
@@ -147,46 +147,46 @@
         <tt><#recurse></tt><#t>
     <#else>
         <#if fontBgColor! != "">
-            <#set moreStyle = "; background-color:${fontBgColor}">
+            <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
         <tt style="color: #A03D10${moreStyle}"><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
-        <#set inlineMonospacedColorisation = true>
+        <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>
-        <#set inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
+        <#assign inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
         </tt><#t>
     </#if>
 </#macro>
 
-<#set classname = _inlineMonospaced>
-<#set code = _inlineMonospaced>
-<#set command=_inlineMonospaced>
-<#set constant = _inlineMonospaced>
-<#set envar = _inlineMonospaced>
-<#set errorcode = _inlineMonospaced>
-<#set errorname = _inlineMonospaced>
-<#set errortext = _inlineMonospaced>
-<#set errortype = _inlineMonospaced>
-<#set exceptionname = _inlineMonospaced>
-<#set filename = _inlineMonospaced>
-<#set function = _inlineMonospaced>
-<#set interfacename = _inlineMonospaced>
-<#set literal = _inlineMonospaced>
-<#set markup = _inlineMonospaced>
-<#set methodname = _inlineMonospaced>
-<#set package = _inlineMonospaced>
-<#set parameter = _inlineMonospaced>
-<#set prompt = _inlineMonospaced>
-<#set property = _inlineMonospaced>
-<#set returnvalue = _inlineMonospaced>
-<#set sgmltag = _inlineMonospaced>
-<#set structfield = _inlineMonospaced>
-<#set structname = _inlineMonospaced>
-<#set symbol = _inlineMonospaced>
-<#set token = _inlineMonospaced>
-<#set type = _inlineMonospaced>
-<#set uri = _inlineMonospaced>
-<#set varname = _inlineMonospaced>
+<#assign classname = _inlineMonospaced>
+<#assign code = _inlineMonospaced>
+<#assign command=_inlineMonospaced>
+<#assign constant = _inlineMonospaced>
+<#assign envar = _inlineMonospaced>
+<#assign errorcode = _inlineMonospaced>
+<#assign errorname = _inlineMonospaced>
+<#assign errortext = _inlineMonospaced>
+<#assign errortype = _inlineMonospaced>
+<#assign exceptionname = _inlineMonospaced>
+<#assign filename = _inlineMonospaced>
+<#assign function = _inlineMonospaced>
+<#assign interfacename = _inlineMonospaced>
+<#assign literal = _inlineMonospaced>
+<#assign markup = _inlineMonospaced>
+<#assign methodname = _inlineMonospaced>
+<#assign package = _inlineMonospaced>
+<#assign parameter = _inlineMonospaced>
+<#assign prompt = _inlineMonospaced>
+<#assign property = _inlineMonospaced>
+<#assign returnvalue = _inlineMonospaced>
+<#assign sgmltag = _inlineMonospaced>
+<#assign structfield = _inlineMonospaced>
+<#assign structname = _inlineMonospaced>
+<#assign symbol = _inlineMonospaced>
+<#assign token = _inlineMonospaced>
+<#assign type = _inlineMonospaced>
+<#assign uri = _inlineMonospaced>
+<#assign varname = _inlineMonospaced>
 
 <#macro note>
 <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
@@ -215,12 +215,12 @@
     <#local packed=(.node.@spacing[0]! = "compact")> 
     <#local prevCompactPara=compactPara>
     <#if packed>
-       <#set compactPara = true>
+       <#assign compactPara = true>
     </#if>
     <@CantBeNestedIntoP>
     <div class="orderedlist"><@Anchor/><ol type="1"><#recurse></ol></div><#t>
     </@CantBeNestedIntoP>
-    <#set compactPara = prevCompactPara>
+    <#assign compactPara = prevCompactPara>
 </#macro>
 
 <#macro para>
@@ -239,7 +239,7 @@
       </span><#t>
     </#if>
   <#else>
-    <#set inHtmlP = true>
+    <#assign inHtmlP = true>
     <p<#if style != ''> style="${style}"</#if>><#t>
     <#local content><@Anchor/><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
@@ -248,17 +248,17 @@
     <#else>
         ${content?substring(0, content?last_index_of("<p>"))}<#t>
     </#if>
-    <#set inHtmlP = false>
+    <#assign inHtmlP = false>
   </#if>
 </#macro>
 
 <#macro CantBeNestedIntoP>
 <#if inHtmlP>
   </p><#t>
-  <#set inHtmlP = false>
+  <#assign inHtmlP = false>
   <#nested>
   <p><#t>
-  <#set inHtmlP = true>
+  <#assign inHtmlP = true>
 <#else>
   <#nested>
 </#if>
@@ -274,22 +274,22 @@
       http://freemarker.org<#t>
     <#elseif role = "markedInvisibleText">
       <#if fontBgColor! != "">
-        <#set moreStyle = ";background-color:${fontBgColor}">
+        <#local moreStyle = ";background-color:${fontBgColor}">
       </#if>
       <i><span style="color: #999999 ${moreStyle}"><#recurse></span></i><#t>
     <#elseif role = "forProgrammers">
       <#if fontBgColor! != "">
-        <#set moreStyle = ";background-color:${fontBgColor}">
+        <#local moreStyle = ";background-color:${fontBgColor}">
       </#if>
       <span style="${forProgrammersStyle}${moreStyle}"><#recurse></span><#t>
     <#else>
-      <#set lastFontBgColor = fontBgColor!>
+      <#local lastFontBgColor = fontBgColor!>
       <#if !bgcolors[role]??>
         <#stop "Invalid role attribute value, \"" + role + "\"">
       </#if>
-      <#set fontBgColor = bgcolors[role]>
+      <#assign fontBgColor = bgcolors[role]>
       <span style="background-color:${bgcolors[role]}"><#recurse></span><#t>
-      <#set fontBgColor = lastFontBgColor>
+      <#assign fontBgColor = lastFontBgColor>
     </#if>
   </#if>
 </#macro>
@@ -299,7 +299,7 @@
   <#local role=.node.@role[0]!?string>
   <#local dotidx=role?index_of(".")>
   <#if dotidx != -1>
-    <#set role = role[0..dotidx-1]>
+    <#local role = role[0..dotidx-1]>
   </#if>
   <#switch role>
     <#case "output">
@@ -363,25 +363,25 @@
 <#macro qandaset>
   <div class="qandaset">
   <#local prevCompactPara=compactPara!>
-  <#set compactPara = true>
-  <#set qaIndex = 1>
+  <#assign compactPara = true>
+  <#assign qaIndex = 1>
   <table border=0 cellpadding=0 cellspacing=4>
   <#list .node.qandaentry as qandaentry>
     <tr align="left" valign="top">
       <td>${qaIndex}.&nbsp;&nbsp;
       <#local prevdisableAnchors=disableAnchors!>
-      <#set disableAnchors = true>
+      <#assign disableAnchors = true>
       <td>
       <a href="#${qandaentry.@id[0]!("faq_question_" + qaIndex)}">
         <#recurse qandaentry.question>
       </a><br>
-      <#set disableAnchors = prevdisableAnchors>
-    <#set qaIndex = qaIndex+1>
+      <#assign disableAnchors = prevdisableAnchors>
+    <#assign qaIndex = qaIndex+1>
   </#list>
   </table>
-  <#set compactPara = prevCompactPara> 
+  <#assign compactPara = prevCompactPara> 
 
-  <#set qaIndex = 1>
+  <#assign qaIndex = 1>
   <#recurse>
     
   </div>
@@ -389,13 +389,13 @@
 
   <#macro question>
   <#local prevCompactPara=compactPara!>
-  <#set compactPara = true>
+  <#assign compactPara = true>
   <div class="question">
     <@Anchor .node?parent/><a name="faq_question_${qaIndex}"></a>
     ${qaIndex}.&nbsp; <#recurse>
   </div>
-  <#set qaIndex = qaIndex+1>
-  <#set compactPara = prevCompactPara> 
+  <#assign qaIndex = qaIndex+1>
+  <#assign compactPara = prevCompactPara> 
 </#macro> 
 
 <#macro qandaentry><#recurse></#macro>
@@ -410,7 +410,7 @@
   <#local moreStyle="">
   <#if inlineMonospacedColorisation>
     <#if fontBgColor! != "">
-      <#set moreStyle = "; background-color:${fontBgColor}">
+      <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
     <i style="color: #DD4400${moreStyle}"><#recurse></i><#t>
   <#else>
@@ -426,13 +426,13 @@
   <#recurse>
 </#macro>
 
-<#set article = sectionLikeElement>
-<#set part = sectionLikeElement>
-<#set chapter = sectionLikeElement>
-<#set appendix = sectionLikeElement>
-<#set preface = sectionLikeElement>
-<#set section = sectionLikeElement>
-<#set simplesect = sectionLikeElement>
+<#assign article = sectionLikeElement>
+<#assign part = sectionLikeElement>
+<#assign chapter = sectionLikeElement>
+<#assign appendix = sectionLikeElement>
+<#assign preface = sectionLikeElement>
+<#assign section = sectionLikeElement>
+<#assign simplesect = sectionLikeElement>
 
 <#macro index>
   <#visit u.getRequiredTitleElement(.node)>
@@ -441,16 +441,16 @@
   <#local lastLetter = "">
   <p>
     <#list indexEntries as key>
-      <#set letter = key[0]?upper_case>
+      <#local letter = key[0]?upper_case>
       <#if lastLetter != letter>
         <#if lastLetter != "">&nbsp;| </#if><a href="#${index_safeID(letter)?html}">${letter?html}</a><#t>
-        <#set lastLetter = letter>
+        <#local lastLetter = letter>
       </#if>
     </#list>
   </p>
 
   <#-- Index list -->
-  <#set lastLetter = "">
+  <#local lastLetter = "">
   <#list indexEntries as key>
     <#local letter = key[0]?upper_case>
     <#if letter != lastLetter>
@@ -461,7 +461,7 @@
       <a name="${index_safeID(letter)?html}"></a><#lt>
       <h2 class="indexLabel">${letter?html}</h2><#lt>
       <dl><#lt>
-      <#set lastLetter = letter>
+      <#local lastLetter = letter>
     </#if>
     <#local entryNodes = primaryIndexTermLookup[key]>
     <dt>
@@ -505,7 +505,7 @@
         <#return>
       </#if>
     </#if>
-    <#set node = node?parent>
+    <#local node = node?parent>
   </#list>
   No title<#t>
 </#macro>
@@ -528,7 +528,7 @@
         <#local gtl = fullgt.@@text[0]?upper_case>
         <#if gtl != lgtl>
           <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id?html}">${gtl?html}</a><#t>
-          <#set lgtl = gtl>
+          <#local lgtl = gtl>
         </#if>
       </#if>
     </#list>
@@ -542,12 +542,12 @@
   </dl>
 </#macro>
 
-<#set partintro = simplesect>
+<#assign partintro = simplesect>
 
 <#macro title>
   <#local hierarElem = .node?parent>
   <#if hierarElem?node_name == "info">
-    <#set hierarElem = hierarElem?parent>
+    <#local hierarElem = hierarElem?parent>
   </#if>
   
   <#local type = hierarElem?node_name>
@@ -561,9 +561,9 @@
       <#break>
     </#if>
     <#if cur.@docgen_rank?size != 0>
-      <#set htmlHLevel = htmlHLevel + 1>
+      <#local htmlHLevel = htmlHLevel + 1>
     </#if>
-    <#set cur = cur?parent>
+    <#local cur = cur?parent>
   </#list>
   
   <#-- HTML only defines h-s up to h6 -->
@@ -620,7 +620,7 @@
             )
         >
           ${labelHTML}<#if labelHTML_has_next>/</#if><#t>
-          <#set started = true>
+          <#local started = true>
         </#if>
       </#list>
     </a><#t>
@@ -635,13 +635,13 @@
      <#local title = u.getOptionalTitleElement(targetNode)>
      <#if title??>
        <#local titleHTML><#recurse title></#local>
-       <#set result = [titleHTML] + result>
-       <#set allowFallback = true>
+       <#local result = [titleHTML] + result>
+       <#local allowFallback = true>
      <#elseif !allowFallback>
        <#break>
      </#if>
      
-     <#set targetNode = targetNode?parent>
+     <#local targetNode = targetNode?parent>
   </#list>
   <#return result>
 </#function>
@@ -651,7 +651,7 @@
 <#macro footnote>
   ${' '}[<a href="#autoid_footnote_${footnotes?size + 1}">${footnotes?size + 1}</a>]${' '}<#t>
   <#local capturedContent><#recurse></#local><#t>
-  <#set footnotes = footnotes + [capturedContent]>
+  <#assign footnotes = footnotes + [capturedContent]>
 </#macro>
 
 <#macro informaltable>
@@ -682,16 +682,16 @@
   ${"\n"}<#t>
 </#macro>
 
-<#set htmlAlignAtts = {"align":true, "valign":true}>
+<#assign htmlAlignAtts = {"align":true, "valign":true}>
 
 <#macro tr><@_HTMLTableElement htmlAlignAtts /></#macro>
 
 <#macro td><@_HTMLTableElement htmlAlignAtts + {"colspan":true, "rowspan":true} /></#macro>
-<#set th = td>
+<#assign th = td>
 
 <#macro thead><@_HTMLTableElement htmlAlignAtts /></#macro>
-<#set tbody = thead>
-<#set tfoot = thead>
+<#assign tbody = thead>
+<#assign tfoot = thead>
 
 <#macro colgroup>
   <#-- This element should be resolved and deleted from the DOM before we get here -->
