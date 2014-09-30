@@ -581,7 +581,7 @@
       ${titleInitial?html}<#recurse><#t>
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
-    <#if subtitleElem??>
+    <#if subtitleElem?has_content>
       <span style="font-size: 50%"><br><#recurse subtitleElem></span>
     </#if>
   </${htmlHElem}>
@@ -601,7 +601,7 @@
   <#local targetLink = CreateLinkFromID(xrefID)>
   
   <#local label = targetNode.@xreflabel[0]!null>
-  <#if label??>
+  <#if label?has_content>
     <a href="${targetLink?html}">${label?html}</a><#t>
   <#else>
     <#local labelHTMLs = buildTitleHTMLChain(targetNode)>
@@ -633,7 +633,7 @@
      <#if targetNode.@docgen_root_element?size != 0><#break></#if>
      
      <#local title = u.getOptionalTitleElement(targetNode)>
-     <#if title??>
+     <#if title?has_content>
        <#local titleHTML><#recurse title></#local>
        <#local result = [titleHTML] + result>
        <#local allowFallback = true>

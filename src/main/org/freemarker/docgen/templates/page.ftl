@@ -75,7 +75,7 @@
   <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
   <#assign footerTitleHTML = topLevelTitle?html>
   <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-  <#if bookSubtitle??>
+  <#if bookSubtitle?has_content>
     <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
   </#if>
   <#if !showXXELogo>
@@ -117,13 +117,13 @@
 </body>
 </html>
 
-<#macro toc att maxDepth title=null minLength=1>
+<#macro toc att maxDepth title='' minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
     <div class="toc">
       <p>
         <b>
-          <#if !title??>
+          <#if !title?has_content>
             <#if .node?parent?node_type == "document">
               Table of Contents
             <#else>

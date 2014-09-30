@@ -8,14 +8,14 @@
   <#local result = node.title>
   <#if !result?has_content><#local result = node.info.title></#if>
   <#if !result?has_content>
-     <#return null>
+     <#return ''>
   </#if>
   <#return result>
 </#function>
 
 <#function getRequiredTitleElement node>
   <#local result = getOptionalTitleElement(node)>
-  <#if !result??>
+  <#if !result?has_content>
     <#stop "Required \"title\" child element missing for element \""
         + node?node_name + "\".">
   </#if>
@@ -30,7 +30,7 @@
   <#local result = node.subtitle>
   <#if !result?has_content><#local result = node.info.subtitle></#if>
   <#if !result?has_content>
-    <#return null>
+    <#return ''>
   </#if>
   <#return result>
 </#function>
@@ -40,9 +40,9 @@
 </#function>
 
 <#function titleToString titleNode>
-  <#if titleNode?is_null>
+  <#if !titleNode?has_content>
     <#-- Used for optional title -->
-    <#return null>
+    <#return ''>
   </#if>
   <#if !titleNode?is_node>
     <#-- Just a string... -->
@@ -72,8 +72,8 @@
 
 <#-- "docStructElem" is a part, chapter, section, etc., NOT a title element -->
 <#function getTitlePrefix docStructElem, extraSpacing=false, longForm=false>
-  <#local prefix = docStructElem.@docgen_title_prefix[0]!null>
-  <#if !prefix??>
+  <#local prefix = docStructElem.@docgen_title_prefix[0]!>
+  <#if !prefix?has_content>
     <#return "">
   </#if>
 
