@@ -28,7 +28,7 @@
 <@nav.navigationBar top=true />
 
 <div id="mainContent">
-  <#var pageType = pageType!.node?node_name>
+  <#assign pageType = pageType!.node?node_name>
 
   <#if pageType == "index" || pageType == "glossary">
     <#visit .node using nodeHandlers>

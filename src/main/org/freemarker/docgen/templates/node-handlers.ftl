@@ -34,7 +34,7 @@
 </#macro>
 
 <#macro emphasis>
-    <#var role=.node.@role[0]!"none">
+    <#local role=.node.@role[0]!"none">
     <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content>
       <b><#recurse></b><#t>
     <#else>
@@ -46,13 +46,13 @@
 
 <#macro glossdef>
    <dd><#recurse>
-   <#var seealsos=.node.glossseealso>
+   <#local seealsos=.node.glossseealso>
    <#if seealsos?has_content>
     <p>See Also
      <#list seealsos as also>
-       <#var otherTermID=also.@otherterm>
-       <#var otherNode=NodeFromID(otherTermID)>
-       <#var term=otherNode.glossterm>
+       <#local otherTermID=also.@otherterm>
+       <#local otherNode=NodeFromID(otherTermID)>
+       <#local term=otherNode.glossterm>
        <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if> 
      </#list>
     </p>
@@ -62,9 +62,9 @@
 
 <#macro glosssee>
     <dd><p>See
-       <#var otherTermID=.node.@otherterm>
-       <#var otherNode=NodeFromID(otherTermID)>
-       <#var term=otherNode.glossterm>
+       <#local otherTermID=.node.@otherterm>
+       <#local otherNode=NodeFromID(otherTermID)>
+       <#local term=otherNode.glossterm>
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
     </p></dd>
 </#macro>
@@ -78,11 +78,11 @@
 </#macro>
 
 <#macro graphic>
-  <#var alt role=.node.@role[0]!?string>
+  <#local role=.node.@role[0]!?string>
   <#if role?starts_with("alt:")>
-    <#set alt = role[4.. .node.@role?length-1]?trim>
+    <#local alt = role[4.. .node.@role?length-1]?trim>
   <#else>  
-    <#set alt = "figure">
+    <#local alt = "figure">
   </#if>
   <img src="${.node.@fileref}" alt="${alt?html}"><#t>
 </#macro>
@@ -94,15 +94,15 @@
 </#macro>
 
 <#macro itemizedlist>
-    <#var packed=.node.@spacing[0]! = "compact"> 
-    <#var prevCompactPara=compactPara>
+    <#local packed=.node.@spacing[0]! = "compact"> 
+    <#local prevCompactPara=compactPara>
     <#if packed>
        <#set compactPara = true>
     </#if>
     <@CantBeNestedIntoP>
     <div class="itemizedlist">
         <@Anchor/>
-        <#var mark=.node.@mark[0]!>
+        <#local mark=.node.@mark[0]!>
         <#if mark = "bullet">
             <ul type="disc"><#t>
         <#elseif mark = "box">
@@ -130,7 +130,7 @@
 </#macro>
 
 <#macro listitem>
-   <#var mark=.node?parent.@mark[0]!>
+   <#local mark=.node?parent.@mark[0]!>
    <#if mark != "">
        <li style="list-style-type: ${mark?html}"><@Anchor/><#t>
    <#else>
@@ -141,7 +141,7 @@
 </#macro>
 
 <#macro _inlineMonospaced>
-    <#var moreStyle="" color="#A03D10">
+    <#local moreStyle="" color="#A03D10">
     <#if .node?ancestors("link")?has_content>
         <#-- If we are within a link, we don't change color, just use the regular link color -->   
         <tt><#recurse></tt><#t>
@@ -150,7 +150,7 @@
             <#set moreStyle = "; background-color:${fontBgColor}">
         </#if>
         <tt style="color: #A03D10${moreStyle}"><#t>
-        <#var saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
+        <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#set inlineMonospacedColorisation = true>
         <#recurse><#t>
         <#set inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
@@ -212,8 +212,8 @@
 </#macro>
 
 <#macro orderedlist>
-    <#var packed=(.node.@spacing[0]! = "compact")> 
-    <#var prevCompactPara=compactPara>
+    <#local packed=(.node.@spacing[0]! = "compact")> 
+    <#local prevCompactPara=compactPara>
     <#if packed>
        <#set compactPara = true>
     </#if>
@@ -224,24 +224,24 @@
 </#macro>
 
 <#macro para>
-  <#var style>
   <#if .node.@role[0]! = "forProgrammers">
-    <#set style = forProgrammersStyle>
+    <#local style = forProgrammersStyle>
+  <#else>
+    <#local style = ''>
   </#if>
   <#if compactPara!>
-    <#if style??>
+    <#if style != ''>
       <span style="${style}"><#t>
     </#if>
     <@Anchor/><#t>
     <#recurse>
-    <#if style??>
+    <#if style != ''>
       </span><#t>
     </#if>
   <#else>
-    <#var content>
     <#set inHtmlP = true>
-    <p<#if style??> style="${style}"</#if>><#t>
-    <#set content><@Anchor/><#recurse></#set><#t>
+    <p<#if style != ''> style="${style}"</#if>><#t>
+    <#local content><@Anchor/><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
     <#if !content?matches(r".*<p>\s*$", "s")>
         ${content}</p><#t>
@@ -265,10 +265,10 @@
 </#macro>
 
 <#macro phrase>
-  <#var lastFontBgColor=fontBgColor>
-  <#var moreStyle="">
-  <#var role=.node.@role[0]!>
-  <#var bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}>
+  <#local lastFontBgColor=fontBgColor!>
+  <#local moreStyle="">
+  <#local role=.node.@role[0]!>
+  <#local bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}>
   <#if role != "">
     <#if role = "homepage">
       http://freemarker.org<#t>
@@ -296,24 +296,23 @@
 
 <#macro programlisting>
   <@Anchor/>
-  <#var content bgcolor>
-  <#var role=.node.@role[0]!?string>
-  <#var dotidx=role?index_of(".")>
+  <#local role=.node.@role[0]!?string>
+  <#local dotidx=role?index_of(".")>
   <#if dotidx != -1>
     <#set role = role[0..dotidx-1]>
   </#if>
   <#switch role>
     <#case "output">
-      <#set bgcolor = "#CCFFCC">
+      <#local bgcolor = "#CCFFCC">
       <#break>
     <#case "dataModel">
-      <#set bgcolor = "#99CCFF">
+      <#local bgcolor = "#99CCFF">
       <#break>
     <#case "template">
-      <#set bgcolor = "#D8D8D8">
+      <#local bgcolor = "#D8D8D8">
       <#break>
     <#case "unspecified">
-      <#set bgcolor = "#F8F8F8">
+      <#local bgcolor = "#F8F8F8">
       <#break>
     <#case "metaTemplate">
       <pre class="metaTemplate"><#t>
@@ -321,7 +320,7 @@
       </pre><#lt>
       <#return>
     <#default>
-      <#set bgcolor = "#F8F8F8">
+      <#local bgcolor = "#F8F8F8">
   </#switch>
   <#--
     We will use a table instead of a div, because div-s has to problems:
@@ -363,14 +362,14 @@
 
 <#macro qandaset>
   <div class="qandaset">
-  <#var prevCompactPara=compactPara!>
+  <#local prevCompactPara=compactPara!>
   <#set compactPara = true>
   <#set qaIndex = 1>
   <table border=0 cellpadding=0 cellspacing=4>
   <#list .node.qandaentry as qandaentry>
     <tr align="left" valign="top">
       <td>${qaIndex}.&nbsp;&nbsp;
-      <#var prevdisableAnchors=disableAnchors!>
+      <#local prevdisableAnchors=disableAnchors!>
       <#set disableAnchors = true>
       <td>
       <a href="#${qandaentry.@id[0]!("faq_question_" + qaIndex)}">
@@ -389,7 +388,7 @@
   </#macro>
 
   <#macro question>
-  <#var prevCompactPara=compactPara!>
+  <#local prevCompactPara=compactPara!>
   <#set compactPara = true>
   <div class="question">
     <@Anchor .node?parent/><a name="faq_question_${qaIndex}"></a>
@@ -408,7 +407,7 @@
 </#macro> 
 
 <#macro replaceable>
-  <#var moreStyle="">
+  <#local moreStyle="">
   <#if inlineMonospacedColorisation>
     <#if fontBgColor! != "">
       <#set moreStyle = "; background-color:${fontBgColor}">
@@ -439,7 +438,7 @@
   <#visit u.getRequiredTitleElement(.node)>
   
   <#-- ABC links -->
-  <#var lastLetter = "">
+  <#local lastLetter = "">
   <p>
     <#list indexEntries as key>
       <#set letter = key[0]?upper_case>
@@ -453,7 +452,7 @@
   <#-- Index list -->
   <#set lastLetter = "">
   <#list indexEntries as key>
-    <#var letter = key[0]?upper_case>
+    <#local letter = key[0]?upper_case>
     <#if letter != lastLetter>
       <#if lastLetter != "">
         </dl></div><#lt>
@@ -464,7 +463,7 @@
       <dl><#lt>
       <#set lastLetter = letter>
     </#if>
-    <#var entryNodes = primaryIndexTermLookup[key]>
+    <#local entryNodes = primaryIndexTermLookup[key]>
     <dt>
       ${key?html}<#if entryNodes?has_content>,&nbsp;&nbsp;</#if><#rt>
       <#list entryNodes as entryNode>
@@ -473,7 +472,7 @@
       </#list>
     </dt>
     <#if secondaryIndexTermLookup[key]?has_content>
-      <#var secondaryTerms = secondaryIndexTermLookup[key]>
+      <#local secondaryTerms = secondaryIndexTermLookup[key]>
       <dd><dl>
       <#list secondaryTerms?keys?sort as secondary>
         <dt><#rt>
@@ -500,7 +499,7 @@
       <#return>
     </#if>
     <#if node.title?has_content>
-      <#var title=node.title>
+      <#local title=node.title>
       <#if !node.@id[0]!?starts_with("autoid_")>
         ${title?trim?html}<#t>
         <#return>
@@ -518,15 +517,15 @@
 <#macro glossary>
   <#visit u.getRequiredTitleElement(.node)>
 
-  <#var ges = .node.glossentry?sort_by("glossterm")>
+  <#local ges = .node.glossentry?sort_by("glossterm")>
 
   <#-- Print alphabetical index links: -->
-  <#var lgtl = "">
+  <#local lgtl = "">
   <p>
     <#list ges as ge>
-      <#var fullgt = ge.glossterm>
+      <#local fullgt = ge.glossterm>
       <#if fullgt?size != 0>
-        <#var gtl = fullgt.@@text[0]?upper_case>
+        <#local gtl = fullgt.@@text[0]?upper_case>
         <#if gtl != lgtl>
           <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id?html}">${gtl?html}</a><#t>
           <#set lgtl = gtl>
@@ -546,17 +545,17 @@
 <#set partintro = simplesect>
 
 <#macro title>
-  <#var hierarElem = .node?parent>
+  <#local hierarElem = .node?parent>
   <#if hierarElem?node_name == "info">
     <#set hierarElem = hierarElem?parent>
   </#if>
   
-  <#var type = hierarElem?node_name>
-  <#var titleInitial = u.getTitlePrefix(hierarElem, true, true)>
+  <#local type = hierarElem?node_name>
+  <#local titleInitial = u.getTitlePrefix(hierarElem, true, true)>
   
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
-  <#var htmlHLevel = 1>
-  <#var cur = hierarElem>
+  <#local htmlHLevel = 1>
+  <#local cur = hierarElem>
   <#list 1..100000 as _>
     <#if cur.@docgen_file_element?size != 0>
       <#break>
@@ -567,22 +566,21 @@
     <#set cur = cur?parent>
   </#list>
   
-  <#var htmlHElem>
   <#-- HTML only defines h-s up to h6 -->
   <#if htmlHLevel <= 6>
-    <#set htmlHElem = "h${htmlHLevel}">
+    <#local htmlHElem = "h${htmlHLevel}">
   <#else>
-    <#set htmlHElem = "p">
+    <#local htmlHElem = "p">
   </#if>
   
-  <#var classAtt = "">
+  <#local classAtt = "">
   
   <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
         <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
       <@Anchor hierarElem/><#t>
       ${titleInitial?html}<#recurse><#t>
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
-    <#var subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
+    <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem??>
       <span style="font-size: 50%"><br><#recurse subtitleElem></span>
     </#if>
@@ -598,22 +596,22 @@
 </#macro>
 
 <#macro xref>
-  <#var xrefID=.node.@linkend>
-  <#var targetNode = NodeFromID(xrefID)>
-  <#var targetLink = CreateLinkFromID(xrefID)>
+  <#local xrefID=.node.@linkend>
+  <#local targetNode = NodeFromID(xrefID)>
+  <#local targetLink = CreateLinkFromID(xrefID)>
   
-  <#var label = targetNode.@xreflabel[0]!null>
+  <#local label = targetNode.@xreflabel[0]!null>
   <#if label??>
     <a href="${targetLink?html}">${label?html}</a><#t>
   <#else>
-    <#var labelHTMLs = buildTitleHTMLChain(targetNode)>
+    <#local labelHTMLs = buildTitleHTMLChain(targetNode)>
     <#if labelHTMLs?size == 0>
       <#stop "\"xref\" target element with xml:id \"" + targetNode.@id
           + "\" has no \"title\" element in it nor \"xreflabel\" attribute.">
     </#if>
-    <#var ctxLabelHTMLs = buildTitleHTMLChain(.node, true)>
+    <#local ctxLabelHTMLs = buildTitleHTMLChain(.node, true)>
     <a href="${targetLink?html}"><#t>
-      <#var started = false>
+      <#local started = false>
       <#list labelHTMLs as labelHTML>
         <#if started || !(
               labelHTML_has_next
@@ -630,14 +628,13 @@
 </#macro>
 
 <#function buildTitleHTMLChain targetNode allowFallback=false>
-  <#var result = []>
+  <#local result = []>
   <#list 1..1000000 as _>
      <#if targetNode.@docgen_root_element?size != 0><#break></#if>
      
-     <#var title = u.getOptionalTitleElement(targetNode)>
+     <#local title = u.getOptionalTitleElement(targetNode)>
      <#if title??>
-       <#var titleHTML>
-       <#set titleHTML><#recurse title></#set>
+       <#local titleHTML><#recurse title></#local>
        <#set result = [titleHTML] + result>
        <#set allowFallback = true>
      <#elseif !allowFallback>
@@ -652,9 +649,8 @@
 <#macro quote>"<#recurse>"</#macro>
 
 <#macro footnote>
-  <#var capturedContent>
   ${' '}[<a href="#autoid_footnote_${footnotes?size + 1}">${footnotes?size + 1}</a>]${' '}<#t>
-  <#set capturedContent><#recurse></#set><#t>
+  <#local capturedContent><#recurse></#local><#t>
   <#set footnotes = footnotes + [capturedContent]>
 </#macro>
 

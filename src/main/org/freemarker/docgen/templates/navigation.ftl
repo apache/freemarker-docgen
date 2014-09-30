@@ -7,8 +7,7 @@
 <#set nodeHandlers = [customizations, defaultNodeHandlers]>
 
 <#macro navigationBar top>
-  <#var captured>
-  <#set captured>
+  <#local captured>
     <#if showNavigationBar>
       <#if top>
         <@breadcrumb />
@@ -19,7 +18,7 @@
         <@breadcrumb />
       </#if>
     </#if>
-  </#set>
+  </#local>
   <#if captured?trim?length == 0>
     <#if !top>
       <div class="missingNavigationFooterLine"></div>
@@ -35,8 +34,8 @@
   <#if !showBreadCrumb>
     <#return>
   </#if>
-  <#var path = []>
-  <#var curNode = .node>
+  <#local path = []>
+  <#local curNode = .node>
   <#list 1..99 as _>
     <#set path = [curNode] + path>
     <#if curNode.@docgen_root_element?size != 0>
@@ -70,9 +69,9 @@
     <div class="bookmarks">
       <span class="bookmarks"><#t>
         Bookmarks:<#lt>
-        <#var curHref = CreateLinkFromNode(.node)>
+        <#local curHref = CreateLinkFromNode(.node)>
         <#list internalBookmarks?keys as k>
-          <#var target = CreateLinkFromID(internalBookmarks[k])>
+          <#local target = CreateLinkFromID(internalBookmarks[k])>
           <#if target != curHref>
             <a href="${target?html}">${k?html}</a><#t>
           <#else>
@@ -105,11 +104,9 @@
 
 <#macro pagerButton label element labelOnly=true>
   <div class="pagerButton"><#t>
-    <#var href>
-    <#var curHref>
     <#if element??>
-      <#set href = CreateLinkFromNode(element)>
-      <#set curHref = CreateLinkFromNode(.node)>
+      <#local href = CreateLinkFromNode(element)>
+      <#local curHref = CreateLinkFromNode(.node)>
     </#if>
     <#if element?? && href != curHref>
       <a href="${href?html}"><#t>

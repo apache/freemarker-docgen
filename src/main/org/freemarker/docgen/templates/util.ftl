@@ -5,7 +5,7 @@
 </#function>
 
 <#function getOptionalTitleElement node>
-  <#var result = node.title>
+  <#local result = node.title>
   <#if !result?has_content><#set result = node.info.title></#if>
   <#if !result?has_content>
      <#return null>
@@ -14,7 +14,7 @@
 </#function>
 
 <#function getRequiredTitleElement node>
-  <#var result = getOptionalTitleElement(node)>
+  <#local result = getOptionalTitleElement(node)>
   <#if !result??>
     <#stop "Required \"title\" child element missing for element \""
         + node?node_name + "\".">
@@ -27,7 +27,7 @@
 </#function>
 
 <#function getOptionalSubtitleElement node>
-  <#var result = node.subtitle>
+  <#local result = node.subtitle>
   <#if !result?has_content><#set result = node.info.subtitle></#if>
   <#if !result?has_content>
     <#return null>
@@ -49,12 +49,12 @@
     <#return titleNode>
   </#if>
   
-  <#var res = "">
+  <#local res = "">
   <#list titleNode?children as child>
     <#if child?node_type == "text">
       <#set res = res + child>
     <#elseif child?node_type == "element">
-      <#var name = child?node_name>
+      <#local name = child?node_name>
       <#if name == "literal"
           || name == "classname" || name == "methodname" || name == "package"
           || name == "replaceable"
@@ -72,18 +72,17 @@
 
 <#-- "docStructElem" is a part, chapter, section, etc., NOT a title element -->
 <#function getTitlePrefix docStructElem, extraSpacing=false, longForm=false>
-  <#var prefix = docStructElem.@docgen_title_prefix[0]!null>
+  <#local prefix = docStructElem.@docgen_title_prefix[0]!null>
   <#if !prefix??>
     <#return "">
   </#if>
 
-  <#var type = docStructElem?node_name>
+  <#local type = docStructElem?node_name>
   
-  <#var spacer>
   <#if extraSpacing>
-    <#set spacer = "\xA0\xA0\xA0">
+    <#local spacer = "\xA0\xA0\xA0">
   <#else>
-    <#set spacer = " ">
+    <#local spacer = " ">
   </#if>
   
   <#if type = "chapter">
