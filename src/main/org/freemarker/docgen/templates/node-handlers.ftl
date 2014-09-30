@@ -600,7 +600,7 @@
   <#local targetNode = NodeFromID(xrefID)>
   <#local targetLink = CreateLinkFromID(xrefID)>
   
-  <#local label = targetNode.@xreflabel[0]!null>
+  <#local label = targetNode.@xreflabel[0]!>
   <#if label?has_content>
     <a href="${targetLink?html}">${label?html}</a><#t>
   <#else>
