@@ -1,329 +1,329 @@
-[#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}]
+<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
 
-[#import "util.ftl" as u]
+<#import "util.ftl" as u>
 
-[#-- Constants: --]
-[#set forProgrammersStyle = "color:#333399; font-style:italic"]
+<#-- Constants: -->
+<#set forProgrammersStyle = "color:#333399; font-style:italic">
 
-[#-- State variables: --]
-[#set inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false]
-[#set footnotes = []]
+<#-- State variables: -->
+<#set inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
+<#set footnotes = []>
  
-[#macro @text]${.node?html}[/#macro]
+<#macro @text>${.node?html}</#macro>
 
-[#macro @element]
-  [#stop "This DocBook element is not supported by the Docgen transformer, "
+<#macro @element>
+  <#stop "This DocBook element is not supported by the Docgen transformer, "
       + "or wasn't expected where it occured: "
-      + .node?node_name]
-[/#macro]
+      + .node?node_name>
+</#macro>
 
-[#macro Anchor node=.node]
-  [#if !disableAnchors && node.@id[0]??]
-    <a name="${node.@id}"></a>[#t]
-  [/#if]  
-[/#macro]
+<#macro Anchor node=.node>
+  <#if !disableAnchors && node.@id[0]??>
+    <a name="${node.@id}"></a><#t>
+  </#if>  
+</#macro>
 
-[#macro anchor]
-  [@Anchor/]
-[/#macro]
+<#macro anchor>
+  <@Anchor/>
+</#macro>
 
-[#macro answer]
+<#macro answer>
 <div class="answer">
-  [#recurse]
+  <#recurse>
 </div>
-[/#macro]
+</#macro>
 
-[#macro emphasis]
-    [#var role=.node.@role[0]!"none"]
-    [#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content]
-      <b>[#recurse]</b>[#t]
-    [#else]
-      <i>[#recurse]</i>[#t]
-    [/#if]
-[/#macro]
+<#macro emphasis>
+    <#var role=.node.@role[0]!"none">
+    <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content>
+      <b><#recurse></b><#t>
+    <#else>
+      <i><#recurse></i><#t>
+    </#if>
+</#macro>
 
-[#macro glossentry][#recurse][/#macro]
+<#macro glossentry><#recurse></#macro>
 
-[#macro glossdef]
-   <dd>[#recurse]
-   [#var seealsos=.node.glossseealso]
-   [#if seealsos?has_content]
+<#macro glossdef>
+   <dd><#recurse>
+   <#var seealsos=.node.glossseealso>
+   <#if seealsos?has_content>
     <p>See Also
-     [#list seealsos as also]
-       [#var otherTermID=also.@otherterm]
-       [#var otherNode=NodeFromID(otherTermID)]
-       [#var term=otherNode.glossterm]
-       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a>[#if also_has_next],[/#if] 
-     [/#list]
+     <#list seealsos as also>
+       <#var otherTermID=also.@otherterm>
+       <#var otherNode=NodeFromID(otherTermID)>
+       <#var term=otherNode.glossterm>
+       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if> 
+     </#list>
     </p>
-   [/#if]
+   </#if>
    </dd>
-[/#macro]
+</#macro>
 
-[#macro glosssee]
+<#macro glosssee>
     <dd><p>See
-       [#var otherTermID=.node.@otherterm]
-       [#var otherNode=NodeFromID(otherTermID)]
-       [#var term=otherNode.glossterm]
+       <#var otherTermID=.node.@otherterm>
+       <#var otherNode=NodeFromID(otherTermID)>
+       <#var term=otherNode.glossterm>
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
     </p></dd>
-[/#macro]
+</#macro>
 
-[#macro glossseealso]
-  [#-- This is dealt with in the glossdef routine --]
-[/#macro]
+<#macro glossseealso>
+  <#-- This is dealt with in the glossdef routine -->
+</#macro>
 
-[#macro glossterm]
-  <dt>[@Anchor .node?parent/][#recurse]</dt>
-[/#macro]
+<#macro glossterm>
+  <dt><@Anchor .node?parent/><#recurse></dt>
+</#macro>
 
-[#macro graphic]
-  [#var alt role=.node.@role[0]!?string]
-  [#if role?starts_with("alt:")]
-    [#set alt = role[4.. .node.@role?length-1]?trim]
-  [#else]  
-    [#set alt = "figure"]
-  [/#if]
-  <img src="${.node.@fileref}" alt="${alt?html}">[#t]
-[/#macro]
+<#macro graphic>
+  <#var alt role=.node.@role[0]!?string>
+  <#if role?starts_with("alt:")>
+    <#set alt = role[4.. .node.@role?length-1]?trim>
+  <#else>  
+    <#set alt = "figure">
+  </#if>
+  <img src="${.node.@fileref}" alt="${alt?html}"><#t>
+</#macro>
 
-[#assign imagedata=graphic]
+<#assign imagedata=graphic>
 
-[#macro indexterm]
-  [@Anchor/]
-[/#macro]
+<#macro indexterm>
+  <@Anchor/>
+</#macro>
 
-[#macro itemizedlist]
-    [#var packed=.node.@spacing[0]! = "compact"] 
-    [#var prevCompactPara=compactPara]
-    [#if packed]
-       [#set compactPara = true]
-    [/#if]
-    [@CantBeNestedIntoP]
+<#macro itemizedlist>
+    <#var packed=.node.@spacing[0]! = "compact"> 
+    <#var prevCompactPara=compactPara>
+    <#if packed>
+       <#set compactPara = true>
+    </#if>
+    <@CantBeNestedIntoP>
     <div class="itemizedlist">
-        [@Anchor/]
-        [#var mark=.node.@mark[0]!]
-        [#if mark = "bullet"]
-            <ul type="disc">[#t]
-        [#elseif mark = "box"]
-            <ul type="square">[#t]
-        [#elseif mark = "ring"]
-            <ul type="circle">[#t]
-        [#elseif mark = ""]
-            <ul>[#t]
-        [#else]
-            <ul type="${mark?html}">[#t]
-        [/#if]
-        [#recurse]
-        </ul>[#t]
+        <@Anchor/>
+        <#var mark=.node.@mark[0]!>
+        <#if mark = "bullet">
+            <ul type="disc"><#t>
+        <#elseif mark = "box">
+            <ul type="square"><#t>
+        <#elseif mark = "ring">
+            <ul type="circle"><#t>
+        <#elseif mark = "">
+            <ul><#t>
+        <#else>
+            <ul type="${mark?html}"><#t>
+        </#if>
+        <#recurse>
+        </ul><#t>
     </div>
-    [/@CantBeNestedIntoP]
-    [#set compactPara = prevCompactPara]
-[/#macro]
+    </@CantBeNestedIntoP>
+    <#set compactPara = prevCompactPara>
+</#macro>
 
-[#macro link]
-   [#if .node.@linkend?has_content]
-      <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse]</a>[#t]
-   [#else]
-      <a href="${.node["@xlink:href"]?html}">[#recurse]</a>[#t]
-   [/#if]
-[/#macro]
+<#macro link>
+   <#if .node.@linkend?has_content>
+      <a href="${CreateLinkFromID(.node.@linkend)?html}"><#recurse></a><#t>
+   <#else>
+      <a href="${.node["@xlink:href"]?html}"><#recurse></a><#t>
+   </#if>
+</#macro>
 
-[#macro listitem]
-   [#var mark=.node?parent.@mark[0]!]
-   [#if mark != ""]
-       <li style="list-style-type: ${mark?html}">[@Anchor/][#t]
-   [#else]
-       <li>[@Anchor/][#t]
-   [/#if]
-   [#recurse]
-   </li>[#t]
-[/#macro]
+<#macro listitem>
+   <#var mark=.node?parent.@mark[0]!>
+   <#if mark != "">
+       <li style="list-style-type: ${mark?html}"><@Anchor/><#t>
+   <#else>
+       <li><@Anchor/><#t>
+   </#if>
+   <#recurse>
+   </li><#t>
+</#macro>
 
-[#macro _inlineMonospaced]
-    [#var moreStyle="" color="#A03D10"]
-    [#if .node?ancestors("link")?has_content]
-        [#-- If we are within a link, we don't change color, just use the regular link color --]   
-        <tt>[#recurse]</tt>[#t]
-    [#else]
-        [#if fontBgColor! != ""]
-            [#set moreStyle = "; background-color:${fontBgColor}"]
-        [/#if]
-        <tt style="color: #A03D10${moreStyle}">[#t]
-        [#var saved_inlineMonospacedColorisation = inlineMonospacedColorisation]
-        [#set inlineMonospacedColorisation = true]
-        [#recurse][#t]
-        [#set inlineMonospacedColorisation = saved_inlineMonospacedColorisation]
-        </tt>[#t]
-    [/#if]
-[/#macro]
+<#macro _inlineMonospaced>
+    <#var moreStyle="" color="#A03D10">
+    <#if .node?ancestors("link")?has_content>
+        <#-- If we are within a link, we don't change color, just use the regular link color -->   
+        <tt><#recurse></tt><#t>
+    <#else>
+        <#if fontBgColor! != "">
+            <#set moreStyle = "; background-color:${fontBgColor}">
+        </#if>
+        <tt style="color: #A03D10${moreStyle}"><#t>
+        <#var saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
+        <#set inlineMonospacedColorisation = true>
+        <#recurse><#t>
+        <#set inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
+        </tt><#t>
+    </#if>
+</#macro>
 
-[#set classname = _inlineMonospaced]
-[#set code = _inlineMonospaced]
-[#set command=_inlineMonospaced]
-[#set constant = _inlineMonospaced]
-[#set envar = _inlineMonospaced]
-[#set errorcode = _inlineMonospaced]
-[#set errorname = _inlineMonospaced]
-[#set errortext = _inlineMonospaced]
-[#set errortype = _inlineMonospaced]
-[#set exceptionname = _inlineMonospaced]
-[#set filename = _inlineMonospaced]
-[#set function = _inlineMonospaced]
-[#set interfacename = _inlineMonospaced]
-[#set literal = _inlineMonospaced]
-[#set markup = _inlineMonospaced]
-[#set methodname = _inlineMonospaced]
-[#set package = _inlineMonospaced]
-[#set parameter = _inlineMonospaced]
-[#set prompt = _inlineMonospaced]
-[#set property = _inlineMonospaced]
-[#set returnvalue = _inlineMonospaced]
-[#set sgmltag = _inlineMonospaced]
-[#set structfield = _inlineMonospaced]
-[#set structname = _inlineMonospaced]
-[#set symbol = _inlineMonospaced]
-[#set token = _inlineMonospaced]
-[#set type = _inlineMonospaced]
-[#set uri = _inlineMonospaced]
-[#set varname = _inlineMonospaced]
+<#set classname = _inlineMonospaced>
+<#set code = _inlineMonospaced>
+<#set command=_inlineMonospaced>
+<#set constant = _inlineMonospaced>
+<#set envar = _inlineMonospaced>
+<#set errorcode = _inlineMonospaced>
+<#set errorname = _inlineMonospaced>
+<#set errortext = _inlineMonospaced>
+<#set errortype = _inlineMonospaced>
+<#set exceptionname = _inlineMonospaced>
+<#set filename = _inlineMonospaced>
+<#set function = _inlineMonospaced>
+<#set interfacename = _inlineMonospaced>
+<#set literal = _inlineMonospaced>
+<#set markup = _inlineMonospaced>
+<#set methodname = _inlineMonospaced>
+<#set package = _inlineMonospaced>
+<#set parameter = _inlineMonospaced>
+<#set prompt = _inlineMonospaced>
+<#set property = _inlineMonospaced>
+<#set returnvalue = _inlineMonospaced>
+<#set sgmltag = _inlineMonospaced>
+<#set structfield = _inlineMonospaced>
+<#set structname = _inlineMonospaced>
+<#set symbol = _inlineMonospaced>
+<#set token = _inlineMonospaced>
+<#set type = _inlineMonospaced>
+<#set uri = _inlineMonospaced>
+<#set varname = _inlineMonospaced>
 
-[#macro note]
+<#macro note>
 <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
    <p class="rank_note">Note</p>
-   [#recurse]
+   <#recurse>
 </div>
-[/#macro]  
+</#macro>  
 
-[#macro warning]
+<#macro warning>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
   <p class="rank_note">Warning!</p>
-  [#recurse]
+  <#recurse>
 </div>            
-[/#macro]
+</#macro>
 
-[#macro olink]
-    [#if !(olinks[.node.@targetdoc]??)]
-      [#stop "The olink element refers to an unknown targetdoc: \""
+<#macro olink>
+    <#if !(olinks[.node.@targetdoc]??)>
+      <#stop "The olink element refers to an unknown targetdoc: \""
              + .node.@targetdoc?xml
-             + "\". Ensure this target is defined in the docgen.cfg file."]
-    [/#if]
-    <a href="${olinks[.node.@targetdoc]}">[#recurse]</a>[#t]
-[/#macro]
+             + "\". Ensure this target is defined in the docgen.cfg file.">
+    </#if>
+    <a href="${olinks[.node.@targetdoc]}"><#recurse></a><#t>
+</#macro>
 
-[#macro orderedlist]
-    [#var packed=(.node.@spacing[0]! = "compact")] 
-    [#var prevCompactPara=compactPara]
-    [#if packed]
-       [#set compactPara = true]
-    [/#if]
-    [@CantBeNestedIntoP]
-    <div class="orderedlist">[@Anchor/]<ol type="1">[#recurse]</ol></div>[#t]
-    [/@CantBeNestedIntoP]
-    [#set compactPara = prevCompactPara]
-[/#macro]
+<#macro orderedlist>
+    <#var packed=(.node.@spacing[0]! = "compact")> 
+    <#var prevCompactPara=compactPara>
+    <#if packed>
+       <#set compactPara = true>
+    </#if>
+    <@CantBeNestedIntoP>
+    <div class="orderedlist"><@Anchor/><ol type="1"><#recurse></ol></div><#t>
+    </@CantBeNestedIntoP>
+    <#set compactPara = prevCompactPara>
+</#macro>
 
-[#macro para]
-  [#var style]
-  [#if .node.@role[0]! = "forProgrammers"]
-    [#set style = forProgrammersStyle]
-  [/#if]
-  [#if compactPara!]
-    [#if style??]
-      <span style="${style}">[#t]
-    [/#if]
-    [@Anchor/][#t]
-    [#recurse]
-    [#if style??]
-      </span>[#t]
-    [/#if]
-  [#else]
-    [#var content]
-    [#set inHtmlP = true]
-    <p[#if style??] style="${style}"[/#if]>[#t]
-    [#set content][@Anchor/][#recurse][/#set][#t]
-    [#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. --]
-    [#if !content?matches(r".*<p>\s*$", "s")]
-        ${content}</p>[#t]
-    [#else]
-        ${content?substring(0, content?last_index_of("<p>"))}[#t]
-    [/#if]
-    [#set inHtmlP = false]
-  [/#if]
-[/#macro]
+<#macro para>
+  <#var style>
+  <#if .node.@role[0]! = "forProgrammers">
+    <#set style = forProgrammersStyle>
+  </#if>
+  <#if compactPara!>
+    <#if style??>
+      <span style="${style}"><#t>
+    </#if>
+    <@Anchor/><#t>
+    <#recurse>
+    <#if style??>
+      </span><#t>
+    </#if>
+  <#else>
+    <#var content>
+    <#set inHtmlP = true>
+    <p<#if style??> style="${style}"</#if>><#t>
+    <#set content><@Anchor/><#recurse></#set><#t>
+    <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
+    <#if !content?matches(r".*<p>\s*$", "s")>
+        ${content}</p><#t>
+    <#else>
+        ${content?substring(0, content?last_index_of("<p>"))}<#t>
+    </#if>
+    <#set inHtmlP = false>
+  </#if>
+</#macro>
 
-[#macro CantBeNestedIntoP]
-[#if inHtmlP]
-  </p>[#t]
-  [#set inHtmlP = false]
-  [#nested]
-  <p>[#t]
-  [#set inHtmlP = true]
-[#else]
-  [#nested]
-[/#if]
-[/#macro]
+<#macro CantBeNestedIntoP>
+<#if inHtmlP>
+  </p><#t>
+  <#set inHtmlP = false>
+  <#nested>
+  <p><#t>
+  <#set inHtmlP = true>
+<#else>
+  <#nested>
+</#if>
+</#macro>
 
-[#macro phrase]
-  [#var lastFontBgColor=fontBgColor]
-  [#var moreStyle=""]
-  [#var role=.node.@role[0]!]
-  [#var bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}]
-  [#if role != ""]
-    [#if role = "homepage"]
-      http://freemarker.org[#t]
-    [#elseif role = "markedInvisibleText"]
-      [#if fontBgColor! != ""]
-        [#set moreStyle = ";background-color:${fontBgColor}"]
-      [/#if]
-      <i><span style="color: #999999 ${moreStyle}">[#recurse]</span></i>[#t]
-    [#elseif role = "forProgrammers"]
-      [#if fontBgColor! != ""]
-        [#set moreStyle = ";background-color:${fontBgColor}"]
-      [/#if]
-      <span style="${forProgrammersStyle}${moreStyle}">[#recurse]</span>[#t]
-    [#else]
-      [#set lastFontBgColor = fontBgColor!]
-      [#if !bgcolors[role]??]
-        [#stop "Invalid role attribute value, \"" + role + "\""]
-      [/#if]
-      [#set fontBgColor = bgcolors[role]]
-      <span style="background-color:${bgcolors[role]}">[#recurse]</span>[#t]
-      [#set fontBgColor = lastFontBgColor]
-    [/#if]
-  [/#if]
-[/#macro]
+<#macro phrase>
+  <#var lastFontBgColor=fontBgColor>
+  <#var moreStyle="">
+  <#var role=.node.@role[0]!>
+  <#var bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}>
+  <#if role != "">
+    <#if role = "homepage">
+      http://freemarker.org<#t>
+    <#elseif role = "markedInvisibleText">
+      <#if fontBgColor! != "">
+        <#set moreStyle = ";background-color:${fontBgColor}">
+      </#if>
+      <i><span style="color: #999999 ${moreStyle}"><#recurse></span></i><#t>
+    <#elseif role = "forProgrammers">
+      <#if fontBgColor! != "">
+        <#set moreStyle = ";background-color:${fontBgColor}">
+      </#if>
+      <span style="${forProgrammersStyle}${moreStyle}"><#recurse></span><#t>
+    <#else>
+      <#set lastFontBgColor = fontBgColor!>
+      <#if !bgcolors[role]??>
+        <#stop "Invalid role attribute value, \"" + role + "\"">
+      </#if>
+      <#set fontBgColor = bgcolors[role]>
+      <span style="background-color:${bgcolors[role]}"><#recurse></span><#t>
+      <#set fontBgColor = lastFontBgColor>
+    </#if>
+  </#if>
+</#macro>
 
-[#macro programlisting]
-  [@Anchor/]
-  [#var content bgcolor]
-  [#var role=.node.@role[0]!?string]
-  [#var dotidx=role?index_of(".")]
-  [#if dotidx != -1]
-    [#set role = role[0..dotidx-1]]
-  [/#if]
-  [#switch role]
-    [#case "output"]
-      [#set bgcolor = "#CCFFCC"]
-      [#break]
-    [#case "dataModel"]
-      [#set bgcolor = "#99CCFF"]
-      [#break]
-    [#case "template"]
-      [#set bgcolor = "#D8D8D8"]
-      [#break]
-    [#case "unspecified"]
-      [#set bgcolor = "#F8F8F8"]
-      [#break]
-    [#case "metaTemplate"]
-      <pre class="metaTemplate">[#t]
-        [#recurse]
-      </pre>[#lt]
-      [#return]
-    [#default]
-      [#set bgcolor = "#F8F8F8"]
-  [/#switch]
-  [#--
+<#macro programlisting>
+  <@Anchor/>
+  <#var content bgcolor>
+  <#var role=.node.@role[0]!?string>
+  <#var dotidx=role?index_of(".")>
+  <#if dotidx != -1>
+    <#set role = role[0..dotidx-1]>
+  </#if>
+  <#switch role>
+    <#case "output">
+      <#set bgcolor = "#CCFFCC">
+      <#break>
+    <#case "dataModel">
+      <#set bgcolor = "#99CCFF">
+      <#break>
+    <#case "template">
+      <#set bgcolor = "#D8D8D8">
+      <#break>
+    <#case "unspecified">
+      <#set bgcolor = "#F8F8F8">
+      <#break>
+    <#case "metaTemplate">
+      <pre class="metaTemplate"><#t>
+        <#recurse>
+      </pre><#lt>
+      <#return>
+    <#default>
+      <#set bgcolor = "#F8F8F8">
+  </#switch>
+  <#--
     We will use a table instead of a div, because div-s has to problems:
     - If their content is wider than the main content div, the bgcolor and
       border will finish but the text will flow out of it.
@@ -331,396 +331,396 @@
       the proper horizontal space is ensured with other tricks), but then if a
       program line is so wide that it doesn't fit the screen width, there will
       be no be horizontal scrollbar, so it becomes unreadable.
-  --]
-  [@CantBeNestedIntoP]
-  <div align="left" class="programlisting">[#t]
-    <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="0" border="0">[#t]
-      <tr valign="top">[#t]
-        <td height="1" width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-        <td height="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-        <td height="1" width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-      </tr>[#t]
-      <tr>[#t]
-        <td width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-        <td>[#t]
-          <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px">[#t]
-            <tr><td><pre style="margin: 0px">[#lt][#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks --]
-            [#local content][#recurse][/#local][#t]
-            ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr>[#t]
-          </table>[#t]
-        </td>[#t]
-        <td width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-      </tr>[#t]
-      <tr valign="top">[#t]
-        <td height="1" width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-        <td height="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
-        <td height="1" width="1" bgcolor="black">[@u.invisible1x1Img /]</td>[#t]
+  -->
+  <@CantBeNestedIntoP>
+  <div align="left" class="programlisting"><#t>
+    <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="0" border="0"><#t>
+      <tr valign="top"><#t>
+        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+      </tr><#t>
+      <tr><#t>
+        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td><#t>
+          <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px"><#t>
+            <tr><td><pre style="margin: 0px"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+            <#local content><#recurse></#local><#t>
+            ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr><#t>
+          </table><#t>
+        </td><#t>
+        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+      </tr><#t>
+      <tr valign="top"><#t>
+        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
       </tr>
-    </table>[#t]
+    </table><#t>
   </div>
-  [/@CantBeNestedIntoP]
-[/#macro]
+  </@CantBeNestedIntoP>
+</#macro>
 
-[#macro qandaset]
+<#macro qandaset>
   <div class="qandaset">
-  [#var prevCompactPara=compactPara!]
-  [#set compactPara = true]
-  [#set qaIndex = 1]
+  <#var prevCompactPara=compactPara!>
+  <#set compactPara = true>
+  <#set qaIndex = 1>
   <table border=0 cellpadding=0 cellspacing=4>
-  [#list .node.qandaentry as qandaentry]
+  <#list .node.qandaentry as qandaentry>
     <tr align="left" valign="top">
       <td>${qaIndex}.&nbsp;&nbsp;
-      [#var prevdisableAnchors=disableAnchors!]
-      [#set disableAnchors = true]
+      <#var prevdisableAnchors=disableAnchors!>
+      <#set disableAnchors = true>
       <td>
       <a href="#${qandaentry.@id[0]!("faq_question_" + qaIndex)}">
-        [#recurse qandaentry.question]
+        <#recurse qandaentry.question>
       </a><br>
-      [#set disableAnchors = prevdisableAnchors]
-    [#set qaIndex = qaIndex+1]
-  [/#list]
+      <#set disableAnchors = prevdisableAnchors>
+    <#set qaIndex = qaIndex+1>
+  </#list>
   </table>
-  [#set compactPara = prevCompactPara] 
+  <#set compactPara = prevCompactPara> 
 
-  [#set qaIndex = 1]
-  [#recurse]
+  <#set qaIndex = 1>
+  <#recurse>
     
   </div>
-  [/#macro]
+  </#macro>
 
-  [#macro question]
-  [#var prevCompactPara=compactPara!]
-  [#set compactPara = true]
+  <#macro question>
+  <#var prevCompactPara=compactPara!>
+  <#set compactPara = true>
   <div class="question">
-    [@Anchor .node?parent/]<a name="faq_question_${qaIndex}"></a>
-    ${qaIndex}.&nbsp; [#recurse]
+    <@Anchor .node?parent/><a name="faq_question_${qaIndex}"></a>
+    ${qaIndex}.&nbsp; <#recurse>
   </div>
-  [#set qaIndex = qaIndex+1]
-  [#set compactPara = prevCompactPara] 
-[/#macro] 
+  <#set qaIndex = qaIndex+1>
+  <#set compactPara = prevCompactPara> 
+</#macro> 
 
-[#macro qandaentry][#recurse][/#macro]
+<#macro qandaentry><#recurse></#macro>
 
-[#macro remark]
-  [#if showEditoralNotes]
-    <p style="background-color:#FFFF00">[[#recurse]]</p>[#t]
-  [/#if]
-[/#macro] 
+<#macro remark>
+  <#if showEditoralNotes>
+    <p style="background-color:#FFFF00">[<#recurse>]</p><#t>
+  </#if>
+</#macro> 
 
-[#macro replaceable]
-  [#var moreStyle=""]
-  [#if inlineMonospacedColorisation]
-    [#if fontBgColor! != ""]
-      [#set moreStyle = "; background-color:${fontBgColor}"]
-    [/#if]
-    <i style="color: #DD4400${moreStyle}">[#recurse]</i>[#t]
-  [#else]
-    <i>[#recurse]</i>[#t]
-  [/#if]
-[/#macro]
+<#macro replaceable>
+  <#var moreStyle="">
+  <#if inlineMonospacedColorisation>
+    <#if fontBgColor! != "">
+      <#set moreStyle = "; background-color:${fontBgColor}">
+    </#if>
+    <i style="color: #DD4400${moreStyle}"><#recurse></i><#t>
+  <#else>
+    <i><#recurse></i><#t>
+  </#if>
+</#macro>
 
-[#macro subtitle]
-  [#-- We do nothing here because this is dealt with in the title macro --]
-[/#macro]
+<#macro subtitle>
+  <#-- We do nothing here because this is dealt with in the title macro -->
+</#macro>
 
-[#macro sectionLikeElement]
-  [#recurse]
-[/#macro]
+<#macro sectionLikeElement>
+  <#recurse>
+</#macro>
 
-[#set article = sectionLikeElement]
-[#set part = sectionLikeElement]
-[#set chapter = sectionLikeElement]
-[#set appendix = sectionLikeElement]
-[#set preface = sectionLikeElement]
-[#set section = sectionLikeElement]
-[#set simplesect = sectionLikeElement]
+<#set article = sectionLikeElement>
+<#set part = sectionLikeElement>
+<#set chapter = sectionLikeElement>
+<#set appendix = sectionLikeElement>
+<#set preface = sectionLikeElement>
+<#set section = sectionLikeElement>
+<#set simplesect = sectionLikeElement>
 
-[#macro index]
-  [#visit u.getRequiredTitleElement(.node)]
+<#macro index>
+  <#visit u.getRequiredTitleElement(.node)>
   
-  [#-- ABC links --]
-  [#var lastLetter = ""]
+  <#-- ABC links -->
+  <#var lastLetter = "">
   <p>
-    [#list indexEntries as key]
-      [#set letter = key[0]?upper_case]
-      [#if lastLetter != letter]
-        [#if lastLetter != ""]&nbsp;| [/#if]<a href="#${index_safeID(letter)?html}">${letter?html}</a>[#t]
-        [#set lastLetter = letter]
-      [/#if]
-    [/#list]
+    <#list indexEntries as key>
+      <#set letter = key[0]?upper_case>
+      <#if lastLetter != letter>
+        <#if lastLetter != "">&nbsp;| </#if><a href="#${index_safeID(letter)?html}">${letter?html}</a><#t>
+        <#set lastLetter = letter>
+      </#if>
+    </#list>
   </p>
 
-  [#-- Index list --]
-  [#set lastLetter = ""]
-  [#list indexEntries as key]
-    [#var letter = key[0]?upper_case]
-    [#if letter != lastLetter]
-      [#if lastLetter != ""]
-        </dl></div>[#lt]
-      [/#if]
-      <div class="indexdiv">[#lt]
-      <a name="${index_safeID(letter)?html}"></a>[#lt]
-      <h2 class="indexLabel">${letter?html}</h2>[#lt]
-      <dl>[#lt]
-      [#set lastLetter = letter]
-    [/#if]
-    [#var entryNodes = primaryIndexTermLookup[key]]
+  <#-- Index list -->
+  <#set lastLetter = "">
+  <#list indexEntries as key>
+    <#var letter = key[0]?upper_case>
+    <#if letter != lastLetter>
+      <#if lastLetter != "">
+        </dl></div><#lt>
+      </#if>
+      <div class="indexdiv"><#lt>
+      <a name="${index_safeID(letter)?html}"></a><#lt>
+      <h2 class="indexLabel">${letter?html}</h2><#lt>
+      <dl><#lt>
+      <#set lastLetter = letter>
+    </#if>
+    <#var entryNodes = primaryIndexTermLookup[key]>
     <dt>
-      ${key?html}[#if entryNodes?has_content],&nbsp;&nbsp;[/#if][#rt]
-      [#list entryNodes as entryNode]
-        <a href="${CreateLinkFromNode(entryNode)}">[#t][@index_entryText entryNode/]</a>[#t]
-        [#if entryNode_has_next],[/#if][#lt]
-      [/#list]
+      ${key?html}<#if entryNodes?has_content>,&nbsp;&nbsp;</#if><#rt>
+      <#list entryNodes as entryNode>
+        <a href="${CreateLinkFromNode(entryNode)}"><#t><@index_entryText entryNode/></a><#t>
+        <#if entryNode_has_next>,</#if><#lt>
+      </#list>
     </dt>
-    [#if secondaryIndexTermLookup[key]?has_content]
-      [#var secondaryTerms = secondaryIndexTermLookup[key]]
+    <#if secondaryIndexTermLookup[key]?has_content>
+      <#var secondaryTerms = secondaryIndexTermLookup[key]>
       <dd><dl>
-      [#list secondaryTerms?keys?sort as secondary]
-        <dt>[#rt]
-        ${secondary?html}, [#t]
-        [#list secondaryTerms[secondary] as secondaryNode]
-          <a href="${CreateLinkFromNode(secondaryNode)}">[#t]
-            [@index_entryText secondaryNode/][#t]
-          </a>[#if secondaryNode_has_next], [/#if][#t]
-        [/#list]
-        </dt>[#lt]
-      [/#list]
+      <#list secondaryTerms?keys?sort as secondary>
+        <dt><#rt>
+        ${secondary?html}, <#t>
+        <#list secondaryTerms[secondary] as secondaryNode>
+          <a href="${CreateLinkFromNode(secondaryNode)}"><#t>
+            <@index_entryText secondaryNode/><#t>
+          </a><#if secondaryNode_has_next>, </#if><#t>
+        </#list>
+        </dt><#lt>
+      </#list>
       </dl></dd>
-    [/#if]
-    [#if !key_has_next]
-      </dl></div>[#lt]
-    [/#if]
-  [/#list]
-[/#macro]
+    </#if>
+    <#if !key_has_next>
+      </dl></div><#lt>
+    </#if>
+  </#list>
+</#macro>
 
-[#macro index_entryText node]
-  [#list 1..100 as i]
-    [#if node?node_type != "element"]
-      entry[#t]
-      [#return]
-    [/#if]
-    [#if node.title?has_content]
-      [#var title=node.title]
-      [#if !node.@id[0]!?starts_with("autoid_")]
-        ${title?trim?html}[#t]
-        [#return]
-      [/#if]
-    [/#if]
-    [#set node = node?parent]
-  [/#list]
-  No title[#t]
-[/#macro]
+<#macro index_entryText node>
+  <#list 1..100 as i>
+    <#if node?node_type != "element">
+      entry<#t>
+      <#return>
+    </#if>
+    <#if node.title?has_content>
+      <#var title=node.title>
+      <#if !node.@id[0]!?starts_with("autoid_")>
+        ${title?trim?html}<#t>
+        <#return>
+      </#if>
+    </#if>
+    <#set node = node?parent>
+  </#list>
+  No title<#t>
+</#macro>
 
-[#function index_safeID id]
-  [#return "idx_" + id?url('UTF-8')?replace('%', "x")?replace('+', "_")]
-[/#function]
+<#function index_safeID id>
+  <#return "idx_" + id?url('UTF-8')?replace('%', "x")?replace('+', "_")>
+</#function>
 
-[#macro glossary]
-  [#visit u.getRequiredTitleElement(.node)]
+<#macro glossary>
+  <#visit u.getRequiredTitleElement(.node)>
 
-  [#var ges = .node.glossentry?sort_by("glossterm")]
+  <#var ges = .node.glossentry?sort_by("glossterm")>
 
-  [#-- Print alphabetical index links: --]
-  [#var lgtl = ""]
+  <#-- Print alphabetical index links: -->
+  <#var lgtl = "">
   <p>
-    [#list ges as ge]
-      [#var fullgt = ge.glossterm]
-      [#if fullgt?size != 0]
-        [#var gtl = fullgt.@@text[0]?upper_case]
-        [#if gtl != lgtl]
-          [#if lgtl != ""]&nbsp;| [/#if]<a href="#${ge.@id?html}">${gtl?html}</a>[#t]
-          [#set lgtl = gtl]
-        [/#if]
-      [/#if]
-    [/#list]
+    <#list ges as ge>
+      <#var fullgt = ge.glossterm>
+      <#if fullgt?size != 0>
+        <#var gtl = fullgt.@@text[0]?upper_case>
+        <#if gtl != lgtl>
+          <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id?html}">${gtl?html}</a><#t>
+          <#set lgtl = gtl>
+        </#if>
+      </#if>
+    </#list>
   </p>
 
-  [#-- Print glossentry-es: --]
+  <#-- Print glossentry-es: -->
   <dl>
-    [#list ges as ge]
-      [#visit ge using nodeHandlers]
-    [/#list]
+    <#list ges as ge>
+      <#visit ge using nodeHandlers>
+    </#list>
   </dl>
-[/#macro]
+</#macro>
 
-[#set partintro = simplesect]
+<#set partintro = simplesect>
 
-[#macro title]
-  [#var hierarElem = .node?parent]
-  [#if hierarElem?node_name == "info"]
-    [#set hierarElem = hierarElem?parent]
-  [/#if]
+<#macro title>
+  <#var hierarElem = .node?parent>
+  <#if hierarElem?node_name == "info">
+    <#set hierarElem = hierarElem?parent>
+  </#if>
   
-  [#var type = hierarElem?node_name]
-  [#var titleInitial = u.getTitlePrefix(hierarElem, true, true)]
+  <#var type = hierarElem?node_name>
+  <#var titleInitial = u.getTitlePrefix(hierarElem, true, true)>
   
-  [#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element --]
-  [#var htmlHLevel = 1]
-  [#var cur = hierarElem]
-  [#list 1..100000 as _]
-    [#if cur.@docgen_file_element?size != 0]
-      [#break]
-    [/#if]
-    [#if cur.@docgen_rank?size != 0]
-      [#set htmlHLevel = htmlHLevel + 1]
-    [/#if]
-    [#set cur = cur?parent]
-  [/#list]
+  <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
+  <#var htmlHLevel = 1>
+  <#var cur = hierarElem>
+  <#list 1..100000 as _>
+    <#if cur.@docgen_file_element?size != 0>
+      <#break>
+    </#if>
+    <#if cur.@docgen_rank?size != 0>
+      <#set htmlHLevel = htmlHLevel + 1>
+    </#if>
+    <#set cur = cur?parent>
+  </#list>
   
-  [#var htmlHElem]
-  [#-- HTML only defines h-s up to h6 --]
-  [#if htmlHLevel <= 6]
-    [#set htmlHElem = "h${htmlHLevel}"]
-  [#else]
-    [#set htmlHElem = "p"]
-  [/#if]
+  <#var htmlHElem>
+  <#-- HTML only defines h-s up to h6 -->
+  <#if htmlHLevel <= 6>
+    <#set htmlHElem = "h${htmlHLevel}">
+  <#else>
+    <#set htmlHElem = "p">
+  </#if>
   
-  [#var classAtt = ""]
+  <#var classAtt = "">
   
   <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
-        [#if htmlHLevel == 1]id="pageTopTitle"[/#if]>
-      [@Anchor hierarElem/][#t]
-      ${titleInitial?html}[#recurse][#t]
-      [#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --][#t]
-    [#var subtitleElem = u.getOptionalSubtitleElement(hierarElem)]
-    [#if subtitleElem??]
-      <span style="font-size: 50%"><br>[#recurse subtitleElem]</span>
-    [/#if]
+        <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
+      <@Anchor hierarElem/><#t>
+      ${titleInitial?html}<#recurse><#t>
+      <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
+    <#var subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
+    <#if subtitleElem??>
+      <span style="font-size: 50%"><br><#recurse subtitleElem></span>
+    </#if>
   </${htmlHElem}>
-[/#macro]
+</#macro>
 
-[#macro subtitle]
-  [#-- Handled by "title" macro --]
-[/#macro]
+<#macro subtitle>
+  <#-- Handled by "title" macro -->
+</#macro>
 
-[#macro ulink]
-  <a href="${.node.@url?html}">[#recurse]</a>[#t]
-[/#macro]
+<#macro ulink>
+  <a href="${.node.@url?html}"><#recurse></a><#t>
+</#macro>
 
-[#macro xref]
-  [#var xrefID=.node.@linkend]
-  [#var targetNode = NodeFromID(xrefID)]
-  [#var targetLink = CreateLinkFromID(xrefID)]
+<#macro xref>
+  <#var xrefID=.node.@linkend>
+  <#var targetNode = NodeFromID(xrefID)>
+  <#var targetLink = CreateLinkFromID(xrefID)>
   
-  [#var label = targetNode.@xreflabel[0]!null]
-  [#if label??]
-    <a href="${targetLink?html}">${label?html}</a>[#t]
-  [#else]
-    [#var labelHTMLs = buildTitleHTMLChain(targetNode)]
-    [#if labelHTMLs?size == 0]
-      [#stop "\"xref\" target element with xml:id \"" + targetNode.@id
-          + "\" has no \"title\" element in it nor \"xreflabel\" attribute."]
-    [/#if]
-    [#var ctxLabelHTMLs = buildTitleHTMLChain(.node, true)]
-    <a href="${targetLink?html}">[#t]
-      [#var started = false]
-      [#list labelHTMLs as labelHTML]
-        [#if started || !(
+  <#var label = targetNode.@xreflabel[0]!null>
+  <#if label??>
+    <a href="${targetLink?html}">${label?html}</a><#t>
+  <#else>
+    <#var labelHTMLs = buildTitleHTMLChain(targetNode)>
+    <#if labelHTMLs?size == 0>
+      <#stop "\"xref\" target element with xml:id \"" + targetNode.@id
+          + "\" has no \"title\" element in it nor \"xreflabel\" attribute.">
+    </#if>
+    <#var ctxLabelHTMLs = buildTitleHTMLChain(.node, true)>
+    <a href="${targetLink?html}"><#t>
+      <#var started = false>
+      <#list labelHTMLs as labelHTML>
+        <#if started || !(
               labelHTML_has_next
               && ctxLabelHTMLs[labelHTML_index]??
               && labelHTML == ctxLabelHTMLs[labelHTML_index]
             )
-        ]
-          ${labelHTML}[#if labelHTML_has_next]/[/#if][#t]
-          [#set started = true]
-        [/#if]
-      [/#list]
-    </a>[#t]
-  [/#if]
-[/#macro]
+        >
+          ${labelHTML}<#if labelHTML_has_next>/</#if><#t>
+          <#set started = true>
+        </#if>
+      </#list>
+    </a><#t>
+  </#if>
+</#macro>
 
-[#function buildTitleHTMLChain targetNode allowFallback=false]
-  [#var result = []]
-  [#list 1..1000000 as _]
-     [#if targetNode.@docgen_root_element?size != 0][#break][/#if]
+<#function buildTitleHTMLChain targetNode allowFallback=false>
+  <#var result = []>
+  <#list 1..1000000 as _>
+     <#if targetNode.@docgen_root_element?size != 0><#break></#if>
      
-     [#var title = u.getOptionalTitleElement(targetNode)]
-     [#if title??]
-       [#var titleHTML]
-       [#set titleHTML][#recurse title][/#set]
-       [#set result = [titleHTML] + result]
-       [#set allowFallback = true]
-     [#elseif !allowFallback]
-       [#break]
-     [/#if]
+     <#var title = u.getOptionalTitleElement(targetNode)>
+     <#if title??>
+       <#var titleHTML>
+       <#set titleHTML><#recurse title></#set>
+       <#set result = [titleHTML] + result>
+       <#set allowFallback = true>
+     <#elseif !allowFallback>
+       <#break>
+     </#if>
      
-     [#set targetNode = targetNode?parent]
-  [/#list]
-  [#return result]
-[/#function]
+     <#set targetNode = targetNode?parent>
+  </#list>
+  <#return result>
+</#function>
 
-[#macro quote]"[#recurse]"[/#macro]
+<#macro quote>"<#recurse>"</#macro>
 
-[#macro footnote]
-  [#var capturedContent]
-  ${' '}[<a href="#autoid_footnote_${footnotes?size + 1}">${footnotes?size + 1}</a>]${' '}[#t]
-  [#set capturedContent][#recurse][/#set][#t]
-  [#set footnotes = footnotes + [capturedContent]]
-[/#macro]
+<#macro footnote>
+  <#var capturedContent>
+  ${' '}[<a href="#autoid_footnote_${footnotes?size + 1}">${footnotes?size + 1}</a>]${' '}<#t>
+  <#set capturedContent><#recurse></#set><#t>
+  <#set footnotes = footnotes + [capturedContent]>
+</#macro>
 
-[#macro informaltable]
+<#macro informaltable>
    <div class="informaltable">
-      [@Anchor/]
+      <@Anchor/>
       <table border="1" cellpadding="4">
-          [#recurse]
+          <#recurse>
       </table>
    </div>
-[/#macro]
+</#macro>
 
-[#-- Re-prints the original tag as is, but restricts the allowed attributes --]
-[#macro _HTMLTableElement supportedAtts empty=false]
-  [#if !supportedAtts??][#stop 'XXX ' + .node?node_name][/#if]
-  <${.node?node_name}[#t]
-    [#list .node.@@ as att]
-      [#if supportedAtts[att?node_name]??]
-        ${' '}${att?node_name}="${att?html}"[#t]
-      [#else]
-        [#stop 'Unimplemented attribute for "${.node?node_name}": ' + att?node_name]
-      [/#if]
-    [/#list]
-  >[#t]
-  [#if !empty]
-    [#recurse][#t]
-    </${.node?node_name}>[#t]
-  [/#if]
-  ${"\n"}[#t]
-[/#macro]
+<#-- Re-prints the original tag as is, but restricts the allowed attributes -->
+<#macro _HTMLTableElement supportedAtts empty=false>
+  <#if !supportedAtts??><#stop 'XXX ' + .node?node_name></#if>
+  <${.node?node_name}<#t>
+    <#list .node.@@ as att>
+      <#if supportedAtts[att?node_name]??>
+        ${' '}${att?node_name}="${att?html}"<#t>
+      <#else>
+        <#stop 'Unimplemented attribute for "${.node?node_name}": ' + att?node_name>
+      </#if>
+    </#list>
+  ><#t>
+  <#if !empty>
+    <#recurse><#t>
+    </${.node?node_name}><#t>
+  </#if>
+  ${"\n"}<#t>
+</#macro>
 
-[#set htmlAlignAtts = {"align":true, "valign":true}]
+<#set htmlAlignAtts = {"align":true, "valign":true}>
 
-[#macro tr][@_HTMLTableElement htmlAlignAtts /][/#macro]
+<#macro tr><@_HTMLTableElement htmlAlignAtts /></#macro>
 
-[#macro td][@_HTMLTableElement htmlAlignAtts + {"colspan":true, "rowspan":true} /][/#macro]
-[#set th = td]
+<#macro td><@_HTMLTableElement htmlAlignAtts + {"colspan":true, "rowspan":true} /></#macro>
+<#set th = td>
 
-[#macro thead][@_HTMLTableElement htmlAlignAtts /][/#macro]
-[#set tbody = thead]
-[#set tfoot = thead]
+<#macro thead><@_HTMLTableElement htmlAlignAtts /></#macro>
+<#set tbody = thead>
+<#set tfoot = thead>
 
-[#macro colgroup]
-  [#-- This element should be resolved and deleted from the DOM before we get here --]
-  [#stop 'This element is only supported directly inside tables.']
-[/#macro]
+<#macro colgroup>
+  <#-- This element should be resolved and deleted from the DOM before we get here -->
+  <#stop 'This element is only supported directly inside tables.'>
+</#macro>
 
-[#macro col]
-  [#-- This element should be resolved and deleted from the DOM before we get here --]
-  [#stop 'This element is only supported directly inside a "colgroup".']
-[/#macro]
+<#macro col>
+  <#-- This element should be resolved and deleted from the DOM before we get here -->
+  <#stop 'This element is only supported directly inside a "colgroup".'>
+</#macro>
 
-[#macro mediaobject]
-  [#list .node.* as imageobject]
-    [#if imageobject?node_name == "imageobject"]
-      [#list imageobject.* as imagedata]
-        [#if imagedata?node_name == "imagedata"]
-          <p align="center">[@Anchor /]<img src="${imagedata.@fileref?html}" alt="figure"></p>
-        [#else]
-          [#stop "Unexpected element when \"imagedata\" was expected: "
-              + imagedata?node_name]
-        [/#if]
-      [/#list]
-    [#else]
-      [#stop "Unexpected element when \"imageobject\" was expected: "
-          + imageobject?node_name]
-    [/#if]
-  [/#list]
-[/#macro]
+<#macro mediaobject>
+  <#list .node.* as imageobject>
+    <#if imageobject?node_name == "imageobject">
+      <#list imageobject.* as imagedata>
+        <#if imagedata?node_name == "imagedata">
+          <p align="center"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
+        <#else>
+          <#stop "Unexpected element when \"imagedata\" was expected: "
+              + imagedata?node_name>
+        </#if>
+      </#list>
+    <#else>
+      <#stop "Unexpected element when \"imageobject\" was expected: "
+          + imageobject?node_name>
+    </#if>
+  </#list>
+</#macro>
