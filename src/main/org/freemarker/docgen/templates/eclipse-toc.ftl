@@ -4,7 +4,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<#set
+<#assign
     part = hierarElemHandler,
     chapter = hierarElemHandler,
     appendix = hierarElemHandler,
@@ -15,7 +15,7 @@
     index = hierarElemHandler
 >
 
-<#set docElem = .node.*>
+<#assign docElem = .node.*>
 <toc label="${u.getRequiredTitleAsString(docElem)}"<#if link_to??> link_to="${link_to}"</#if>>
   <#recurse docElem>
 </toc>

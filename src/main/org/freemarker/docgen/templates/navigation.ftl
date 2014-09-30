@@ -4,7 +4,7 @@
 
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
-<#set nodeHandlers = [customizations, defaultNodeHandlers]>
+<#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 
 <#macro navigationBar top>
   <#local captured>
@@ -37,11 +37,11 @@
   <#local path = []>
   <#local curNode = .node>
   <#list 1..99 as _>
-    <#set path = [curNode] + path>
+    <#local path = [curNode] + path>
     <#if curNode.@docgen_root_element?size != 0>
       <#break>
     </#if>
-    <#set curNode = curNode?parent>
+    <#local curNode = curNode?parent>
   </#list>
   <#if (path?size > 1)>
     <div class="breadcrumb">

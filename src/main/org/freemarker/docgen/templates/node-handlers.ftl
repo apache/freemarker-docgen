@@ -3,11 +3,11 @@
 <#import "util.ftl" as u>
 
 <#-- Constants: -->
-<#set forProgrammersStyle = "color:#333399; font-style:italic">
+<#assign forProgrammersStyle = "color:#333399; font-style:italic">
 
 <#-- State variables: -->
-<#set inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
-<#set footnotes = []>
+<#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
+<#assign footnotes = []>
  
 <#macro @text>${.node?html}</#macro>
 

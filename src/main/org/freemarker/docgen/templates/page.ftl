@@ -4,7 +4,7 @@
 <#import "navigation.ftl" as nav>
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
-<#set nodeHandlers = [customizations, defaultNodeHandlers]>
+<#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <#-- Avoid inital empty line! -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -13,9 +13,9 @@
   <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
   <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
   <title>
-    <#set titleElement = u.getRequiredTitleElement(.node)>
-    <#set title = u.titleToString(titleElement)>
-    <#set topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
+    <#assign titleElement = u.getRequiredTitleElement(.node)>
+    <#assign title = u.titleToString(titleElement)>
+    <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
     ${topLevelTitle?html}<#if title != topLevelTitle> - ${title?html}</#if>
   </title>
   <#if !disableJavaScript>
@@ -56,7 +56,7 @@
   </#if>
   
   <#-- Render footnotes, if any: -->
-  <#set footnotes = defaultNodeHandlers.footnotes>
+  <#assign footnotes = defaultNodeHandlers.footnotes>
   <#if footnotes?size != 0>
     <div id="footnotes">
       Footnotes:
@@ -72,11 +72,11 @@
 <@nav.navigationBar top=false />
 
 <table border=0 cellspacing=0 cellpadding=0 width="100%">
-  <#set pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
-  <#set footerTitleHTML = topLevelTitle?html>
-  <#set bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+  <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
+  <#assign footerTitleHTML = topLevelTitle?html>
+  <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
   <#if bookSubtitle??>
-    <#set footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
+    <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
   </#if>
   <#if !showXXELogo>
     <tr>
@@ -118,7 +118,7 @@
 </html>
 
 <#macro toc att maxDepth title=null minLength=1>
-  <#set tocElems = .node["*[@${att}]"]>
+  <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
     <div class="toc">
       <p>

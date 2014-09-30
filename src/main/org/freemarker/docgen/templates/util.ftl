@@ -6,7 +6,7 @@
 
 <#function getOptionalTitleElement node>
   <#local result = node.title>
-  <#if !result?has_content><#set result = node.info.title></#if>
+  <#if !result?has_content><#local result = node.info.title></#if>
   <#if !result?has_content>
      <#return null>
   </#if>
@@ -28,7 +28,7 @@
 
 <#function getOptionalSubtitleElement node>
   <#local result = node.subtitle>
-  <#if !result?has_content><#set result = node.info.subtitle></#if>
+  <#if !result?has_content><#local result = node.info.subtitle></#if>
   <#if !result?has_content>
     <#return null>
   </#if>
@@ -52,7 +52,7 @@
   <#local res = "">
   <#list titleNode?children as child>
     <#if child?node_type == "text">
-      <#set res = res + child>
+      <#local res = res + child>
     <#elseif child?node_type == "element">
       <#local name = child?node_name>
       <#if name == "literal"
@@ -60,7 +60,7 @@
           || name == "replaceable"
           || name == "emphasis"
           || name == "phrase">
-        <#set res = res + titleToString(child)>
+        <#local res = res + titleToString(child)>
       <#elseif node != "subtitle">
         <#stop 'The "${name}" in titles is not supported by Docgen.'>
       </#if>
