@@ -8,7 +8,7 @@
     </publications>
     <dependencies>
         <dependency org="com.thaiopensource" name="jing" rev="20081028" conf="default->default" />
-        <dependency org="org.freemarker" name="freemarker" rev="3.0-branch-head" conf="default->default" changing="true" />
+        <dependency org="org.freemarker" name="freemarker" rev="2.3-branch-head" conf="default->default" changing="true" />
         <dependency org="ant" name="ant" rev="1.6.5" conf="default->default" />
     </dependencies>
 </ivy-module>

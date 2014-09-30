@@ -42,11 +42,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,9 +65,11 @@ import freemarker.template.SimpleHash;
 import freemarker.template.SimpleScalar;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
+import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.StringUtil;
 
 /**
@@ -849,13 +851,13 @@ public final class Transform {
             throw new BugException(e);
         }
 
-        fmConfig = new Configuration();
+        fmConfig = new Configuration(Configuration.VERSION_2_3_21);
         
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
         if (templatesDir != null) {
             templateLoader = new MultiTemplateLoader(
-                    new FileTemplateLoader(templatesDir), templateLoader);
+                    new TemplateLoader[] { new FileTemplateLoader(templatesDir), templateLoader });
         }
         fmConfig.setTemplateLoader(templateLoader);
         
@@ -1002,7 +1004,7 @@ public final class Transform {
                             "UTF-8"));
             try {
                 try {
-                    SimpleHash dataModel = new SimpleHash();
+                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
                     if (eclipseLinkTo != null) {
                         dataModel.put(VAR_ECLIPSE_LINK_TO, eclipseLinkTo);
                     }
@@ -1828,7 +1830,7 @@ public final class Transform {
      */
     private int generateHTMLFile()
             throws IOException, TemplateException {
-        SimpleHash dataModel = new SimpleHash();
+        SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
         
         TOCNode otherTOCNode;
         
@@ -2010,8 +2012,20 @@ public final class Transform {
         
         return link;
     }
+
+    private String getArgString(List<?> args, int argIdx) throws TemplateModelException {
+        Object value = args.get(argIdx);
+        if (value instanceof TemplateScalarModel) {
+            return ((TemplateScalarModel) value).getAsString();
+        }
+        if (value instanceof TemplateModel) {
+            throw new TemplateModelException("Argument #" + (argIdx + 1) + " should be a string, but it was: "
+                    + ClassUtil.getFTLTypeDescription((TemplateModel) value));
+        }
+        throw new IllegalArgumentException("\"value\" must be " + TemplateModel.class.getName());
+    }
     
-    private TemplateMethodModel createLinkFromID = new TemplateMethodModel() {
+    private TemplateMethodModelEx createLinkFromID = new TemplateMethodModelEx() {
         
         public Object exec(@SuppressWarnings("rawtypes") final List args)
                 throws TemplateModelException {
@@ -2020,7 +2034,7 @@ public final class Transform {
                         "Method CreateLinkFromID should have exactly one "
                         + "parameter.");
             }
-            String id = (String) args.get(0);
+            String id = getArgString(args, 0);
             
             Element elem = elementsById.get(id);
             if (elem == null) {
@@ -2035,10 +2049,10 @@ public final class Transform {
                         "CreateLinkFromID failed to create link.", e);
             }
         }
-        
+
     };
     
-    private TemplateMethodModel createLinkFromNode
+    private TemplateMethodModelEx createLinkFromNode
             = new TemplateMethodModelEx() {
         
         public Object exec(@SuppressWarnings("rawtypes") final List args)
@@ -2074,11 +2088,11 @@ public final class Transform {
         
     };
     
-    private TemplateMethodModel nodeFromID = new TemplateMethodModel() {
+    private TemplateMethodModelEx nodeFromID = new TemplateMethodModelEx() {
 
         public Object exec(@SuppressWarnings("rawtypes") List args)
                 throws TemplateModelException {
-            Node node = elementsById.get(args.get(0));
+            Node node = elementsById.get(getArgString(args, 0));
             return NodeModel.wrap(node);
         }
         
