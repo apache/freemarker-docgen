@@ -6,18 +6,20 @@
 <#import "customizations.ftl" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <#-- Avoid inital empty line! -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
-  <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
+  <meta charset="utf-8">
   <title>
     <#assign titleElement = u.getRequiredTitleElement(.node)>
     <#assign title = u.titleToString(titleElement)>
     <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
     ${topLevelTitle?html}<#if title != topLevelTitle> - ${title?html}</#if>
   </title>
+  <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
+  <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
   <#if !disableJavaScript>
     <script type="text/javascript" src="docgen-resources/jquery.js"></script>
     <script type="text/javascript" src="docgen-resources/linktargetmarker.js"></script>
@@ -39,12 +41,12 @@
 
     <#-- - Render page title: -->
     <#visit titleElement using nodeHandlers>
-    
+
     <#-- - Render either ToF (Table of Files) or Page ToC; -->
     <#--   both is called, but at least one of them will be empty: -->
     <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
     <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
-    
+
     <#-- - Render the usual content, like <para>-s etc.: -->
     <#list .node.* as child>
       <#if child.@docgen_file_element?size == 0
@@ -54,7 +56,7 @@
       </#if>
     </#list>
   </#if>
-  
+
   <#-- Render footnotes, if any: -->
   <#assign footnotes = defaultNodeHandlers.footnotes>
   <#if footnotes?size != 0>
@@ -71,7 +73,8 @@
 
 <@nav.navigationBar top=false />
 
-<table border=0 cellspacing=0 cellpadding=0 width="100%">
+<#-- @todo: remove table, fix spacing -->
+<table width="100%">
   <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
   <#assign footerTitleHTML = topLevelTitle?html>
   <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
@@ -79,9 +82,6 @@
     <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
   </#if>
   <#if !showXXELogo>
-    <tr>
-      <td colspan=2><img src="docgen-resources/img/none.gif" width=1 height=4 alt=""></td>
-    <tr>
       <td align="left" valign="top"><span class="footer">
           ${footerTitleHTML}
       </span></td>
@@ -90,9 +90,6 @@
       </span></td>
     </tr>
   <#else>
-    <tr>
-      <td colspan=2><img src="docgen-resources/img/none.gif" width=1 height=8 alt=""></td>
-    <tr>
       <td align="left" valign="top"><span class="smallFooter">
           <#if footerTitleHTML != "">
             ${footerTitleHTML}
@@ -109,7 +106,7 @@
   </#if>
 </table>
 <#if !disableJavaScript>
-  <!-- Put pre-loaded images here: -->
+  <#-- Put pre-loaded images here: -->
   <div style="display: none">
     <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
   </div>
@@ -122,7 +119,7 @@
   <#if (tocElems?size >= minLength)>
     <div class="toc">
       <p>
-        <b>
+        <strong>
           <#if !title?has_content>
             <#if .node?parent?node_type == "document">
               Table of Contents
@@ -132,9 +129,10 @@
           <#else>
             ${title}
           </#if>
-        </b>
+        </strong>
         <#if alternativeTOCLink??>
           &nbsp;&nbsp;<#t>
+          <#-- @todo: removing font tag -->
           <font size="-1">[<#t>
           <a href="${alternativeTOCLink?html}"><#t>
             ${alternativeTOCLabel?cap_first?html}...<#t>
@@ -142,7 +140,7 @@
           ]</font><#t>
         </#if>
       </p>
-      
+
       <@toc_inner tocElems att maxDepth />
     </div>
     <a name="docgen_afterTheTOC"></a>
@@ -153,7 +151,7 @@
   <#if tocElems?size == 0><#return></#if>
   <ul <#if curDepth == 1>class="noMargin"</#if>>
     <#if curDepth==1 && startsWithTopLevelContent>
-      <li style="padding-bottom: 0.5em"><i><a href="#docgen_afterTheTOC">Intro.</a></i></li>
+      <li style="padding-bottom: 0.5em"><em><a href="#docgen_afterTheTOC">Intro.</a></em></li>
     </#if>
     <#list tocElems as tocElem>
       <li>

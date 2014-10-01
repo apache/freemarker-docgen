@@ -1,32 +1,79 @@
 body {
-  background-color: #FFFFFF; color: #000000;
+  background-color: #FFFFFF;
+  color: #000000;
   font-family: Arial, sans-serif;
-  padding: 0.5em; margin: 0
+  padding: 0.5em;
+  margin: 0;
 }
- 
-#mainContent {width: 43em; margin: 0; padding: 0 0 1.5em 2em}
+
+#mainContent {
+  width: 43em;
+  margin: 0;
+  padding: 0 0 1.5em 2em;
+}
 
 /* Overwiriting the browser defaults: */
+table {
+  border-spacing: 0;
+  border: 0;
+}
 
-p  {margin-top: 1em; margin-bottom: 1em}
-ul, ol  {margin-top: 1em; margin-bottom: 1em}
-ul ul, ul ol, ol ul, ol ol  {margin-top: 0; margin-bottom: 0}
-img {border: 0}
-a {color: #0000CC; text-decoration:none}
-a:hover {text-decoration: underline}
-a:visited {color: #800080}
+th,
+td {
+  padding: 0;
+}
+
+p,
+ul,
+ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol  {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+img {
+  border: 0;
+}
+
+a {
+  color: #0000CC;
+  text-decoration: none;
+}
+a: hover {
+  text-decoration: underline;
+}
+a: visited {
+  color: #800080;
+}
 
 /* pre and tt font issues: */
-
-pre {font-size: 90%; font-family: "Courier New", monospace}
-pre.metaTemplate {font-size: 100%}
+pre {
+  font-size: 90%;
+  font-family: "Courier New", monospace;
+}
+pre.metaTemplate {
+  font-size: 100%;
+}
 /* Some browsers chose smaller font than for normal text otherwise: */
-tt {font-size: 100%; font-family: "Courier New", monospace}
+tt,
+code {
+  font-size: 100%;
+  font-family: "Courier New", monospace;
+}
 
 /* Table-based DocBook elements: */
 
-div.programlisting, div.informaltable, div.table {
-  margin: 1em 0 1em 0
+div.programlisting,
+div.informaltable,
+div.table {
+  margin: 1em 0 1em 0;
 }
 
 /* ToC: */
@@ -36,16 +83,34 @@ div.toc {
   padding: 0.5em;
   background-color: #F0F0F0;
   width: 90%;
-  margin: 1em 0 1em 0
+  margin: 1em 0 1em 0;
 }
-.toc ul.noMargin {margin-left: 0}
-.toc ul {list-style-type: none; margin-left: 2.5em; padding-left: 0; margin-bottom: 0}
-.toc li {list-style-type: none; margin-left: 0; padding-left: 0; margin-bottom: 0}
-.toc p {margin: 0}
+.toc ul.noMargin {
+  margin-left: 0;
+}
+.toc ul {
+  list-style-type: none;
+  margin-left: 2.5em;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+.toc li {
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+.toc p {
+  margin: 0;
+}
 
 /* FAQ: */
 
-.question {color:#0050B2; margin-top: 2em; margin-bottom: 1em}
+.question {
+  color: #0050B2;
+  margin-top: 2em;
+  margin-bottom: 1em
+}
 
 /* Footnote: */
 
@@ -67,27 +132,76 @@ div.toc {
 .rank_simplesect,
 .rank_note,
 .indexLabel {
-    font-family: Arial, sans-serif; font-weight: bold; color:#0050B2
+    font-family: Arial, sans-serif; font-weight: bold; color: #0050B2
 }
-.rank_book {font-size: 230%; padding: 0; margin: 2em 0 1.5em 0;}
-.rank_part {font-size: 220%; padding: 0; margin: 2em 0 1.5em 0}
-.rank_chapter {font-size: 200%; padding: 0; margin: 2em 0 1.5em 0}
-.rank_section1 {  font-size: 150%; padding: 0; margin: 1.5em 0 1.0em 0;}
-.rank_section2 {  font-size: 112%; padding: 0; margin: 1.5em 0 1.0em 0;}
-.rank_section3 {  font-size: 95%; padding: 0; margin: 1.5em 0 1.0em 0;}
-.rank_simplesect {font-size: 100%; padding: 0; margin: 1.5em 0 1.0em 0;
-    font-weight: normal; font-style: italic
+.rank_book {
+  font-size: 230%;
+  padding: 0;
+  margin: 2em 0 1.5em 0;
 }
-.indexLabel {font-size: 108%; padding: 0; margin: 1.0em 0 1.0em 0;}
+.rank_part {
+  font-size: 220%;
+  padding: 0;
+  margin: 2em 0 1.5em 0
+}
+.rank_chapter {
+  font-size: 200%;
+  padding: 0;
+  margin: 2em 0 1.5em 0
+}
+.rank_section1 {
+  font-size: 150%;
+  padding: 0;
+  margin: 1.5em 0 1.0em 0;
+}
+.rank_section2 {
+  font-size: 112%;
+  padding: 0;
+  margin: 1.5em 0 1.0em 0;
+}
+.rank_section3 {
+  font-size: 95%;
+  padding: 0;
+  margin: 1.5em 0 1.0em 0;
+}
+.rank_simplesect {
+  font-size: 100%;
+  padding: 0;
+  margin: 1.5em 0 1.0em 0;
+  font-weight: normal;
+  font-style: italic;
+}
+.indexLabel {
+  font-size: 108%;
+  padding: 0;
+  margin: 1.0em 0 1.0em 0;
+}
 
-.rank_note {font-size: 100%; color: black; padding: 0; margin: 1em 0 0.5em 0;}
+.rank_note {
+  font-size: 100%;
+  color: black;
+  padding: 0;
+  margin: 1em 0 0.5em 0;
+}
 
-#pageTopTitle {margin-top: 1em; margin-bottom: 1em; border: none;}
+#pageTopTitle {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: none;
+}
 
 /* Footer: */
 
-.footer {font-size: 83%; color: #A0A0A0; font-style: italic}
-.smallFooter {font-size: 63%; color: #A0A0A0; font-style: italic}
+.footer {
+  font-size: 83%;
+  color: #A0A0A0;
+  font-style: italic;
+}
+.smallFooter {
+  font-size: 63%;
+  color: #A0A0A0;
+  font-style: italic;
+}
 
 /* Nav. bar: */
 
@@ -109,9 +223,9 @@ div.missingNavigationFooterLine {
 div.bookmarks {
   padding: 0.2em 0.3em 0.2em 0.3em;
 }
-span.bookmarks {
+.disabledBookmark {
+  color: #808080;
 }
-.disabledBookmark {color: #808080}
 
 /*
 Because the buttons are floating div-s, this panel uses
@@ -124,7 +238,9 @@ div.pagersVerticalSpacer {
   clear: both;
   height: 0.2em;
 }
-.disabledPager {color: #808080}
+.disabledPager {
+  color: #808080;
+}
 
 div.pagerButton {
   float: left;
@@ -136,7 +252,9 @@ div.pagerButton {
   background: #E0E0E0;
 }
 
-.hideA {color: #000000;}
+.hideA {
+  color: #000000;
+}
 
 div.breadcrumb {
   padding: 0.2em 0.3em 0.2em 0.3em;
@@ -144,4 +262,27 @@ div.breadcrumb {
 
 span.breadcrumb {
   font-size: 80%; /* Don't use 0.8em due to MSIE6 bug */
+}
+
+/* roles */
+.code-block {
+  border: 1px solid #000;
+  margin: 0;
+  padding: 4px;
+}
+.code-output {
+  background-color: #CCFFCC;
+}
+
+.code-data-model {
+  background-color: #99CCFF;
+}
+
+.code-template {
+  background-color: #D8D8D8;
+}
+
+.code-unspecified,
+.code-default {
+  background-color: #F8F8F8;
 }

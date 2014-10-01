@@ -8,7 +8,7 @@
 <#-- State variables: -->
 <#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
 <#assign footnotes = []>
- 
+
 <#macro @text>${.node?html}</#macro>
 
 <#macro @element>
@@ -20,7 +20,7 @@
 <#macro Anchor node=.node>
   <#if !disableAnchors && node.@id[0]??>
     <a name="${node.@id}"></a><#t>
-  </#if>  
+  </#if>
 </#macro>
 
 <#macro anchor>
@@ -36,9 +36,9 @@
 <#macro emphasis>
     <#local role=.node.@role[0]!"none">
     <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content>
-      <b><#recurse></b><#t>
+      <strong><#recurse></strong><#t>
     <#else>
-      <i><#recurse></i><#t>
+      <em><#recurse></em><#t>
     </#if>
 </#macro>
 
@@ -53,7 +53,7 @@
        <#local otherTermID=also.@otherterm>
        <#local otherNode=NodeFromID(otherTermID)>
        <#local term=otherNode.glossterm>
-       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if> 
+       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if>
      </#list>
     </p>
    </#if>
@@ -61,12 +61,12 @@
 </#macro>
 
 <#macro glosssee>
-    <dd><p>See
+    <dd>See
        <#local otherTermID=.node.@otherterm>
        <#local otherNode=NodeFromID(otherTermID)>
        <#local term=otherNode.glossterm>
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
-    </p></dd>
+    </dd>
 </#macro>
 
 <#macro glossseealso>
@@ -81,7 +81,7 @@
   <#local role=.node.@role[0]!?string>
   <#if role?starts_with("alt:")>
     <#local alt = role[4.. .node.@role?length-1]?trim>
-  <#else>  
+  <#else>
     <#local alt = "figure">
   </#if>
   <img src="${.node.@fileref}" alt="${alt?html}"><#t>
@@ -94,7 +94,7 @@
 </#macro>
 
 <#macro itemizedlist>
-    <#local packed=.node.@spacing[0]! = "compact"> 
+    <#local packed=.node.@spacing[0]! = "compact">
     <#local prevCompactPara=compactPara>
     <#if packed>
        <#assign compactPara = true>
@@ -143,18 +143,18 @@
 <#macro _inlineMonospaced>
     <#local moreStyle="" color="#A03D10">
     <#if .node?ancestors("link")?has_content>
-        <#-- If we are within a link, we don't change color, just use the regular link color -->   
-        <tt><#recurse></tt><#t>
+        <#-- If we are within a link, we don't change color, just use the regular link color -->
+        <code><#recurse></code><#t>
     <#else>
         <#if fontBgColor! != "">
             <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
-        <tt style="color: #A03D10${moreStyle}"><#t>
+        <code style="color: #A03D10${moreStyle}"><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>
         <#assign inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
-        </tt><#t>
+        </code><#t>
     </#if>
 </#macro>
 
@@ -193,13 +193,13 @@
    <p class="rank_note">Note</p>
    <#recurse>
 </div>
-</#macro>  
+</#macro>
 
 <#macro warning>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
   <p class="rank_note">Warning!</p>
   <#recurse>
-</div>            
+</div>
 </#macro>
 
 <#macro olink>
@@ -212,7 +212,7 @@
 </#macro>
 
 <#macro orderedlist>
-    <#local packed=(.node.@spacing[0]! = "compact")> 
+    <#local packed=(.node.@spacing[0]! = "compact")>
     <#local prevCompactPara=compactPara>
     <#if packed>
        <#assign compactPara = true>
@@ -301,18 +301,19 @@
   <#if dotidx != -1>
     <#local role = role[0..dotidx-1]>
   </#if>
+
   <#switch role>
     <#case "output">
-      <#local bgcolor = "#CCFFCC">
+      <#local codeType = "code-output">
       <#break>
     <#case "dataModel">
-      <#local bgcolor = "#99CCFF">
+      <#local codeType = "code-data-model">
       <#break>
     <#case "template">
-      <#local bgcolor = "#D8D8D8">
+      <#local codeType = "code-template">
       <#break>
     <#case "unspecified">
-      <#local bgcolor = "#F8F8F8">
+      <#local codeType = "code-unspecified">
       <#break>
     <#case "metaTemplate">
       <pre class="metaTemplate"><#t>
@@ -320,7 +321,7 @@
       </pre><#lt>
       <#return>
     <#default>
-      <#local bgcolor = "#F8F8F8">
+      <#local codeType = "code-default">
   </#switch>
   <#--
     We will use a table instead of a div, because div-s has to problems:
@@ -332,31 +333,9 @@
       be no be horizontal scrollbar, so it becomes unreadable.
   -->
   <@CantBeNestedIntoP>
-  <div align="left" class="programlisting"><#t>
-    <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="0" border="0"><#t>
-      <tr valign="top"><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-      </tr><#t>
-      <tr><#t>
-        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td><#t>
-          <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px"><#t>
-            <tr><td><pre style="margin: 0px"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-            <#local content><#recurse></#local><#t>
-            ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr><#t>
-          </table><#t>
-        </td><#t>
-        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-      </tr><#t>
-      <tr valign="top"><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-      </tr>
-    </table><#t>
-  </div>
+    <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+      <#local content><#recurse></#local><#t>
+      ${content?chop_linebreak}</pre><#t>
   </@CantBeNestedIntoP>
 </#macro>
 
@@ -365,6 +344,7 @@
   <#local prevCompactPara=compactPara!>
   <#assign compactPara = true>
   <#assign qaIndex = 1>
+  <#-- @todo: remove table, fix spacing -->
   <table border=0 cellpadding=0 cellspacing=4>
   <#list .node.qandaentry as qandaentry>
     <tr align="left" valign="top">
@@ -379,11 +359,11 @@
     <#assign qaIndex = qaIndex+1>
   </#list>
   </table>
-  <#assign compactPara = prevCompactPara> 
+  <#assign compactPara = prevCompactPara>
 
   <#assign qaIndex = 1>
   <#recurse>
-    
+
   </div>
   </#macro>
 
@@ -395,8 +375,8 @@
     ${qaIndex}.&nbsp; <#recurse>
   </div>
   <#assign qaIndex = qaIndex+1>
-  <#assign compactPara = prevCompactPara> 
-</#macro> 
+  <#assign compactPara = prevCompactPara>
+</#macro>
 
 <#macro qandaentry><#recurse></#macro>
 
@@ -404,7 +384,7 @@
   <#if showEditoralNotes>
     <p style="background-color:#FFFF00">[<#recurse>]</p><#t>
   </#if>
-</#macro> 
+</#macro>
 
 <#macro replaceable>
   <#local moreStyle="">
@@ -412,9 +392,9 @@
     <#if fontBgColor! != "">
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
-    <i style="color: #DD4400${moreStyle}"><#recurse></i><#t>
+    <em style="color: #DD4400${moreStyle}"><#recurse></em><#t>
   <#else>
-    <i><#recurse></i><#t>
+    <em><#recurse></em><#t>
   </#if>
 </#macro>
 
@@ -436,7 +416,7 @@
 
 <#macro index>
   <#visit u.getRequiredTitleElement(.node)>
-  
+
   <#-- ABC links -->
   <#local lastLetter = "">
   <p>
@@ -549,10 +529,10 @@
   <#if hierarElem?node_name == "info">
     <#local hierarElem = hierarElem?parent>
   </#if>
-  
+
   <#local type = hierarElem?node_name>
   <#local titleInitial = u.getTitlePrefix(hierarElem, true, true)>
-  
+
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
   <#local htmlHLevel = 1>
   <#local cur = hierarElem>
@@ -565,16 +545,16 @@
     </#if>
     <#local cur = cur?parent>
   </#list>
-  
+
   <#-- HTML only defines h-s up to h6 -->
   <#if htmlHLevel <= 6>
     <#local htmlHElem = "h${htmlHLevel}">
   <#else>
     <#local htmlHElem = "p">
   </#if>
-  
+
   <#local classAtt = "">
-  
+
   <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
         <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
       <@Anchor hierarElem/><#t>
@@ -599,7 +579,7 @@
   <#local xrefID=.node.@linkend>
   <#local targetNode = NodeFromID(xrefID)>
   <#local targetLink = CreateLinkFromID(xrefID)>
-  
+
   <#local label = targetNode.@xreflabel[0]!>
   <#if label?has_content>
     <a href="${targetLink?html}">${label?html}</a><#t>
@@ -631,7 +611,7 @@
   <#local result = []>
   <#list 1..1000000 as _>
      <#if targetNode.@docgen_root_element?size != 0><#break></#if>
-     
+
      <#local title = u.getOptionalTitleElement(targetNode)>
      <#if title?has_content>
        <#local titleHTML><#recurse title></#local>
@@ -640,7 +620,7 @@
      <#elseif !allowFallback>
        <#break>
      </#if>
-     
+
      <#local targetNode = targetNode?parent>
   </#list>
   <#return result>
@@ -657,6 +637,7 @@
 <#macro informaltable>
    <div class="informaltable">
       <@Anchor/>
+      <#-- @todo: remove table, fix spacing -->
       <table border="1" cellpadding="4">
           <#recurse>
       </table>
