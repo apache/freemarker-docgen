@@ -337,10 +337,10 @@
       <tr valign="top"><#t>
         <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
         <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td style="background-color: #000; width: 1px; height: 1px"><@u.invisible1x1Img /></td><#t>
       </tr><#t>
       <tr><#t>
-        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
+        <td style="background-color: #000; width: 1px"><@u.invisible1x1Img /></td><#t>
         <td><#t>
           <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px"><#t>
             <tr><td><pre style="margin: 0px"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
@@ -412,9 +412,9 @@
     <#if fontBgColor! != "">
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
-    <em style="color: #DD4400${moreStyle}"><#recurse></i><#t>
+    <em style="color: #DD4400${moreStyle}"><#recurse></em><#t>
   <#else>
-    <em><#recurse></i><#t>
+    <em><#recurse></em><#t>
   </#if>
 </#macro>
 
