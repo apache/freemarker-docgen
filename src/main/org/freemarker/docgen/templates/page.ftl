@@ -6,18 +6,20 @@
 <#import "customizations.ftl" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <#-- Avoid inital empty line! -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
-  <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
+  <meta charset="utf-8">
   <title>
     <#assign titleElement = u.getRequiredTitleElement(.node)>
     <#assign title = u.titleToString(titleElement)>
     <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
     ${topLevelTitle?html}<#if title != topLevelTitle> - ${title?html}</#if>
   </title>
+  <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
+  <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
   <#if !disableJavaScript>
     <script type="text/javascript" src="docgen-resources/jquery.js"></script>
     <script type="text/javascript" src="docgen-resources/linktargetmarker.js"></script>
