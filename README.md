@@ -11,7 +11,7 @@ it for other projects as well, so it's not entirely specialized either.
 
 Issue:
 
-```shell
+```sh
 ant all
 ```
 
