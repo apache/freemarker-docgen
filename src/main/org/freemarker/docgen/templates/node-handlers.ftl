@@ -8,7 +8,7 @@
 <#-- State variables: -->
 <#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
 <#assign footnotes = []>
- 
+
 <#macro @text>${.node?html}</#macro>
 
 <#macro @element>
@@ -20,7 +20,7 @@
 <#macro Anchor node=.node>
   <#if !disableAnchors && node.@id[0]??>
     <a name="${node.@id}"></a><#t>
-  </#if>  
+  </#if>
 </#macro>
 
 <#macro anchor>
@@ -36,9 +36,9 @@
 <#macro emphasis>
     <#local role=.node.@role[0]!"none">
     <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content>
-      <b><#recurse></b><#t>
+      <strong><#recurse></strong><#t>
     <#else>
-      <i><#recurse></i><#t>
+      <em><#recurse></em><#t>
     </#if>
 </#macro>
 
@@ -53,7 +53,7 @@
        <#local otherTermID=also.@otherterm>
        <#local otherNode=NodeFromID(otherTermID)>
        <#local term=otherNode.glossterm>
-       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if> 
+       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if>
      </#list>
     </p>
    </#if>
@@ -81,7 +81,7 @@
   <#local role=.node.@role[0]!?string>
   <#if role?starts_with("alt:")>
     <#local alt = role[4.. .node.@role?length-1]?trim>
-  <#else>  
+  <#else>
     <#local alt = "figure">
   </#if>
   <img src="${.node.@fileref}" alt="${alt?html}"><#t>
@@ -94,7 +94,7 @@
 </#macro>
 
 <#macro itemizedlist>
-    <#local packed=.node.@spacing[0]! = "compact"> 
+    <#local packed=.node.@spacing[0]! = "compact">
     <#local prevCompactPara=compactPara>
     <#if packed>
        <#assign compactPara = true>
@@ -143,7 +143,7 @@
 <#macro _inlineMonospaced>
     <#local moreStyle="" color="#A03D10">
     <#if .node?ancestors("link")?has_content>
-        <#-- If we are within a link, we don't change color, just use the regular link color -->   
+        <#-- If we are within a link, we don't change color, just use the regular link color -->
         <tt><#recurse></tt><#t>
     <#else>
         <#if fontBgColor! != "">
@@ -193,13 +193,13 @@
    <p class="rank_note">Note</p>
    <#recurse>
 </div>
-</#macro>  
+</#macro>
 
 <#macro warning>
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
   <p class="rank_note">Warning!</p>
   <#recurse>
-</div>            
+</div>
 </#macro>
 
 <#macro olink>
@@ -212,7 +212,7 @@
 </#macro>
 
 <#macro orderedlist>
-    <#local packed=(.node.@spacing[0]! = "compact")> 
+    <#local packed=(.node.@spacing[0]! = "compact")>
     <#local prevCompactPara=compactPara>
     <#if packed>
        <#assign compactPara = true>
@@ -379,11 +379,11 @@
     <#assign qaIndex = qaIndex+1>
   </#list>
   </table>
-  <#assign compactPara = prevCompactPara> 
+  <#assign compactPara = prevCompactPara>
 
   <#assign qaIndex = 1>
   <#recurse>
-    
+
   </div>
   </#macro>
 
@@ -395,8 +395,8 @@
     ${qaIndex}.&nbsp; <#recurse>
   </div>
   <#assign qaIndex = qaIndex+1>
-  <#assign compactPara = prevCompactPara> 
-</#macro> 
+  <#assign compactPara = prevCompactPara>
+</#macro>
 
 <#macro qandaentry><#recurse></#macro>
 
@@ -404,7 +404,7 @@
   <#if showEditoralNotes>
     <p style="background-color:#FFFF00">[<#recurse>]</p><#t>
   </#if>
-</#macro> 
+</#macro>
 
 <#macro replaceable>
   <#local moreStyle="">
@@ -436,7 +436,7 @@
 
 <#macro index>
   <#visit u.getRequiredTitleElement(.node)>
-  
+
   <#-- ABC links -->
   <#local lastLetter = "">
   <p>
@@ -549,10 +549,10 @@
   <#if hierarElem?node_name == "info">
     <#local hierarElem = hierarElem?parent>
   </#if>
-  
+
   <#local type = hierarElem?node_name>
   <#local titleInitial = u.getTitlePrefix(hierarElem, true, true)>
-  
+
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
   <#local htmlHLevel = 1>
   <#local cur = hierarElem>
@@ -565,16 +565,16 @@
     </#if>
     <#local cur = cur?parent>
   </#list>
-  
+
   <#-- HTML only defines h-s up to h6 -->
   <#if htmlHLevel <= 6>
     <#local htmlHElem = "h${htmlHLevel}">
   <#else>
     <#local htmlHElem = "p">
   </#if>
-  
+
   <#local classAtt = "">
-  
+
   <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
         <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
       <@Anchor hierarElem/><#t>
@@ -599,7 +599,7 @@
   <#local xrefID=.node.@linkend>
   <#local targetNode = NodeFromID(xrefID)>
   <#local targetLink = CreateLinkFromID(xrefID)>
-  
+
   <#local label = targetNode.@xreflabel[0]!>
   <#if label?has_content>
     <a href="${targetLink?html}">${label?html}</a><#t>
@@ -631,7 +631,7 @@
   <#local result = []>
   <#list 1..1000000 as _>
      <#if targetNode.@docgen_root_element?size != 0><#break></#if>
-     
+
      <#local title = u.getOptionalTitleElement(targetNode)>
      <#if title?has_content>
        <#local titleHTML><#recurse title></#local>
@@ -640,7 +640,7 @@
      <#elseif !allowFallback>
        <#break>
      </#if>
-     
+
      <#local targetNode = targetNode?parent>
   </#list>
   <#return result>
