@@ -301,18 +301,20 @@
   <#if dotidx != -1>
     <#local role = role[0..dotidx-1]>
   </#if>
+
+
   <#switch role>
     <#case "output">
-      <#local bgcolor = "#CCFFCC">
+      <#local roleClass = "role-output">
       <#break>
     <#case "dataModel">
-      <#local bgcolor = "#99CCFF">
+      <#local roleClass = "role-dataModel">
       <#break>
     <#case "template">
-      <#local bgcolor = "#D8D8D8">
+      <#local roleClass = "role-template">
       <#break>
     <#case "unspecified">
-      <#local bgcolor = "#F8F8F8">
+      <#local roleClass = "role-unspecified">
       <#break>
     <#case "metaTemplate">
       <pre class="metaTemplate"><#t>
@@ -320,7 +322,7 @@
       </pre><#lt>
       <#return>
     <#default>
-      <#local bgcolor = "#F8F8F8">
+      <#local roleClass = "role-default">
   </#switch>
   <#--
     We will use a table instead of a div, because div-s has to problems:
@@ -333,30 +335,10 @@
   -->
   <@CantBeNestedIntoP>
   <div align="left" class="programlisting"><#t>
-    <table style="background-color: ${bgcolor}"><#t>
-      <tr valign="top"><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td style="background-color: #000; width: 1px; height: 1px"><@u.invisible1x1Img /></td><#t>
-      </tr><#t>
-      <tr><#t>
-        <td style="background-color: #000; width: 1px"><@u.invisible1x1Img /></td><#t>
-        <td><#t>
-          <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px"><#t>
-            <tr><td><pre style="margin: 0px"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-            <#local content><#recurse></#local><#t>
-            ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr><#t>
-          </table><#t>
-        </td><#t>
-        <td width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-      </tr><#t>
-      <tr valign="top"><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-        <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
-      </tr>
-    </table><#t>
-  </div>
+      <pre class="code-block ${roleClass}"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+        <#local content><#recurse></#local><#lt>
+          ${content?chop_linebreak}
+      </pre><#t>
   </@CantBeNestedIntoP>
 </#macro>
 

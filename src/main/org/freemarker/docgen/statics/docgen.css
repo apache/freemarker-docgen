@@ -263,3 +263,25 @@ div.breadcrumb {
 span.breadcrumb {
   font-size: 80%; /* Don't use 0.8em due to MSIE6 bug */
 }
+
+/* roles */
+.code-block {
+  border: 1px solid #000;
+  margin: 0;
+}
+.role-output {
+  background-color: #CCFFCC;
+}
+
+.role-dataModel {
+  background-color: #99CCFF;
+}
+
+.role-template {
+  background-color: #D8D8D8;
+}
+
+.role-unspecified,
+.role-default {
+  background-color: #F8F8F8;
+}
