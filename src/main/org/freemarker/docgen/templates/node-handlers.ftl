@@ -61,12 +61,12 @@
 </#macro>
 
 <#macro glosssee>
-    <dd><p>See
+    <dd>See
        <#local otherTermID=.node.@otherterm>
        <#local otherNode=NodeFromID(otherTermID)>
        <#local term=otherNode.glossterm>
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
-    </p></dd>
+    </dd>
 </#macro>
 
 <#macro glossseealso>
@@ -144,17 +144,17 @@
     <#local moreStyle="" color="#A03D10">
     <#if .node?ancestors("link")?has_content>
         <#-- If we are within a link, we don't change color, just use the regular link color -->
-        <tt><#recurse></tt><#t>
+        <code><#recurse></code><#t>
     <#else>
         <#if fontBgColor! != "">
             <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
-        <tt style="color: #A03D10${moreStyle}"><#t>
+        <code style="color: #A03D10${moreStyle}"><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>
         <#assign inlineMonospacedColorisation = saved_inlineMonospacedColorisation>
-        </tt><#t>
+        </code><#t>
     </#if>
 </#macro>
 
@@ -412,9 +412,9 @@
     <#if fontBgColor! != "">
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
-    <i style="color: #DD4400${moreStyle}"><#recurse></i><#t>
+    <em style="color: #DD4400${moreStyle}"><#recurse></i><#t>
   <#else>
-    <i><#recurse></i><#t>
+    <em><#recurse></i><#t>
   </#if>
 </#macro>
 
