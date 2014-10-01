@@ -73,7 +73,7 @@
 
 <@nav.navigationBar top=false />
 
-<table border=0 cellspacing=0 cellpadding=0 width="100%">
+<table width="100%">
   <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
   <#assign footerTitleHTML = topLevelTitle?html>
   <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
