@@ -39,12 +39,12 @@
 
     <#-- - Render page title: -->
     <#visit titleElement using nodeHandlers>
-    
+
     <#-- - Render either ToF (Table of Files) or Page ToC; -->
     <#--   both is called, but at least one of them will be empty: -->
     <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
     <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
-    
+
     <#-- - Render the usual content, like <para>-s etc.: -->
     <#list .node.* as child>
       <#if child.@docgen_file_element?size == 0
@@ -54,7 +54,7 @@
       </#if>
     </#list>
   </#if>
-  
+
   <#-- Render footnotes, if any: -->
   <#assign footnotes = defaultNodeHandlers.footnotes>
   <#if footnotes?size != 0>
@@ -109,7 +109,7 @@
   </#if>
 </table>
 <#if !disableJavaScript>
-  <!-- Put pre-loaded images here: -->
+  <#-- Put pre-loaded images here: -->
   <div style="display: none">
     <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
   </div>
@@ -142,7 +142,7 @@
           ]</font><#t>
         </#if>
       </p>
-      
+
       <@toc_inner tocElems att maxDepth />
     </div>
     <a name="docgen_afterTheTOC"></a>
