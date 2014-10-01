@@ -124,7 +124,7 @@
   <#if (tocElems?size >= minLength)>
     <div class="toc">
       <p>
-        <b>
+        <strong>
           <#if !title?has_content>
             <#if .node?parent?node_type == "document">
               Table of Contents
@@ -134,9 +134,10 @@
           <#else>
             ${title}
           </#if>
-        </b>
+        </strong>
         <#if alternativeTOCLink??>
           &nbsp;&nbsp;<#t>
+          <#-- @todo: removing font tag -->
           <font size="-1">[<#t>
           <a href="${alternativeTOCLink?html}"><#t>
             ${alternativeTOCLabel?cap_first?html}...<#t>
@@ -155,7 +156,7 @@
   <#if tocElems?size == 0><#return></#if>
   <ul <#if curDepth == 1>class="noMargin"</#if>>
     <#if curDepth==1 && startsWithTopLevelContent>
-      <li style="padding-bottom: 0.5em"><i><a href="#docgen_afterTheTOC">Intro.</a></i></li>
+      <li style="padding-bottom: 0.5em"><em><a href="#docgen_afterTheTOC">Intro.</a></em></li>
     </#if>
     <#list tocElems as tocElem>
       <li>
