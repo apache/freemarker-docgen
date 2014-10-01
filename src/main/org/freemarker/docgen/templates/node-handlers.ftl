@@ -333,7 +333,7 @@
   -->
   <@CantBeNestedIntoP>
   <div align="left" class="programlisting"><#t>
-    <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="0" border="0"><#t>
+    <table style="background-color: ${bgcolor}"><#t>
       <tr valign="top"><#t>
         <td height="1" width="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
         <td height="1" bgcolor="black"><@u.invisible1x1Img /></td><#t>
