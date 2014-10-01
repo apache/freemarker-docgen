@@ -73,6 +73,7 @@
 
 <@nav.navigationBar top=false />
 
+<#-- @todo: remove table, fix spacing -->
 <table width="100%">
   <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
   <#assign footerTitleHTML = topLevelTitle?html>

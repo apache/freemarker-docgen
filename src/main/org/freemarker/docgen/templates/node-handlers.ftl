@@ -344,6 +344,7 @@
   <#local prevCompactPara=compactPara!>
   <#assign compactPara = true>
   <#assign qaIndex = 1>
+  <#-- @todo: remove table, fix spacing -->
   <table border=0 cellpadding=0 cellspacing=4>
   <#list .node.qandaentry as qandaentry>
     <tr align="left" valign="top">
@@ -636,6 +637,7 @@
 <#macro informaltable>
    <div class="informaltable">
       <@Anchor/>
+      <#-- @todo: remove table, fix spacing -->
       <table border="1" cellpadding="4">
           <#recurse>
       </table>
