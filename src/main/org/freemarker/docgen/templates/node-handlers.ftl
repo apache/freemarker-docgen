@@ -302,19 +302,18 @@
     <#local role = role[0..dotidx-1]>
   </#if>
 
-
   <#switch role>
     <#case "output">
-      <#local roleClass = "role-output">
+      <#local codeType = "code-output">
       <#break>
     <#case "dataModel">
-      <#local roleClass = "role-dataModel">
+      <#local codeType = "code-data-model">
       <#break>
     <#case "template">
-      <#local roleClass = "role-template">
+      <#local codeType = "code-template">
       <#break>
     <#case "unspecified">
-      <#local roleClass = "role-unspecified">
+      <#local codeType = "code-unspecified">
       <#break>
     <#case "metaTemplate">
       <pre class="metaTemplate"><#t>
@@ -322,7 +321,7 @@
       </pre><#lt>
       <#return>
     <#default>
-      <#local roleClass = "role-default">
+      <#local codeType = "code-default">
   </#switch>
   <#--
     We will use a table instead of a div, because div-s has to problems:
@@ -334,11 +333,9 @@
       be no be horizontal scrollbar, so it becomes unreadable.
   -->
   <@CantBeNestedIntoP>
-  <div align="left" class="programlisting"><#t>
-      <pre class="code-block ${roleClass}"><#lt><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-        <#local content><#recurse></#local><#lt>
-          ${content?chop_linebreak}
-      </pre><#t>
+    <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+      <#local content><#recurse></#local><#t>
+      ${content?chop_linebreak}</pre><#t>
   </@CantBeNestedIntoP>
 </#macro>
 

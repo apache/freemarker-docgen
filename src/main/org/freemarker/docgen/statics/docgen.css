@@ -268,20 +268,21 @@ span.breadcrumb {
 .code-block {
   border: 1px solid #000;
   margin: 0;
+  padding: 4px;
 }
-.role-output {
+.code-output {
   background-color: #CCFFCC;
 }
 
-.role-dataModel {
+.code-data-model {
   background-color: #99CCFF;
 }
 
-.role-template {
+.code-template {
   background-color: #D8D8D8;
 }
 
-.role-unspecified,
-.role-default {
+.code-unspecified,
+.code-default {
   background-color: #F8F8F8;
 }
