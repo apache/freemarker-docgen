@@ -81,9 +81,6 @@
     <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
   </#if>
   <#if !showXXELogo>
-    <tr>
-      <td colspan=2><img src="docgen-resources/img/none.gif" width=1 height=4 alt=""></td>
-    <tr>
       <td align="left" valign="top"><span class="footer">
           ${footerTitleHTML}
       </span></td>
@@ -92,9 +89,6 @@
       </span></td>
     </tr>
   <#else>
-    <tr>
-      <td colspan=2><img src="docgen-resources/img/none.gif" width=1 height=8 alt=""></td>
-    <tr>
       <td align="left" valign="top"><span class="smallFooter">
           <#if footerTitleHTML != "">
             ${footerTitleHTML}
