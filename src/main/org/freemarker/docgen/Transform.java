@@ -156,7 +156,7 @@ import freemarker.template.utility.StringUtil;
  *            {@code book}.
  *            If the name of an element is the same as one of the rank names
  *            then that will be its rank. For <tt>section</tt>-s, the number in
- *            the rank name tells how deep the <tt>section</tt> is nested into
+ *            the rank name tells how deeply the <tt>section</tt> is nested into
  *            other <tt>section</tt>-s (1 means a <tt>section</tt> that is not
  *            nested into any other <tt>section</tt>-s). For the other document
  *            structure elements (e.g. <tt>appendix</tt>, <tt>preface</tt>,
