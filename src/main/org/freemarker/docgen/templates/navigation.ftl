@@ -50,11 +50,7 @@
         You are here:
         [#list path as step]
           [#if step_has_next]<a href="${CreateLinkFromNode(step)?html}">[/#if][#rt]
-            [#if step_index != 0]
-              [#recurse u.getRequiredTitleElement(step) using nodeHandlers][#t]
-            [#else]
-              ${step?node_name?cap_first}[#t]
-            [/#if]
+            [#recurse u.getRequiredTitleElement(step) using nodeHandlers][#t]
           [#if step_has_next]</a>[/#if][#lt]
           [#if step_has_next]
             <b>></b>
