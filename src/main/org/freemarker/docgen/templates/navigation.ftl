@@ -1,4 +1,5 @@
 <#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
+<#escape x as x?html>
 
 <#import "util.ftl" as u>
 
@@ -25,7 +26,7 @@
     </#if>
   <#else>
     <div class="navigation">
-      ${captured}<#t>
+      <#noescape>${captured}</#noescape><#t>
     </div>
   </#if>
 </#macro>
@@ -48,7 +49,7 @@
       <span class="breadcrumb"><#t>
         You are here:
         <#list path as step>
-          <#if step_has_next><a href="${CreateLinkFromNode(step)?html}"></#if><#rt>
+          <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#rt>
             <#recurse u.getRequiredTitleElement(step) using nodeHandlers><#t>
           <#if step_has_next></a></#if><#lt>
           <#if step_has_next>
@@ -69,19 +70,34 @@
         <#list internalBookmarks?keys as k>
           <#local target = CreateLinkFromID(internalBookmarks[k])>
           <#if target != curHref>
-            <a href="${target?html}">${k?html}</a><#t>
+            <a href="${target}">${k}</a><#t>
           <#else>
-            <span class="disabledBookmark">${k?html}</span><#t>
+            <span class="disabledBookmark">${k}</span><#t>
           </#if>
           <#if k_has_next>, </#if><#t>
         </#list>
         <#if internalBookmarks?size != 0 && externalBookmarks?size != 0>, </#if><#t>
         <#list externalBookmarks?keys as k>
-          <a href="${externalBookmarks[k]?html}">${k?html}</a><#if k_has_next>, </#if><#t>
+          <a href="${externalBookmarks[k]}">${k}</a><#if k_has_next>, </#if><#t>
         </#list>
       </span><#t>
     </div>
   </#if>
+</#macro>
+
+<#macro tabs>
+    <#local tabs = .data_model.tabs>
+    <#if tabs?size != 0>
+        <ul class="tabs">
+            <#list tabs?keys as tabTitle>
+                <#if tabs[tabTitle]?has_content>
+                    <li><a href="${tabs[tabTitle]}">${tabTitle}</a></li>
+                <#else>
+                    <li class="current">${tabTitle}</li>
+                </#if>
+            </#list>
+        </ul>
+    </#if>
 </#macro>
 
 <#macro pagers>
@@ -105,16 +121,18 @@
       <#local curHref = CreateLinkFromNode(.node)>
     </#if>
     <#if element?has_content && href != curHref>
-      <a href="${href?html}"><#t>
+      <a href="${href}"><#t>
         <#if !labelOnly>
-          <span class="hideA">${label?html}:${' '}</span><#t>
+          <span class="hideA">${label}:${' '}</span><#t>
           <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
         <#else>
-          ${label?html}<#t>
+          ${label}<#t>
         </#if>
       </a><#t>
     <#else>
-      <span class="disabledPager">${label?html}</span><#t>
+      <span class="disabledPager">${label}</span><#t>
     </#if>
   </div><#t>
 </#macro>
+
+</#escape>
