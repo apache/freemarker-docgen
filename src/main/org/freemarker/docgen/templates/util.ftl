@@ -61,7 +61,9 @@
           || name == "emphasis"
           || name == "phrase">
         <#local res = res + titleToString(child)>
-      <#elseif node != "subtitle">
+      <#elseif name == "quote">
+        <#local res = "\x201C" + titleToString(child) + "\x201D"> 
+      <#elseif name != "subtitle">
         <#stop 'The "${name}" in titles is not supported by Docgen.'>
       </#if>
     </#if>

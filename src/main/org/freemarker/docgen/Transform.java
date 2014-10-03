@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -332,6 +333,10 @@ public final class Transform {
     static final String FILE_SETTINGS = "docgen.cjson";
     static final String FILE_DETAILED_TOC_HTML = "detailed-toc.html";
     static final String FILE_INDEX_HTML = "index.html";
+    static final String FILE_TOC_JSON_TEMPLATE = "toc-json.ftl";
+    static final String FILE_TOC_JSON_OUTPUT = "toc.json";
+    static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftl";
+    static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
     
     static final String SETTING_VALIDATION = "validation";
@@ -401,7 +406,11 @@ public final class Transform {
     private static final String VAR_SHOW_NAVIGATION_BAR = "showNavigationBar";
     private static final String VAR_SHOW_BREADCRUMB = "showBreadCrumb";
 
+    private static final String VAR_JSON_TOC_ROOT = "tocRoot";
+    
     private static final String PAGE_TYPE_DETAILED_TOC = "docgen:detailed_toc";
+
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
     
     // Docgen-specific XML attributes (added during DOM-tree postediting):
     
@@ -864,6 +873,8 @@ public final class Transform {
         fmConfig.setLocale(locale);
         fmConfig.setTimeZone(timeZone);
         
+        fmConfig.setDefaultEncoding(UTF_8.name());
+        fmConfig.setOutputEncoding(UTF_8.name());
 
         // Do the actual job:
         
@@ -948,6 +959,26 @@ public final class Transform {
         } catch (TemplateModelException e) {
             throw new BugException(e);
         }
+
+        // - Generate ToC JSON-s:
+        {
+            logger.info("Generating ToC JSON...");
+            Template template = fmConfig.getTemplate(FILE_TOC_JSON_TEMPLATE);
+            try (Writer wr = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(
+                                    new File(destDir, FILE_TOC_JSON_OUTPUT)),
+                            UTF_8))) {
+                try {
+                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+                        dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                    template.process(dataModel, wr, null, NodeModel.wrap(doc));
+                } catch (TemplateException e) {
+                    throw new BugException("Failed to generate ToC JSON "
+                            + "(see cause exception).", e);
+                }
+            }
+        }
         
         // - Generate the HTML-s: 
         logger.info("Generating HTML files...");
@@ -965,7 +996,6 @@ public final class Transform {
                 } catch (freemarker.core.StopException e) {
                     throw new DocgenException(e.getMessage());
                 } catch (TemplateException e) {
-                    logger.info(e.getFTLInstructionStack()); //!!T
                     throw new BugException(e);
                 }
             }
@@ -996,13 +1026,12 @@ public final class Transform {
         // - Eclipse ToC:
         if (generateEclipseTOC) {
             logger.info("Generating Eclipse ToC...");
-            Template template = fmConfig.getTemplate("eclipse-toc.ftl");
-            Writer wr = new BufferedWriter(
+            Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
+            try (Writer wr = new BufferedWriter(
                     new OutputStreamWriter(
                             new FileOutputStream(
-                                    new File(destDir, "eclipse-toc.xml")),
-                            "UTF-8"));
-            try {
+                                    new File(destDir, FILE_ECLIPSE_TOC_OUTPUT)),
+                            UTF_8))) {
                 try {
                     SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
                     if (eclipseLinkTo != null) {
@@ -1013,8 +1042,6 @@ public final class Transform {
                     throw new BugException("Failed to generate Eclipse ToC "
                             + "(see cause exception).", e);
                 }
-            } finally {
-                wr.close();
             }
         }
         
@@ -1921,7 +1948,7 @@ public final class Transform {
         Template template = fmConfig.getTemplate("page.ftl");
         File outputFile = new File(destDir, fileName);
         FileOutputStream fos = new FileOutputStream(outputFile);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+        OutputStreamWriter osw = new OutputStreamWriter(fos, UTF_8);
         Writer writer = new BufferedWriter(osw, 2048);
         try {
             template.process(
@@ -2177,7 +2204,7 @@ public final class Transform {
      * These nodes form a tree that exists in parallel with the the tree of DOM
      * nodes.
      */
-    private class TOCNode {
+    public class TOCNode {
 
         private final Element element;
         private final int traversalIndex;
