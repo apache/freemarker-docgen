@@ -1393,6 +1393,7 @@ final class CJSONInterpreter {
                         }
                         c = tx.charAt(p);
                         if (c == 0xA || c == 0xD) {
+                            skipWSFoundNL = true;
                             break; //!
                         }
                     }
