@@ -280,6 +280,10 @@ span.breadcrumb {
 .inline-code {
   color: #A03D10;
 }
+.code-color {
+  color: #DD4400;
+}
+
 .code-block {
   border: 1px solid #000;
   margin: 0;
@@ -335,4 +339,11 @@ span.breadcrumb {
 
 .footer-wrapper .footer-right {
   float: right;
+}
+
+/* notes */
+.note,
+.warning {
+  margin-left: 48px;
+  margin-right: 48px;
 }

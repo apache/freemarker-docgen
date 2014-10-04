@@ -190,14 +190,14 @@
 <#assign varname = _inlineMonospaced>
 
 <#macro note>
-<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<div class="note">
    <p class="rank_note">Note</p>
    <#recurse>
 </div>
 </#macro>
 
 <#macro warning>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<div class="warning">
   <p class="rank_note">Warning!</p>
   <#recurse>
 </div>
@@ -400,7 +400,8 @@
     <#if fontBgColor! != "">
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
-    <em style="color: #DD4400${moreStyle}"><#recurse></em><#t>
+    <#-- @todo: check if class name is necessary. probably able to cascade under .inline-code -->
+    <em class="code-color"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#recurse></em><#t>
   <#else>
     <em><#recurse></em><#t>
   </#if>
