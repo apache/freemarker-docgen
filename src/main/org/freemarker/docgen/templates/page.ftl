@@ -56,6 +56,7 @@
       </div>
       <#-- @todo: replace with google search -->
       <#-- @todo: move to better file -->
+      <#-- @todo: need flag to disable or enable search -->
       <form class="search-form">
         <fieldset>
           <legend class="sr-only">Search form</legend>

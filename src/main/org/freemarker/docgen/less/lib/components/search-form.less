@@ -2,6 +2,7 @@
 
   min-width: 100px;
   width: 100%;
+  position: relative;
 
   @media (min-width: @screen-md-min) {
     max-width: 300px;
@@ -30,10 +31,43 @@
       outline: 0;
       box-shadow: 1px 1px 3px #000;
       border-color: #2C5F79;
+
+      & + .search-btn {
+        color: #2C5F79;
+      }
     }
   }
 
   .search-btn {
+    position: absolute;
+    top: 1px;
+    right: 0;
 
+    border: 0;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 0;
+    font-size: 17px;
+
+    height: 34px;
+    color: #4a4a4a;
+    transition: color ease-in-out .2s;
+    cursor: pointer;
+    padding: 0 12px;
+
+    &:focus,
+    &:hover {
+      outline: 0;
+      color: #2C5F79;
+    }
+
+    &::-ms-clear {
+      display: none;
+    }
+
+    &::before {
+      content: @fa-var-search;
+      font-family: FontAwesome;
+      line-height: 100%;
+    }
   }
 }
