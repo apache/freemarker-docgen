@@ -11,11 +11,6 @@ var prefix    = require('gulp-autoprefixer');
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
 var OUT_DIR = path.join(BASE_DIR, 'statics');
 
-var paths = {
-  less: path.join(__dirname, 'node_modules'),
-  targetCss: path.join(OUT_DIR, 'css')
-};
-
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
     .pipe( less() )
