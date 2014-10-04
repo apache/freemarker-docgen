@@ -1,5 +1,6 @@
 .site-header {
   background: #000 url(img/diagonal.gif);
+  color: #FFF;
 
   .tabs {
     .list-unstyled();
@@ -7,7 +8,7 @@
 
     li {
       display: inline-block;
-      color: #FFF;
+      margin: 0 3px;
 
       &.current {
         background-color: rgba(62, 169, 225, 0.7);
@@ -18,10 +19,27 @@
         display: block;
         color: #FFF;
         padding: 3px 24px;
+        transition: background-color .2s ease;
+
 
         &:hover {
           background-color: rgba(62, 169, 225, 0.7);
         }
+      }
+    }
+  }
+
+
+  .navigation {
+    border-top: 4px solid rgb(74, 74, 74);
+    background-color: rgba(74, 74, 74, 0.7);
+
+    a {
+      color: rgb(181, 229, 129);
+      -webkit-tap-highlight-color: rgba(181, 229, 129, 0.3);
+
+      &:hover {
+        text-decoration: underline;
       }
     }
   }
