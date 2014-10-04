@@ -28,9 +28,9 @@
 </#macro>
 
 <#macro answer>
-<div class="answer">
+<dd class="answer">
   <#recurse>
-</div>
+</dd>
 </#macro>
 
 <#macro emphasis>
@@ -362,7 +362,9 @@
   <#assign compactPara = prevCompactPara>
 
   <#assign qaIndex = 1>
+  <dl>
   <#recurse>
+  </dl>
 
   </div>
   </#macro>
@@ -370,10 +372,15 @@
   <#macro question>
   <#local prevCompactPara=compactPara!>
   <#assign compactPara = true>
-  <div class="question">
-    <@Anchor .node?parent/><a name="faq_question_${qaIndex}"></a>
+
+  <#local nodeParent = .node?parent>
+
+  <#if nodeParent.@id[0]??>
+    <#local questionId = nodeParent.@id />
+  </#if>
+  <dt class="question" id="${questionId!''}">
     ${qaIndex}.&nbsp; <#recurse>
-  </div>
+  </dt>
   <#assign qaIndex = qaIndex+1>
   <#assign compactPara = prevCompactPara>
 </#macro>

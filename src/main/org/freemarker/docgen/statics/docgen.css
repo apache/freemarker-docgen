@@ -292,3 +292,7 @@ span.breadcrumb {
   display: block;
   margin-top: 5px;
 }
+
+.qandaset .answer {
+  margin: 0;
+}
