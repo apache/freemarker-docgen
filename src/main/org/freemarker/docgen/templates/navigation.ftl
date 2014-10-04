@@ -48,11 +48,11 @@
   <#if (path?size > 1)>
     <ul class="breadcrumb"><#t>
       <#list path as step>
-        <li>
-          <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#rt>
+        <li><#t>
+          <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#t>
             <#recurse u.getRequiredTitleElement(step) using nodeHandlers><#t>
-          <#if step_has_next></a></#if><#lt>
-        </li>
+          <#if step_has_next></a></#if><#t>
+        </li><#t>
       </#list>
     </ul><#t>
   </#if>
