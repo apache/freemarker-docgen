@@ -54,9 +54,16 @@
         </#if>
         <@nav.tabs />
       </div>
-      <div class="search-wrapper">
-        <input type="search" class="search-box" placeholder="Search">
-      </div>
+      <#-- @todo: replace with google search -->
+      <#-- @todo: move to better file -->
+      <form class="search-form">
+        <fieldset>
+          <legend class="sr-only">Search form</legend>
+          <label for="search-field" class="sr-only">Search query</label>
+          <input id="search-field" type="search" class="search-box" placeholder="Search" spellcheck="false" autocorrect="off">
+          <button type="submit" class="search-btn"><span class="sr-only">Search</span></button>
+        </fieldset>
+      </form>
     </div>
     <@nav.navigationBar top=true />
   </div>
