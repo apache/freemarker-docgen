@@ -42,12 +42,15 @@
 
 <body>
   <div class="site-header">
-    <#if logo??>
-        <div id="logo">
-            <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
-        </div>
-    </#if>
-    <@nav.tabs />
+    <#-- keep site-width inside site-header so that the background extends -->
+    <div class="site-width">
+      <#if logo??>
+          <div id="logo">
+              <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
+          </div>
+      </#if>
+      <@nav.tabs />
+    </div>
     <@nav.navigationBar top=true />
   </div>
 <div id="mainContent">

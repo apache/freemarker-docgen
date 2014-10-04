@@ -1,3 +1,32 @@
+// determines the max-width of the site at various resolutions
+.site-width {
+  margin-left: auto;
+  margin-right: auto;
+
+  padding-left: @gutter-width;
+  padding-right: @gutter-width;
+
+  @media (min-width: @screen-sm-min) {
+    width: @container-sm;
+  }
+
+  @media (min-width: @screen-md-min) {
+    width: @container-md;
+  }
+
+  @media (min-width: @screen-lg-min) {
+    width: @container-lg;
+  }
+
+  @media (min-width: @screen-xl-min) {
+    width: @container-xl;
+  }
+
+  @media (min-width: @screen-xxl-min) {
+    width: @container-xxl;
+  }
+}
+
 // Only display content to screen readers
 //
 // See: http://a11yproject.com/posts/how-to-hide-content/

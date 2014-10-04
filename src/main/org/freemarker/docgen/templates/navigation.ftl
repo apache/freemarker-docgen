@@ -26,7 +26,10 @@
     </#if>
   <#else>
     <div class="navigation">
-      <#noescape>${captured}</#noescape><#t>
+      <#-- keep site-width inside navigation so that the background extends -->
+      <div class="site-width">
+        <#noescape>${captured}</#noescape><#t>
+      </div>
     </div>
   </#if>
 </#macro>
@@ -63,8 +66,7 @@
 
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
-    <div class="bookmarks">
-      <span class="bookmarks"><#t>
+    <div class="bookmarks"><#t>
         Bookmarks:<#lt>
         <#local curHref = CreateLinkFromNode(.node)>
         <#list internalBookmarks?keys as k>
@@ -80,7 +82,6 @@
         <#list externalBookmarks?keys as k>
           <a href="${externalBookmarks[k]}">${k}</a><#if k_has_next>, </#if><#t>
         </#list>
-      </span><#t>
     </div>
   </#if>
 </#macro>
