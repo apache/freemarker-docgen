@@ -7,24 +7,39 @@
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <#-- Avoid inital empty line! -->
 <!doctype html>
-<html>
-<head>
+<html lang="en">
+<#compress>
+<head prefix="og: http://ogp.me/ns#">
   <meta charset="utf-8">
-  <title>
-    <#assign titleElement = u.getRequiredTitleElement(.node)>
-    <#assign title = u.titleToString(titleElement)>
-    <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
-    ${topLevelTitle?html}<#if title != topLevelTitle> - ${title?html}</#if>
-  </title>
+  <#assign titleElement = u.getRequiredTitleElement(.node)>
+  <#assign title = u.titleToString(titleElement)>
+  <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
+  <#assign pageTitle = topLevelTitle />
+  <#if title != topLevelTitle>
+    <#assign pageTitle = topLevelTitle + " - " + title>
+  </#if>
+  <title>${pageTitle?html}</title>
   <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
   <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
+  <meta property="og:title" content="${pageTitle?html}">
+  <meta property="og:locale" content="en_US">
+  <#-- @todo: improve this logic -->
+  <#assign nodeId = .node.@id>
+  <#if nodeId == "autoid_1">
+    <#assign nodeId = "index">
+  </#if>
+  <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
+  <meta property="og:url" content="${canonicalUrl}">
+  <link rel="canoical" href="${canonicalUrl}">
   <#if !disableJavaScript>
     <script type="text/javascript" src="docgen-resources/jquery.js"></script>
     <script type="text/javascript" src="docgen-resources/linktargetmarker.js"></script>
   </#if>
 </head>
+</#compress>
+
 <body>
 
 <#if logo??>
