@@ -342,6 +342,11 @@ public final class Transform {
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
+    static final String SETTING_LOGO = "logo";
+    static final String SETTING_LOGO_SRC = "src";
+    static final String SETTING_LOGO_ALT = "alt";
+    static final String SETTING_LOGO_HREF = "href";
+    static final String SETTING_TABS = "tabs";
     static final String SETTING_OLINKS = "olinks";
     static final String SETTING_ECLIPSE = "eclipse";
     static final String SETTING_SHOW_EDITORAL_NOTES = "showEditoralNotes";
@@ -383,6 +388,8 @@ public final class Transform {
             = SETTING_INTERNAL_BOOKMARKS;
     private static final String VAR_EXTERNAL_BOOKMARDS
             = SETTING_EXTERNAL_BOOKMARKS;
+    private static final String VAR_LOGO = SETTING_LOGO;
+    private static final String VAR_TABS = SETTING_TABS;
     private static final String VAR_OLINKS
             = SETTING_OLINKS;
     private static final String VAR_TOC_DISPLAY_DEPTH
@@ -541,11 +548,12 @@ public final class Transform {
     
     private boolean printProgress;
     
-    private LinkedHashMap<String, String> internalBookmarks
-        = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
     
-    private LinkedHashMap<String, String> externalBookmarks
-        = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
+
+    private HashMap<String, String> logo;
     
     private DocgenValidationOptions validationOps
             = new DocgenValidationOptions();
@@ -674,6 +682,37 @@ public final class Transform {
                         String target = itIsAStringValueInAMapSetting(
                                 cfgFile, settingName, ent.getValue());
                         externalBookmarks.put(name, target);
+                    }
+                } else if (settingName.equals(SETTING_LOGO)) {
+                    Map<String, Object> m = itIsAMapSetting(
+                            cfgFile, settingName, settingValue);
+                    logo = new HashMap<>();
+                    for (Entry<String, Object> ent : m.entrySet()) {
+                        String k = ent.getKey();
+                        String v = itIsAStringValueInAMapSetting(cfgFile, settingName, ent.getValue());
+                        if (!(k.equals(SETTING_LOGO_SRC) || k.equals(SETTING_LOGO_ALT)
+                                || k.equals(SETTING_LOGO_HREF))) {
+                            throw newCfgFileException(cfgFile, SETTING_LOGO, "Unknown logo option: " + k);
+                        }
+                        logo.put(k, v);
+                    }
+                    if (!logo.containsKey(SETTING_LOGO_SRC)) {
+                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_SRC);
+                    }
+                    if (!logo.containsKey(SETTING_LOGO_ALT)) {
+                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_ALT);
+                    }
+                    if (!logo.containsKey(SETTING_LOGO_HREF)) {
+                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_HREF);
+                    }
+                } else if (settingName.equals(SETTING_TABS)) {
+                    Map<String, Object> m = itIsAMapSetting(
+                            cfgFile, settingName, settingValue);
+                    for (Entry<String, Object> ent : m.entrySet()) {
+                        String name = ent.getKey();
+                        String target = itIsAStringValueInAMapSetting(
+                                cfgFile, settingName, ent.getValue());
+                        tabs.put(name, target);
                     }
                 } else if (settingName.equals(SETTING_VALIDATION)) {
                     Map<String, Object> m = itIsAMapSetting(
@@ -923,6 +962,10 @@ public final class Transform {
                     VAR_OLINKS, olinks);
             fmConfig.setSharedVariable(
                     VAR_NUMBERED_SECTIONS, numberedSectons);
+            fmConfig.setSharedVariable(
+                    VAR_LOGO, logo);
+            fmConfig.setSharedVariable(
+                    VAR_TABS, tabs);
             fmConfig.setSharedVariable(
                     VAR_EXTERNAL_BOOKMARDS, externalBookmarks);
             fmConfig.setSharedVariable(

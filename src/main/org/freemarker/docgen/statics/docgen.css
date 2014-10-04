@@ -68,6 +68,12 @@ code {
   font-family: "Courier New", monospace;
 }
 
+/* Utility classes: */
+
+.clear {
+  clear: both;
+}
+
 /* Table-based DocBook elements: */
 
 div.programlisting,
@@ -230,6 +236,40 @@ div.navigation {
 div.missingNavigationFooterLine {
   height: 1px;
   border-bottom: solid black 1px;
+}
+
+#logo {
+  float: left;
+  margin: 0 2.5em .5em 0;
+  padding: 0;
+}
+#logo  a {
+  text-decoration: none;
+}
+#logo  a  img {
+  display: block;
+  border: 0;
+}
+
+ul.tabs {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ul.tabs li {
+  background: #ccc;
+  color: #000;
+  float: left;
+  margin: 0 .5em .5em 0;
+  padding: .25em .5em;
+}
+ul.tabs li.current {
+  color: #fff;
+  background: #0050b2;
+}
+ul.tabs li a {
+  color: #000;
+  text-decoration: none;
 }
 
 div.bookmarks {

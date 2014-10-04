@@ -27,6 +27,14 @@
 </head>
 <body>
 
+<#if logo??>
+    <div id="logo">
+        <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
+    </div>
+</#if>
+<@nav.tabs />
+<div class="clear"></div>
+
 <@nav.navigationBar top=true />
 
 <div id="mainContent">
