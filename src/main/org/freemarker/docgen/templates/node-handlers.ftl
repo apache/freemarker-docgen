@@ -149,7 +149,8 @@
         <#if fontBgColor! != "">
             <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
-        <code style="color: #A03D10${moreStyle}"><#t>
+        <#-- @todo: convert 'moreStyle' to class names -->
+        <code class="inline-code"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>

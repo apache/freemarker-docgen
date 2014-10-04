@@ -277,6 +277,9 @@ span.breadcrumb {
 }
 
 /* roles */
+.inline-code {
+  color: #A03D10;
+}
 .code-block {
   border: 1px solid #000;
   margin: 0;
