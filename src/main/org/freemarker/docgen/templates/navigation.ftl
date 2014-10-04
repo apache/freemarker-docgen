@@ -102,24 +102,33 @@
 <#macro pagers>
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
-    <div class="pagers">
-      <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
-      <@pagerButton "Next page", nextFileElement!, false />
-      <@pagerButton "Previous page", previousFileElement! />
+    <ul class="pagers"><#t>
+      <@pagerButton "Previous", previousFileElement! />
       <@pagerButton "Parent page", parentFileElement! />
       <@pagerButton "Contents", rootElement />
-      <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
-    </div>
+      <@pagerButton "Next", nextFileElement!, false />
+    </ul><#t>
   </#if>
 </#macro>
 
 <#macro pagerButton label element labelOnly=true>
-  <div class="pagerButton"><#t>
+  <li><#t>
     <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>
       <#local curHref = CreateLinkFromNode(.node)>
     </#if>
     <#if element?has_content && href != curHref>
+      <#if !labelOnly>
+        <span class="pager-label">${label}:</span><#t>
+        <a href="${href}"><#t>
+          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
+        </a><#t>
+      <#else>
+        <a href="${href}"><#t>
+          ${label}<#t>
+        </a><#t>
+      </#if>
+      <#--
       <a href="${href}"><#t>
         <#if !labelOnly>
           <span class="hideA">${label}:${' '}</span><#t>
@@ -127,11 +136,11 @@
         <#else>
           ${label}<#t>
         </#if>
-      </a><#t>
+      </a><#t>-->
     <#else>
-      <span class="disabledPager">${label}</span><#t>
+      ${label}<#t>
     </#if>
-  </div><#t>
+  </li><#t>
 </#macro>
 
 </#escape>
