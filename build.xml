@@ -14,17 +14,17 @@
   <property name="moduleOrg" value="org.freemarker" />
   <property name="moduleName" value="docgen" />
   <property name="moduleBranch" value="2.0" />
-  
+
   <!-- Will be overidden on the server: -->
   <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
-  
+
   <property file="build.properties" />
-  
+
   <!-- When boot.classpath is missing, this is the default: -->
   <property name="boot.classpath" value="${sun.boot.class.path}" />
   <!-- Checking the correctness of the boot.classpath -->
   <available classpath="${boot.classpath}"
-    classname="java.lang.Object" ignoresystemclasses="true" 
+    classname="java.lang.Object" ignoresystemclasses="true"
     property="boot.classpath.correct"
   />
 
@@ -43,7 +43,7 @@
   <!-- ================================================================== -->
 
   <!-- Classpath-es (dependencies) separately for each module -->
-  
+
   <!-- Needed for purely technical resons... -->
   <path id="classpath.empty" />
 
@@ -68,9 +68,9 @@
         -->set it.<!--
       --></fail>
       <echo level="info">Using boot classpath: ${boot.classpath}</echo>
-      
+
       <mkdir dir="@{destDir}" />
-      
+
       <javac
         srcdir="@{srcDir}"
         destDir="@{destDir}"
@@ -82,7 +82,7 @@
         classpathRef="@{classpathRef}"
         bootclasspath="${boot.classpath}"
       />
-      
+
       <copy todir="@{destDir}" filtering="true" includeEmptyDirs="false">
         <fileset dir="@{srcDir}">
           <include name="**/*.properties" />
@@ -114,7 +114,7 @@
       <echo level="info"><!--
         -->Javadoc generation for: @{title}<!--
       --></echo>
-      
+
       <u:provideEmptyDir dir="@{destDir}" />
       <javadoc
         sourcepath="@{srcDir}"
@@ -136,7 +136,7 @@
       />
     </sequential>
   </macrodef>
-  
+
   <macrodef name="provideEmptyDir" uri="http://freemarker.org/ant-utils">
     <attribute name="dir" />
     <sequential>
@@ -147,18 +147,18 @@
     </sequential>
   </macrodef>
 
-  
+
   <!-- ================================================================== -->
   <!-- Targets                                                            -->
   <!-- ================================================================== -->
-  
+
   <target name="init">
     <condition property="deps.available">
       <available file=".ivy" />
     </condition>
     <antcall target="_autoget-deps" />
   </target>
-  
+
   <target name="classes" depends="init"
     description='Compile + resource copy'
   >
@@ -190,7 +190,7 @@
         <attribute name="Implementation-Version" value="${version}" />
       </manifest>
     </jar>
-    
+
     <mkdir dir="build/lib" />
     <ivy:retrieve pattern="build/lib/[artifact].[ext]" />
     <copy file="build/artifacts/docgen.jar" todir="build/lib" />
@@ -200,7 +200,7 @@
     description="Build the JavaDoc."
   >
     <ivy:cachepath pathid="ivy.dep" />
-    <u:javadoc   
+    <u:javadoc
       title="Docgen API"
       srcdir="src/main"
       destDir="build/api"
@@ -211,12 +211,12 @@
   <target name="all" depends="jar, javadoc"
     description='Build "docgen.jar" + javadocs'
   />
-  
+
   <target name="clean" description='Delete output files.'>
     <u:provideEmptyDir dir="build" />
     <delete file="build/docgen.jar" />
   </target>
-  
+
   <target name="test" depends="jar">
     <echo>***************************************</echo>
     <echo>* Now issue this in the command-line: *</echo>
@@ -246,16 +246,16 @@
   <target name="artifacts" depends="jar"
     description="Creates the artifacts for Ivy."
   />
-  
-  
+
+
   <!-- ================================================================== -->
   <!-- Dependency management (keep it exactly identical for all projects) -->
   <!-- ================================================================== -->
-  
+
   <target name="_autoget-deps" unless="deps.available">
     <antcall target="update-deps" />
   </target>
-  
+
   <target name="update-deps"
     description="Gets the latest version of the dependencies from the Web"
   >
@@ -313,14 +313,14 @@
   >
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override/${moduleOrg}/${moduleName}" />
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache/${moduleOrg}/${moduleName}" />
-  </target>  
+  </target>
 
   <target name="unpublish-override-all"
     description="Undoes publish-override-s made in ALL projects"
   >
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache" />
-  </target>  
+  </target>
 
   <target name="uninstall"
     description="Deletes external files created by FreeMarker developement"
@@ -337,7 +337,7 @@
     <ivy:resolve />
     <ivy:report todir="build/deps-report" />
   </target>
-  
+
   <!--
     This meant to be called on the Continuous Integration server, so the
     integration builds appear in the freemarker.org public Ivy repository.
@@ -356,5 +356,5 @@
       <artifacts pattern="build/artifacts/[artifact].[ext]" />
     </ivy:publish>
   </target>
-  
+
 </project>
