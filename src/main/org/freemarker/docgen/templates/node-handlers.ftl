@@ -642,10 +642,10 @@
 </#macro>
 
 <#macro informaltable>
-   <div class="informaltable">
+   <div class="informal-table">
       <@Anchor/>
       <#-- @todo: remove table, fix spacing -->
-      <table border="1" cellpadding="4">
+      <table>
           <#recurse>
       </table>
    </div>

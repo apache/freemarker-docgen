@@ -71,9 +71,21 @@ code {
 /* Table-based DocBook elements: */
 
 div.programlisting,
-div.informaltable,
+div.informal-table,
 div.table {
   margin: 1em 0 1em 0;
+}
+
+.informal-table table {
+  border: 1px solid #808080;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.informal-table td,
+.informal-table th {
+  border: 1px solid #808080;
+  padding: 4px;
 }
 
 /* ToC: */
