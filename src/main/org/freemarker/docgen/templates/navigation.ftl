@@ -46,11 +46,11 @@
     <#local curNode = curNode?parent>
   </#list>
   <#if (path?size > 1)>
-    <ul class="breadcrumb"><#t>
+    <ul class="breadcrumb" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
       <#list path as step>
         <li><#t>
-          <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#t>
-            <#recurse u.getRequiredTitleElement(step) using nodeHandlers><#t>
+          <#if step_has_next><a itemprop="url" href="${CreateLinkFromNode(step)}"></#if><#t>
+            <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
           <#if step_has_next></a></#if><#t>
         </li><#t>
       </#list>
