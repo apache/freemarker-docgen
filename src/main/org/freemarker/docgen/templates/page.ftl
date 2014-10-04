@@ -80,22 +80,24 @@
     <#else>
       <#-- Normal page content: -->
 
-      <#-- - Render page title: -->
-      <#visit titleElement using nodeHandlers>
-
       <#-- - Render either ToF (Table of Files) or Page ToC; -->
       <#--   both is called, but at least one of them will be empty: -->
       <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
       <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
 
-      <#-- - Render the usual content, like <para>-s etc.: -->
-      <#list .node.* as child>
-        <#if child.@docgen_file_element?size == 0
-            && child?node_name != "title"
-            && child?node_name != "subtitle">
-          <#visit child using nodeHandlers>
-        </#if>
-      </#list>
+      <div class="page-content">
+        <#-- - Render page title: -->
+        <#visit titleElement using nodeHandlers>
+
+        <#-- - Render the usual content, like <para>-s etc.: -->
+        <#list .node.* as child>
+          <#if child.@docgen_file_element?size == 0
+              && child?node_name != "title"
+              && child?node_name != "subtitle">
+            <#visit child using nodeHandlers>
+          </#if>
+        </#list>
+      </div>
     </#if>
 
     <#-- Render footnotes, if any: -->
@@ -112,37 +114,38 @@
     </#if>
   </div>
 
-<@nav.navigationBar top=false />
+  <@nav.navigationBar top=false />
 
-<#-- @todo: remove table, fix spacing -->
-<div class="footer-wrapper">
-  <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
-  <#assign footerTitleHTML = topLevelTitle?html>
-  <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-  <#if bookSubtitle?has_content>
-    <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
-  </#if>
-  <#if !showXXELogo>
-    <div class="footer-left">
-        ${footerTitleHTML}
-    </div>
-    <div class="footer-right">
+<div class="site-footer">
+  <div class="site-width">
+    <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
+    <#assign footerTitleHTML = topLevelTitle?html>
+    <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+    <#if bookSubtitle?has_content>
+      <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
+    </#if>
+    <#if !showXXELogo>
+      <div class="footer-left">
+          ${footerTitleHTML}
+      </div>
+      <div class="footer-right">
+          ${pageGenTimeHTML}
+      </div>
+    <#else>
+      <div class="footer-left">
+        <#if footerTitleHTML != "">
+          ${footerTitleHTML}
+          <br>
+        </#if>
         ${pageGenTimeHTML}
-    </div>
-  <#else>
-    <div class="footer-left">
-      <#if footerTitleHTML != "">
-        ${footerTitleHTML}
-        <br>
-      </#if>
-      ${pageGenTimeHTML}
-    </div>
-    <div class="footer-right">
-        <a href="http://www.xmlmind.com/xmleditor/">
-          <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
-        </a>
-    </div>
-  </#if>
+      </div>
+      <div class="footer-right">
+          <a href="http://www.xmlmind.com/xmleditor/">
+            <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+          </a>
+      </div>
+    </#if>
+  </div>
 </div>
 <#if !disableJavaScript>
   <#-- Put pre-loaded images here: -->
@@ -159,7 +162,7 @@
 <#macro toc att maxDepth title='' minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-    <div class="toc">
+    <div class="table-of-contents">
       <p>
         <strong>
           <#if !title?has_content>
@@ -182,29 +185,29 @@
           ]</font><#t>
         </#if>
       </p>
-
       <@toc_inner tocElems att maxDepth />
     </div>
+    <#-- @todo: move this -->
     <a name="docgen_afterTheTOC"></a>
   </#if>
 </#macro>
 
 <#macro toc_inner tocElems att maxDepth curDepth=1>
   <#if tocElems?size == 0><#return></#if>
-  <ul <#if curDepth == 1>class="noMargin"</#if>>
-    <#if curDepth==1 && startsWithTopLevelContent>
-      <li style="padding-bottom: 0.5em"><em><a href="#docgen_afterTheTOC">Intro.</a></em></li>
+  <ul>
+    <#if curDepth == 1 && startsWithTopLevelContent>
+      <li><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
     </#if>
     <#list tocElems as tocElem>
-      <li>
-        ${u.getTitlePrefix(tocElem, true)?html}<#rt>
+      <li><#t>
+        ${u.getTitlePrefix(tocElem, true)?html}<#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
-        <#if curDepth < maxDepth>
+        <#if (curDepth < maxDepth)>
           <@toc_inner tocElem["*[@${att}]"], att, maxDepth, curDepth + 1 />
         </#if>
-      </li>
+      </li><#t>
     </#list>
-  </ul>
+  </ul><#t>
 </#macro>
