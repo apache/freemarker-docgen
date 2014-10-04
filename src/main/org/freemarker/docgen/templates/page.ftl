@@ -41,17 +41,15 @@
 </#compress>
 
 <body>
-
-<#if logo??>
-    <div id="logo">
-        <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
-    </div>
-</#if>
-<@nav.tabs />
-<div class="clear"></div>
-
-<@nav.navigationBar top=true />
-
+  <div class="site-header">
+    <#if logo??>
+        <div id="logo">
+            <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
+        </div>
+    </#if>
+    <@nav.tabs />
+    <@nav.navigationBar top=true />
+  </div>
 <div id="mainContent">
   <#assign pageType = pageType!.node?node_name>
 

@@ -43,6 +43,31 @@ img {
   border: 0;
   vertical-align: middle;
 }
+.site-header {
+  background: #000000 url(img/diagonal.gif);
+}
+.site-header .tabs {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  font-size: 18px;
+}
+.site-header .tabs li {
+  display: inline-block;
+  color: #FFF;
+}
+.site-header .tabs li.current {
+  background-color: rgba(62, 169, 225, 0.7);
+  padding: 3px 24px;
+}
+.site-header .tabs li a {
+  display: block;
+  color: #FFF;
+  padding: 3px 24px;
+}
+.site-header .tabs li a:hover {
+  background-color: rgba(62, 169, 225, 0.7);
+}
 .sr-only {
   position: absolute;
   width: 1px;
