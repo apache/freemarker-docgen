@@ -46,10 +46,10 @@ a {
   color: #0000CC;
   text-decoration: none;
 }
-a: hover {
+a:hover {
   text-decoration: underline;
 }
-a: visited {
+a:visited {
   color: #800080;
 }
 
@@ -77,9 +77,21 @@ code {
 /* Table-based DocBook elements: */
 
 div.programlisting,
-div.informaltable,
+div.informal-table,
 div.table {
   margin: 1em 0 1em 0;
+}
+
+.informal-table table {
+  border: 1px solid #808080;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.informal-table td,
+.informal-table th {
+  border: 1px solid #808080;
+  padding: 4px;
 }
 
 /* ToC: */
@@ -305,6 +317,13 @@ span.breadcrumb {
 }
 
 /* roles */
+.inline-code {
+  color: #A03D10;
+}
+.code-color {
+  color: #DD4400;
+}
+
 .code-block {
   border: 1px solid #000;
   margin: 0;
@@ -325,4 +344,46 @@ span.breadcrumb {
 .code-unspecified,
 .code-default {
   background-color: #F8F8F8;
+}
+
+/* faq */
+.qandaset li a {
+  display: block;
+  margin-top: 5px;
+}
+
+.qandaset .answer {
+  margin: 0;
+}
+
+/* footer */
+.footer-wrapper {
+  font-size: 63%;
+  color: #A0A0A0;
+  font-style: italic;
+  padding-top: 10px;
+}
+.footer-wrapper:before,
+.footer-wrapper:after {
+  content: " ";
+  display: table;
+}
+
+.footer-wrapper:after {
+  clear: both;
+}
+
+.footer-wrapper .footer-left {
+  float: left;
+}
+
+.footer-wrapper .footer-right {
+  float: right;
+}
+
+/* notes */
+.note,
+.warning {
+  margin-left: 48px;
+  margin-right: 48px;
 }

@@ -28,9 +28,9 @@
 </#macro>
 
 <#macro answer>
-<div class="answer">
+<dd class="answer">
   <#recurse>
-</div>
+</dd>
 </#macro>
 
 <#macro emphasis>
@@ -149,7 +149,8 @@
         <#if fontBgColor! != "">
             <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
-        <code style="color: #A03D10${moreStyle}"><#t>
+        <#-- @todo: convert 'moreStyle' to class names -->
+        <code class="inline-code"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>
@@ -189,14 +190,14 @@
 <#assign varname = _inlineMonospaced>
 
 <#macro note>
-<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<div class="note">
    <p class="rank_note">Note</p>
    <#recurse>
 </div>
 </#macro>
 
 <#macro warning>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<div class="warning">
   <p class="rank_note">Warning!</p>
   <#recurse>
 </div>
@@ -345,24 +346,26 @@
   <#assign compactPara = true>
   <#assign qaIndex = 1>
   <#-- @todo: remove table, fix spacing -->
-  <table border=0 cellpadding=0 cellspacing=4>
+
+  <ol>
   <#list .node.qandaentry as qandaentry>
-    <tr align="left" valign="top">
-      <td>${qaIndex}.&nbsp;&nbsp;
+    <li>
       <#local prevdisableAnchors=disableAnchors!>
       <#assign disableAnchors = true>
-      <td>
       <a href="#${qandaentry.@id[0]!("faq_question_" + qaIndex)}">
         <#recurse qandaentry.question>
-      </a><br>
+      </a>
       <#assign disableAnchors = prevdisableAnchors>
     <#assign qaIndex = qaIndex+1>
+    </li>
   </#list>
-  </table>
+  </ol>
   <#assign compactPara = prevCompactPara>
 
   <#assign qaIndex = 1>
+  <dl>
   <#recurse>
+  </dl>
 
   </div>
   </#macro>
@@ -370,10 +373,15 @@
   <#macro question>
   <#local prevCompactPara=compactPara!>
   <#assign compactPara = true>
-  <div class="question">
-    <@Anchor .node?parent/><a name="faq_question_${qaIndex}"></a>
+
+  <#local nodeParent = .node?parent>
+
+  <#if nodeParent.@id[0]??>
+    <#local questionId = nodeParent.@id />
+  </#if>
+  <dt class="question" id="${questionId!''}">
     ${qaIndex}.&nbsp; <#recurse>
-  </div>
+  </dt>
   <#assign qaIndex = qaIndex+1>
   <#assign compactPara = prevCompactPara>
 </#macro>
@@ -392,7 +400,8 @@
     <#if fontBgColor! != "">
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
-    <em style="color: #DD4400${moreStyle}"><#recurse></em><#t>
+    <#-- @todo: check if class name is necessary. probably able to cascade under .inline-code -->
+    <em class="code-color"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#recurse></em><#t>
   <#else>
     <em><#recurse></em><#t>
   </#if>
@@ -635,10 +644,10 @@
 </#macro>
 
 <#macro informaltable>
-   <div class="informaltable">
+   <div class="informal-table">
       <@Anchor/>
       <#-- @todo: remove table, fix spacing -->
-      <table border="1" cellpadding="4">
+      <table>
           <#recurse>
       </table>
    </div>
