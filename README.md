@@ -3,9 +3,9 @@
 ## About
 
 Docgen was originally written to generate HTML pages from the DocBook 5 XML
-that the FreeMarker Manual is written in. As such, it's not a general purpose
-DocBook 5 to HTML converter, however, we use it for other projects as well,
-so it's not entirely specialized either.
+that [the FreeMarker Manual](http://freemarker.org/docs/) is written in. As
+such, it's not a general purpose DocBook 5 to HTML converter, however, we
+use it for other projects as well, so it's not entirely specialized either.
 
 ## Usage
 
@@ -43,6 +43,6 @@ ant publish-override
 
 This will shadow the `docgen` artifact that comes from the Ivy repo on
 [freemarker.org](http://freemarker.org). Then, in the `freemarker` project you
-have issue `ant update-deps` so it will pick up your version.
+have to issue `ant update-deps` so that it picks up your version.
 
 [fmProj]: https://github.com/freemarker/freemarker
