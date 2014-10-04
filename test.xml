@@ -1,7 +1,7 @@
 <!--
   This is separated from the build.xml to prevent the classloading mess caused
   by that build.xml (re)creates lib/docgen.jar.
-  
+
   Invoke this as:
     ant -f test.xml
 -->
@@ -22,7 +22,7 @@
         srcdir="src/test/9" destdir="build/test/9"
         offline="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/8" destdir="build/test/8"
         offline="true"
@@ -40,37 +40,37 @@
         offline="true"
         generateEclipseToC="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/5" destdir="build/test/5"
         offline="true"
         generateEclipseToC="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/4" destdir="build/test/4"
         offline="true"
         generateEclipseToC="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/3" destdir="build/test/3"
         offline="true"
         generateEclipseToC="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/2" destdir="build/test/2"
         offline="true"
         generateEclipseToC="true"
     />
-    
+
     <docgen:transform
         srcdir="src/test/1" destdir="build/test/1"
         offline="true"
         generateEclipseToC="true"
     />
-    
+
   </target>
 
 </project>
