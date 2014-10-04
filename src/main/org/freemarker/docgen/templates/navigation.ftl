@@ -88,15 +88,15 @@
 <#macro tabs>
     <#local tabs = .data_model.tabs>
     <#if tabs?size != 0>
-        <ul class="tabs">
+        <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
                 <#if tabs[tabTitle]?has_content>
-                    <li><a href="${tabs[tabTitle]}">${tabTitle}</a></li>
+                    <li><a href="${tabs[tabTitle]}">${tabTitle}</a></li><#t>
                 <#else>
-                    <li class="current">${tabTitle}</li>
+                    <li class="current">${tabTitle}</li><#t>
                 </#if>
             </#list>
-        </ul>
+        </ul><#t>
     </#if>
 </#macro>
 
