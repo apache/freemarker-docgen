@@ -46,7 +46,7 @@ a {
   color: #0000CC;
   text-decoration: none;
 }
-a: hover {
+a:hover {
   text-decoration: underline;
 }
 a: visited {
