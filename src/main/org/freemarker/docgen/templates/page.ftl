@@ -74,7 +74,7 @@
 <@nav.navigationBar top=false />
 
 <#-- @todo: remove table, fix spacing -->
-<table width="100%">
+<div class="footer-wrapper">
   <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
   <#assign footerTitleHTML = topLevelTitle?html>
   <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
@@ -82,29 +82,27 @@
     <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
   </#if>
   <#if !showXXELogo>
-      <td align="left" valign="top"><span class="footer">
-          ${footerTitleHTML}
-      </span></td>
-      <td align="right" valign="top"><span class="footer">
-          ${pageGenTimeHTML}
-      </span></td>
-    </tr>
+    <div class="footer-left">
+        ${footerTitleHTML}
+    </div>
+    <div class="footer-right">
+        ${pageGenTimeHTML}
+    </div>
   <#else>
-      <td align="left" valign="top"><span class="smallFooter">
-          <#if footerTitleHTML != "">
-            ${footerTitleHTML}
-            <br>
-          </#if>
-          ${pageGenTimeHTML}
-      </span></td>
-      <td align="right" valign="top"><span class="smallFooter">
-          <a href="http://www.xmlmind.com/xmleditor/">
-            <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
-          </a>
-      </span></td>
-    </tr>
+    <div class="footer-left">
+      <#if footerTitleHTML != "">
+        ${footerTitleHTML}
+        <br>
+      </#if>
+      ${pageGenTimeHTML}
+    </div>
+    <div class="footer-right">
+        <a href="http://www.xmlmind.com/xmleditor/">
+          <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+        </a>
+    </div>
   </#if>
-</table>
+</div>
 <#if !disableJavaScript>
   <#-- Put pre-loaded images here: -->
   <div style="display: none">

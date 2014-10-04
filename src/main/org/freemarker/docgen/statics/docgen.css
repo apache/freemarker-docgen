@@ -308,3 +308,28 @@ span.breadcrumb {
 .qandaset .answer {
   margin: 0;
 }
+
+/* footer */
+.footer-wrapper {
+  font-size: 63%;
+  color: #A0A0A0;
+  font-style: italic;
+  padding-top: 10px;
+}
+.footer-wrapper:before,
+.footer-wrapper:after {
+  content: " ";
+  display: table;
+}
+
+.footer-wrapper:after {
+  clear: both;
+}
+
+.footer-wrapper .footer-left {
+  float: left;
+}
+
+.footer-wrapper .footer-right {
+  float: right;
+}
