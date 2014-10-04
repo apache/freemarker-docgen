@@ -1,0 +1,30 @@
+// text colors
+@text-color: #333;
+@link-color: #009;
+@link-hover-color: darken(@link-color, 10%);
+
+// borders
+@border-gray: #ddd;
+
+// gutter
+@gutter-width: 24px;
+
+// breakpoints
+@screen-sm-min:  768px;
+@screen-md-min:  992px;
+@screen-lg-min:  1200px;
+@screen-xl-min:  1600px;
+@screen-xxl-min: 1850px;
+
+@screen-xs-max: (@screen-sm-min - 1);
+@screen-sm-max: (@screen-md-min - 1);
+@screen-md-max: (@screen-lg-min - 1);
+@screen-lg-max: (@screen-xl-min - 1);
+@screen-xl-max: (@screen-xxl-min - 1);
+
+// container widths
+@container-sm:  @screen-sm-min - (@gutter-width * 2);
+@container-md:  @screen-md-min - (@gutter-width * 2);
+@container-lg:  @screen-lg-min - (@gutter-width * 2);
+@container-xl:  @screen-xl-min - (@gutter-width * 2);
+@container-xxl: @screen-xxl-min - (@gutter-width * 2);
