@@ -9,7 +9,7 @@ var minifyCss = require('gulp-minify-css');
 var prefix    = require('gulp-autoprefixer');
 
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
-var OUT_DIR = path.join(BASE_DIR, 'statics');
+var OUT_DIR  = path.join(BASE_DIR, 'statics');
 
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
