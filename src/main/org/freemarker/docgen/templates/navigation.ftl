@@ -11,12 +11,10 @@
   <#local captured>
     <#if showNavigationBar>
       <#if top>
-        <@breadcrumb />
         <@bookmarks />
         <@pagers />
       <#else>
         <@pagers />
-        <@breadcrumb />
       </#if>
     </#if>
   </#local>
@@ -48,40 +46,40 @@
     <#local curNode = curNode?parent>
   </#list>
   <#if (path?size > 1)>
-    <div class="breadcrumb">
-      <span class="breadcrumb"><#t>
-        You are here:
-        <#list path as step>
+    <ul class="breadcrumb"><#t>
+      <#list path as step>
+        <li>
           <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#rt>
             <#recurse u.getRequiredTitleElement(step) using nodeHandlers><#t>
           <#if step_has_next></a></#if><#lt>
-          <#if step_has_next>
-            <b>></b>
-          </#if>
-        </#list>
-      </span><#t>
-    </div>
+        </li>
+      </#list>
+    </ul><#t>
   </#if>
 </#macro>
 
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
     <div class="bookmarks"><#t>
-        Bookmarks:<#lt>
-        <#local curHref = CreateLinkFromNode(.node)>
-        <#list internalBookmarks?keys as k>
-          <#local target = CreateLinkFromID(internalBookmarks[k])>
-          <#if target != curHref>
-            <a href="${target}">${k}</a><#t>
-          <#else>
-            <span class="disabledBookmark">${k}</span><#t>
-          </#if>
-          <#if k_has_next>, </#if><#t>
-        </#list>
-        <#if internalBookmarks?size != 0 && externalBookmarks?size != 0>, </#if><#t>
-        <#list externalBookmarks?keys as k>
-          <a href="${externalBookmarks[k]}">${k}</a><#if k_has_next>, </#if><#t>
-        </#list>
+        Bookmarks:<#t>
+        <ul class="bookmark-list"><#t>
+          <#local curHref = CreateLinkFromNode(.node)>
+          <#list internalBookmarks?keys as k>
+            <li><#t>
+              <#local target = CreateLinkFromID(internalBookmarks[k])>
+              <#if target != curHref>
+                <a href="${target}">${k}</a><#t>
+              <#else>
+                ${k}<#t>
+              </#if>
+            </li><#t>
+          </#list>
+          <#list externalBookmarks?keys as k>
+            <li><#t>
+              <a href="${externalBookmarks[k]}">${k}</a><#t>
+            </li><#t>
+          </#list>
+        </ul><#t>
     </div>
   </#if>
 </#macro>

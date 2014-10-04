@@ -53,7 +53,9 @@
     </div>
     <@nav.navigationBar top=true />
   </div>
+
 <div id="mainContent">
+  <@nav.breadcrumb />
   <#assign pageType = pageType!.node?node_name>
 
   <#if pageType == "index" || pageType == "glossary">

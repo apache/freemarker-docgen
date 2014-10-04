@@ -49,5 +49,31 @@
         text-decoration: underline;
       }
     }
+
+    .site-width {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  .bookmark-list {
+    .list-unstyled();
+    display: inline-block;
+
+    li {
+      display: inline-block;
+      margin-left: 3px;
+
+      &::after {
+        content: ", ";
+      }
+
+      &:last-child {
+        &::after {
+          content: "";
+        }
+      }
+    }
   }
 }
