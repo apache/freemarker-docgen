@@ -1,13 +1,13 @@
 # Docgen
 
-## What is this?
+## About
 
-Docgen is originally the sub-project of FreeMarker that is used to generate
-HTML pages from the DocBook 5 XML that the FreeMarker Manual is written in. As
-such, it's not a general purpose DocBook 5 to HTML converter, however, we use
-it for other projects as well, so it's not entirely specialized either.
+Docgen was originally written to generate HTML pages from the DocBook 5 XML
+that the FreeMarker Manual is written in. As such, it's not a general purpose
+DocBook 5 to HTML converter, however, we use it for other projects as well,
+so it's not entirely specialized either.
 
-## How to use it?
+## Usage
 
 Issue:
 
@@ -15,24 +15,34 @@ Issue:
 ant all
 ```
 
-This will create lib/docgen.jar and build/api. Then, for more documentation see:
+This will create `lib/docgen.jar` and `build/api`.
 
+For documentation see `build/api/index.html`. Especially, read the
+documentation of the `Transform` class there.
+
+For some examples see `src/test` and `test.xml`, and of course, `src/manual`
+in the [`freemarker` project][fmProj].
+
+For editing DocBook, we are using [XXE](http://www.xmlmind.com/xmleditor/)
+with the `src/xxe-addon` installed.
+
+## Building tricks
+
+If you run into dependency errors, you may need to issue:
+
+```sh
+ant update-deps
 ```
-build/api/index.html
+
+If you have modified `docgen`, and want to try the new version in the
+[`freemarker` project][fmProj], you will have to issue:
+
+```sh
+ant publish-override
 ```
 
-Especially, read the documentation of "Transform" there.
+This will shadow the `docgen` artifact that comes from the Ivy repo on
+[freemarker.org](http://freemarker.org). Then, in the `freemarker` project you
+have issue `ant update-deps` so it will pick up your version.
 
-For some examples see:
-
-```
-src/test
-```
-
-and
-
-```
-test.xml
-```
-
-For editing DocBook-s we recomend XXE with the `src/xxe-addion` installed.
+[fmProj]: https://github.com/freemarker/freemarker
