@@ -49,7 +49,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
-a: visited {
+a:visited {
   color: #800080;
 }
 
@@ -285,4 +285,10 @@ span.breadcrumb {
 .code-unspecified,
 .code-default {
   background-color: #F8F8F8;
+}
+
+/* faq */
+.qandaset li a {
+  display: block;
+  margin-top: 5px;
 }

@@ -345,20 +345,20 @@
   <#assign compactPara = true>
   <#assign qaIndex = 1>
   <#-- @todo: remove table, fix spacing -->
-  <table border=0 cellpadding=0 cellspacing=4>
+
+  <ol>
   <#list .node.qandaentry as qandaentry>
-    <tr align="left" valign="top">
-      <td>${qaIndex}.&nbsp;&nbsp;
+    <li>
       <#local prevdisableAnchors=disableAnchors!>
       <#assign disableAnchors = true>
-      <td>
       <a href="#${qandaentry.@id[0]!("faq_question_" + qaIndex)}">
         <#recurse qandaentry.question>
-      </a><br>
+      </a>
       <#assign disableAnchors = prevdisableAnchors>
     <#assign qaIndex = qaIndex+1>
+    </li>
   </#list>
-  </table>
+  </ol>
   <#assign compactPara = prevCompactPara>
 
   <#assign qaIndex = 1>
