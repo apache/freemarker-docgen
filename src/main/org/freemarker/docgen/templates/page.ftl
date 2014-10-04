@@ -43,13 +43,20 @@
 <body>
   <div class="site-header">
     <#-- keep site-width inside site-header so that the background extends -->
-    <div class="site-width">
-      <#if logo??>
-          <div id="logo">
-              <a href="${logo.href?html}"><img src="${logo.src?html}" alt="${logo.alt?html}"></a>
-          </div>
-      </#if>
-      <@nav.tabs />
+    <div class="site-width header-top">
+      <div class="logo-nav-wrapper">
+        <#if logo??>
+          <a class="logo" href="${logo.href?html}" role="banner"><#t>
+            FreeMarker<#t>
+            <#-- @todo: replace with new logo -->
+            <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
+          </a><#t><#t>
+        </#if>
+        <@nav.tabs />
+      </div>
+      <div class="search-wrapper">
+        <input type="search" class="search-box" placeholder="Search">
+      </div>
     </div>
     <@nav.navigationBar top=true />
   </div>

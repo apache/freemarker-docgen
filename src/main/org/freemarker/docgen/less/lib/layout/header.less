@@ -2,9 +2,55 @@
   background: #000 url(img/diagonal.gif);
   color: #FFF;
 
+  .header-top {
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  }
+
+  .logo-nav-wrapper {
+    text-align: center;
+
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+  }
+
+  .logo {
+    color: #FFF;
+    font-size: 30px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    line-height: 1;
+
+    padding: 9px 0;
+
+    @media (min-width: @screen-sm-min) {
+      &::after {
+        content: "";
+        width: 1px;
+        height: 32px;
+        margin: 0 27px;
+        display: inline-block;
+        vertical-align: middle;
+        background-color: #4a4a4a;
+      }
+    }
+  }
+
   .tabs {
     .list-unstyled();
     font-size: 18px;
+
+    padding: 9px 0;
 
     li {
       display: inline-block;
@@ -22,32 +68,73 @@
         color: #FFF;
         padding: 3px 24px;
         transition: background-color .2s ease;
+        -webkit-tap-highlight-color: rgba(red(@tab-bg), green(@tab-bg), blue(@tab-bg), 0.1);
 
         &:hover {
+          background-color: @tab-bg;
+        }
+
+        &:focus {
           background-color: @tab-bg;
         }
       }
     }
   }
 
+  .search-wrapper {
+    min-width: 100px;
+    width: 100%;
+
+    @media (min-width: @screen-md-min) {
+      max-width: 300px;
+    }
+
+    @media (min-width: @screen-lg-min) {
+      max-width: 400px;
+    }
+
+    .search-box {
+      padding: 3px 12px;
+      background: none;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #4a4a4a;
+      height: 36px;
+      line-height: 24px;
+      color: #FFF;
+      width: 100%;
+      font-family: Helvetic, Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+
+      transition: all .2s ease;
+      border-radius: 0;
+
+      &:focus {
+        outline: 0;
+        box-shadow: 1px 1px 3px #000;
+        border-color: #2C5F79;
+      }
+    }
+  }
 
   .navigation {
-    padding: 6px 0;
+    padding: 9px 0;
 
     // @todo: certainly there must be a better way to share rgb colors between rgba
     @nav-bg: rgb(74, 74, 74);
 
     border-top: 4px solid rgb(red(@nav-bg), green(@nav-bg), blue(@nav-bg));
-    background-color: rgba(red(@nav-bg), green(@nav-bg), blue(@nav-bg), 0.7);
+    background-color: rgba(red(@nav-bg), green(@nav-bg), blue(@nav-bg), 0.5);
 
     a {
       @link-color: rgb(181, 229, 129); // lime green
       @link-color: rgb(107, 173, 207);
 
-      color: rgb(red(@link-color), green(@link-color), blue(@link-color));
-      -webkit-tap-highlight-color: rgba(red(@link-color), green(@link-color), blue(@link-color), 0.3);
+      color: rgb(107, 173, 207);
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
 
-      &:hover {
+      &:hover,
+      &:focus {
         text-decoration: underline;
       }
     }
