@@ -114,6 +114,9 @@
     <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
   </div>
 [/#if]
+[#if !offline && onlineTrackerHTML??]
+  ${onlineTrackerHTML}
+[/#if]
 </body>
 </html>
 

@@ -27,7 +27,7 @@ import org.apache.tools.ant.Task;
     &lt;/delete>
     
     <b>&lt;docgen:transform <!--
-           -->srcdir="<i>SRC_DIR</i>" destdir="<i>DEST_DIR</i>" /></b>
+           -->srcdir="<i>SRC_DIR</i>" destdir="<i>DEST_DIR</i>" offline="<i>OFFLINE</i>" /&gt;</b>
   &lt;/target>
 
 &lt;/project>
@@ -62,6 +62,14 @@ public final class TransformAntTask extends Task {
 
     public void setGenerateEclipseToC(boolean value) {
         transform.setGenerateEclipseToC(value);
+    }
+    
+    public Boolean getOffline() {
+        return transform.getOffline();
+    }
+
+    public void setOffline(Boolean offline) {
+        transform.setOffline(offline);
     }
     
     @Override
