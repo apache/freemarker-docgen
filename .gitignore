@@ -6,3 +6,5 @@
 
 .DS_Store
 src/manual/book.xml~
+
+node_modules
