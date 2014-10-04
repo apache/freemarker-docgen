@@ -17,7 +17,7 @@ var paths = {
 };
 
 gulp.task('styles', function() {
-  gulp.src(path.join(BASE_DIR, 'less', 'styles.less');)
+  gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
     .pipe( less() )
 
     // rename and prefix
