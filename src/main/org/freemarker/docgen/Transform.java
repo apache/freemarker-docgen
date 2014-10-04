@@ -81,6 +81,7 @@ import freemarker.template.utility.StringUtil;
  * <ul>
  *   <li>{@link #setSourceDirectory(File)}
  *   <li>{@link #setDestinationDirectory(File)}
+ *   <li>{@link #setOffline(Boolean)}, unless the configuration file specifies this
  * </ul>
  * 
  * <p>All files and directories in the source directory will be copied into the
@@ -340,6 +341,8 @@ public final class Transform {
     static final String DIR_TEMPLATES = "docgen-templates";
     
     static final String SETTING_VALIDATION = "validation";
+    static final String SETTING_OFFLINE = "offline";
+    static final String SETTING_ONLINE_TRACKER_HTML = "onlineTrackerHTML";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
     static final String SETTING_LOGO = "logo";
@@ -375,6 +378,10 @@ public final class Transform {
             = "maximumProgramlistingWidth";
     static final String SETTING_ECLIPSE_LINK_TO = "link_to";
 
+    private static final String VAR_OFFLINE
+            = SETTING_OFFLINE;
+    private static final String VAR_ONLINE_TRACKER_HTML
+            = SETTING_ONLINE_TRACKER_HTML;
     private static final String VAR_SHOW_EDITORAL_NOTES
             = "showEditoralNotes";
     private static final String VAR_TRANSFORM_START_TIME
@@ -516,8 +523,12 @@ public final class Transform {
     private File destDir;
     
     private File srcDir;
-
+    
     private File contentDir;
+
+    private Boolean offline;
+    
+    private String onlineTrackerHTML;    
     
     /** Element types for which a new output file is created  */
     private DocumentStructureRank lowestFileElemenRank
@@ -755,6 +766,19 @@ public final class Transform {
                                     "Unknown validation option: " + name);
                         }
                     }
+                } else if (settingName.equals(SETTING_OFFLINE)) {
+                    if (offline == null) {  // Ignore if the caller has already set this
+                        offline = itIsABooleanSetting(cfgFile, settingName, settingValue);
+                    }
+                } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
+                    String onlineTrackerHtmlPath = itIsAStringSetting(cfgFile, settingName, settingValue);
+                    File f = new File(getSourceDirectory(), onlineTrackerHtmlPath);
+                    if (!f.exists()) {
+                        throw newCfgFileException(
+                                cfgFile, SETTING_ONLINE_TRACKER_HTML,
+                                "File not found: " + f.toPath());
+                    }
+                    onlineTrackerHTML = FileUtil.loadString(f, UTF_8);
                 } else if (settingName.equals(SETTING_ECLIPSE)) {
                     Map<String, Object> m = itIsAMapSetting(
                             cfgFile, SETTING_ECLIPSE, settingValue);
@@ -860,6 +884,11 @@ public final class Transform {
                             + Transform.class.getName() + ". Also, note that "
                             + "setting names are case-sensitive.)");
                 }
+            } // for each cfg settings
+            
+            if (offline == null) {
+                throw new DocgenException(
+                        "The \"offline\" setting wasn't specified; it must be set to true or false"); 
             }
         }
         
@@ -952,6 +981,10 @@ public final class Transform {
         // - Setup common data-model variables:
         try {
             // Settings:
+            fmConfig.setSharedVariable(
+                    VAR_OFFLINE, offline);
+            fmConfig.setSharedVariable(
+                    VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
             fmConfig.setSharedVariable(
                     VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
             fmConfig.setSharedVariable(
@@ -2187,6 +2220,14 @@ public final class Transform {
 
     public void setSourceDirectory(File srcDir) {
         this.srcDir = srcDir;
+    }
+    
+    public Boolean getOffline() {
+        return offline;
+    }
+
+    public void setOffline(Boolean offline) {
+        this.offline = offline;
     }
 
     public boolean getShowEditoralNotes() {

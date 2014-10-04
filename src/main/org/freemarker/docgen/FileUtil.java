@@ -5,10 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
 
 final class FileUtil {
     
+    private static final int READ_BUFFER_SIZE = 4096;
+
     // Can't be instantiated
     private FileUtil() {
         // nop
@@ -205,6 +210,31 @@ final class FileUtil {
         }
         
         return false;
+    }
+
+    public static String loadString(File f, Charset charset) throws IOException {
+        FileInputStream in = new FileInputStream(f);
+        try {
+            return loadString(in, charset);
+        } finally {
+            in.close();
+        }
+    }
+    
+    public static String loadString(InputStream in, Charset charset)
+            throws IOException {
+        Reader r = new InputStreamReader(in, charset);
+        StringBuilder sb = new StringBuilder(256);
+        try {
+            char[] buf = new char[READ_BUFFER_SIZE];
+            int ln;
+            while ((ln = r.read(buf)) != -1) {
+                sb.append(buf, 0, ln);
+            }
+        } finally {
+            r.close();
+        }
+        return sb.toString();
     }
 
 }
