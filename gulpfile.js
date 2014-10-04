@@ -13,7 +13,7 @@ var OUT_DIR  = path.join(BASE_DIR, 'statics');
 
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
-    .pipe( less() )
+    .pipe( less( { paths: path.join(__dirname, 'node_modules') } ) )
 
     // rename and prefix
     .pipe( rename( { basename: "docgen" } ) )
