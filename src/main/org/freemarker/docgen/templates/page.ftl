@@ -61,48 +61,48 @@
     <@nav.navigationBar top=true />
   </div>
 
-<div id="mainContent">
-  <@nav.breadcrumb />
-  <#assign pageType = pageType!.node?node_name>
+  <div class="site-content site-width">
+    <@nav.breadcrumb />
+    <#assign pageType = pageType!.node?node_name>
 
-  <#if pageType == "index" || pageType == "glossary">
-    <#visit .node using nodeHandlers>
-  <#elseif pageType == "docgen:detailed_toc">
-    <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
-  <#else>
-    <#-- Normal page content: -->
+    <#if pageType == "index" || pageType == "glossary">
+      <#visit .node using nodeHandlers>
+    <#elseif pageType == "docgen:detailed_toc">
+      <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
+    <#else>
+      <#-- Normal page content: -->
 
-    <#-- - Render page title: -->
-    <#visit titleElement using nodeHandlers>
+      <#-- - Render page title: -->
+      <#visit titleElement using nodeHandlers>
 
-    <#-- - Render either ToF (Table of Files) or Page ToC; -->
-    <#--   both is called, but at least one of them will be empty: -->
-    <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-    <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
+      <#-- - Render either ToF (Table of Files) or Page ToC; -->
+      <#--   both is called, but at least one of them will be empty: -->
+      <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+      <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
 
-    <#-- - Render the usual content, like <para>-s etc.: -->
-    <#list .node.* as child>
-      <#if child.@docgen_file_element?size == 0
-          && child?node_name != "title"
-          && child?node_name != "subtitle">
-        <#visit child using nodeHandlers>
-      </#if>
-    </#list>
-  </#if>
+      <#-- - Render the usual content, like <para>-s etc.: -->
+      <#list .node.* as child>
+        <#if child.@docgen_file_element?size == 0
+            && child?node_name != "title"
+            && child?node_name != "subtitle">
+          <#visit child using nodeHandlers>
+        </#if>
+      </#list>
+    </#if>
 
-  <#-- Render footnotes, if any: -->
-  <#assign footnotes = defaultNodeHandlers.footnotes>
-  <#if footnotes?size != 0>
-    <div id="footnotes">
-      Footnotes:
-      <ol>
-        <#list footnotes as footnote>
-          <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
-        </#list>
-      </ol>
-    </div>
-  </#if>
-</div>
+    <#-- Render footnotes, if any: -->
+    <#assign footnotes = defaultNodeHandlers.footnotes>
+    <#if footnotes?size != 0>
+      <div id="footnotes">
+        Footnotes:
+        <ol>
+          <#list footnotes as footnote>
+            <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+          </#list>
+        </ol>
+      </div>
+    </#if>
+  </div>
 
 <@nav.navigationBar top=false />
 
