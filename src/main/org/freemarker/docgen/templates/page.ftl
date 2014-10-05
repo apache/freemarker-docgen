@@ -78,25 +78,28 @@
     <#elseif pageType == "docgen:detailed_toc">
       <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
     <#else>
-      <#-- Normal page content: -->
-
-      <#-- - Render either ToF (Table of Files) or Page ToC; -->
-      <#--   both is called, but at least one of them will be empty: -->
-      <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-      <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
-
       <div class="page-content">
-        <#-- - Render page title: -->
-        <#visit titleElement using nodeHandlers>
+        <#-- Normal page content: -->
 
-        <#-- - Render the usual content, like <para>-s etc.: -->
-        <#list .node.* as child>
-          <#if child.@docgen_file_element?size == 0
-              && child?node_name != "title"
-              && child?node_name != "subtitle">
-            <#visit child using nodeHandlers>
-          </#if>
-        </#list>
+        <#-- - Render either ToF (Table of Files) or Page ToC; -->
+        <#--   both is called, but at least one of them will be empty: -->
+        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+        <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
+
+        <#-- - Render page title: -->
+        <div class="col-right">
+          <a name="docgen_afterTheTOC"></a>
+          <#visit titleElement using nodeHandlers>
+
+          <#-- - Render the usual content, like <para>-s etc.: -->
+          <#list .node.* as child>
+            <#if child.@docgen_file_element?size == 0
+                && child?node_name != "title"
+                && child?node_name != "subtitle">
+              <#visit child using nodeHandlers>
+            </#if>
+          </#list>
+        </div>
       </div>
     </#if>
 
@@ -162,7 +165,7 @@
 <#macro toc att maxDepth title='' minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-    <div class="table-of-contents">
+    <div class="table-of-contents-wrapper">
       <p>
         <strong>
           <#if !title?has_content>
@@ -187,14 +190,12 @@
       </p>
       <@toc_inner tocElems att maxDepth />
     </div>
-    <#-- @todo: move this -->
-    <a name="docgen_afterTheTOC"></a>
   </#if>
 </#macro>
 
 <#macro toc_inner tocElems att maxDepth curDepth=1>
   <#if tocElems?size == 0><#return></#if>
-  <ul>
+  <ul<#if curDepth == 1> class="table-of-contents"</#if>>
     <#if curDepth == 1 && startsWithTopLevelContent>
       <li><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
     </#if>
