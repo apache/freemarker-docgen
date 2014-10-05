@@ -191,19 +191,15 @@
 
 <#macro note>
   <div class="callout note">
-    <div class="callout-inner">
-       <strong class="callout-label">Note</strong>
-       <#recurse>
-     </div>
+    <strong class="callout-label">Note</strong>
+    <#recurse>
   </div>
 </#macro>
 
 <#macro warning>
   <div class="callout warning">
-    <div class="callout-inner">
-      <strong class="callout-label">Warning!</strong>
-      <#recurse>
-    </div>
+    <strong class="callout-label">Warning!</strong>
+    <#recurse>
   </div>
 </#macro>
 

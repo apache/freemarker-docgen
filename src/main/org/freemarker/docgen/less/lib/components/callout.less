@@ -3,18 +3,9 @@
   display: block;
   margin: 0;
 
-  border: 1px solid #e4e4e4;
+  margin: 9px 0 9px 18px;
 
-  margin: 9px 0;
-
-  &::before {
-    content: " ";
-    width: 3px;
-    display: block;
-    float: left;
-    background-color: #30f583;
-  }
-
+  /*
   .callout-inner {
     border-left: 3px solid #333;
     padding: 3px 12px;
@@ -26,12 +17,12 @@
     .warning& {
       border-color: #f54927; //@todo: move to variables
     }
-  }
+  }*/
 
   .callout-label {
 
     font-weight: normal;
-    display: inline-block;
+    display: block;
     margin-top: 3px;
 
     &::before {
@@ -42,7 +33,7 @@
 
     .note& {
       &::before {
-        color: #333;
+        color: #666;
         content: @fa-var-info-circle;
       }
     }
@@ -58,5 +49,9 @@
   p {
     display: inline-block;
     margin: 6px 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

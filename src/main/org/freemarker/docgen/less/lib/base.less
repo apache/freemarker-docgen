@@ -8,12 +8,13 @@ html {
   color: @text-color;
   line-height: 1.5;
   text-size-adjust: 100%;
-  font-weight: 300;
+  font-weight: normal;
 }
 
 body {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
+  -ms-touch-action: none;
 }
 
 a {
@@ -33,17 +34,29 @@ h5,
 h6 {
   font-family: Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 300;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 18px;
 }
 
 code,
 pre {
-  font-size: 14px;
+  font-size: 13px;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 code {
-  color: #CE6D1E;
+  color: #248844;
+  background-color: rgba(36, 136, 68, .05);
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0 4px;
 }
 
 img {
