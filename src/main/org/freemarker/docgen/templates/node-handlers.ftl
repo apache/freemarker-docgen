@@ -190,17 +190,21 @@
 <#assign varname = _inlineMonospaced>
 
 <#macro note>
-<div class="note">
-   <p class="rank_note">Note</p>
-   <#recurse>
-</div>
+  <div class="callout note">
+    <div class="callout-inner">
+       <strong class="callout-label">Note</strong>
+       <#recurse>
+     </div>
+  </div>
 </#macro>
 
 <#macro warning>
-<div class="warning">
-  <p class="rank_note">Warning!</p>
-  <#recurse>
-</div>
+  <div class="callout warning">
+    <div class="callout-inner">
+      <strong class="callout-label">Warning!</strong>
+      <#recurse>
+    </div>
+  </div>
 </#macro>
 
 <#macro olink>
