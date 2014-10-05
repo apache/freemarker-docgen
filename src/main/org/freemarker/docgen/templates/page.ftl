@@ -201,7 +201,6 @@
     </#if>
     <#list tocElems as tocElem>
       <li><#t>
-        ${u.getTitlePrefix(tocElem, true)?html}<#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
