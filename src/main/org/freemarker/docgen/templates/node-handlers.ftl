@@ -650,8 +650,7 @@
 <#macro informaltable>
    <div class="informal-table">
       <@Anchor/>
-      <#-- @todo: remove table, fix spacing -->
-      <table>
+      <table class="table">
           <#recurse>
       </table>
    </div>
