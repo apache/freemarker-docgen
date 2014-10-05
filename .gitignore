@@ -3,6 +3,8 @@
 /build/
 /build.properties
 /archive/
+/ide-dependencies/
 
 .DS_Store
 src/manual/book.xml~
+

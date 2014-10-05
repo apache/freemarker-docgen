@@ -45,4 +45,19 @@ This will shadow the `docgen` artifact that comes from the Ivy repo on
 [freemarker.org](http://freemarker.org). Then, in the `freemarker` project you
 have to issue `ant update-deps` so that it picks up your version.
 
+## Eclipse and other IDE-s
+
+You need to run this:
+
+```sh
+ant ide-dependencies
+```
+
+This will create an `ide-dependencies` library that contains all the jars that
+you have to add to the classpath in the IDE. Note that here we assume that you
+have run the build or at least `ant update-deps` earlier. 
+
+You could also use IvyDE instead, with configuration "IDE", but as the
+dependencies hardly ever change, it's unnecessary.
+
 [fmProj]: https://github.com/freemarker/freemarker
