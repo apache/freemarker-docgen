@@ -338,6 +338,16 @@
     <ivy:report todir="build/deps-report" />
   </target>
   
+  <target name="ide-dependencies" description="If your IDE has no Ivy support, this generates ide-lib/*.jar for it">
+    <mkdir dir="ide-dependencies" />
+    <delete includeEmptyDirs="true">  
+      <fileset dir="ide-dependencies">  
+         <include name="*/**" />  
+      </fileset>  
+    </delete>    
+    <ivy:retrieve pattern="ide-dependencies/[artifact]-[revision].[ext]" />
+  </target>
+  
   <!--
     This meant to be called on the Continuous Integration server, so the
     integration builds appear in the freemarker.org public Ivy repository.
