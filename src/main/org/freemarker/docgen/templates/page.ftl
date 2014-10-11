@@ -227,7 +227,7 @@
   <div class="site-footer">
 
     <#-- keep site-width inside so background extends -->
-    <div class="site-width">
+    <div class="site-width footer-inner">
       <#local pageGenTimeHTML>
         HTML generated:
         <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>

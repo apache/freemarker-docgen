@@ -4,4 +4,16 @@
   border-top: 4px solid rgb(red(@footer-bg), green(@footer-bg), blue(@footer-bg));
 
   color: #FFF;
+
+  padding-top: 24px;
+  padding-bottom: 24px;
+
+  .footer-inner {
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  }
 }
