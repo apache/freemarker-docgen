@@ -256,9 +256,9 @@
           ${pageGenTimeHTML}
         </div>
         <div class="footer-right">
-            <a href="http://www.xmlmind.com/xmleditor/">
-              <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
-            </a>
+          <a href="http://www.xmlmind.com/xmleditor/" rel="nofollow">
+            <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+          </a>
         </div>
       </#if>
     </div>
