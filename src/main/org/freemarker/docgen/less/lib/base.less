@@ -9,6 +9,7 @@ html {
   line-height: 1.5;
   text-size-adjust: 100%;
   font-weight: normal;
+  background: #000 url(img/diagonal.gif);
 }
 
 body {
@@ -38,25 +39,40 @@ h6 {
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 27px;
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 21px;
 }
 
 code,
 pre {
   font-size: 13px;
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: Courier, Monaco, Consolas, "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
 }
 
 code {
-  color: #248844;
-  background-color: rgba(36, 136, 68, .05);
-  display: inline-block;
+  background-color: @bg-gray;
+  border: 1px solid @border-gray;
   border-radius: 4px;
-  padding: 0 4px;
+  padding: 1px 3px;
+  white-space: nowrap;
+  color: #6D180B;
+}
+
+pre {
+  display: block;
+  border: 1px solid @border-gray;
+  padding: 6px 12px;
+  background-color: @bg-gray;
+
+  word-break: normal;
+  word-wrap: break-word;
+  white-space: pre;
+
+  margin: 0 0 9px;
 }
 
 img {

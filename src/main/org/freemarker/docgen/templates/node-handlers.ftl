@@ -3,7 +3,8 @@
 <#import "util.ftl" as u>
 
 <#-- Constants: -->
-<#assign forProgrammersStyle = "color:#333399; font-style:italic">
+<#assign forProgrammersCss = "programmers-note">
+
 
 <#-- State variables: -->
 <#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
@@ -191,15 +192,19 @@
 
 <#macro note>
   <div class="callout note">
-    <strong class="callout-label">Note</strong>
-    <#recurse>
+    <div class="callout-inner">
+      <strong class="callout-label">Note:</strong>
+      <#recurse>
+    </div>
   </div>
 </#macro>
 
 <#macro warning>
   <div class="callout warning">
-    <strong class="callout-label">Warning!</strong>
-    <#recurse>
+    <div class="callout-inner">
+      <strong class="callout-label">Warning!</strong>
+      <#recurse>
+    </div>
   </div>
 </#macro>
 
@@ -226,22 +231,22 @@
 
 <#macro para>
   <#if .node.@role[0]! = "forProgrammers">
-    <#local style = forProgrammersStyle>
+    <#local cssClass = forProgrammersCss>
   <#else>
-    <#local style = ''>
+    <#local cssClass = "">
   </#if>
   <#if compactPara!>
-    <#if style != ''>
-      <span style="${style}"><#t>
+    <#if cssClass?has_content>
+      <span<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
     </#if>
     <@Anchor/><#t>
     <#recurse>
-    <#if style != ''>
+    <#if cssClass?has_content>
       </span><#t>
     </#if>
   <#else>
     <#assign inHtmlP = true>
-    <p<#if style != ''> style="${style}"</#if>><#t>
+    <p<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
     <#local content><@Anchor/><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
     <#if !content?matches(r".*<p>\s*$", "s")>
@@ -282,7 +287,7 @@
       <#if fontBgColor! != "">
         <#local moreStyle = ";background-color:${fontBgColor}">
       </#if>
-      <span style="${forProgrammersStyle}${moreStyle}"><#recurse></span><#t>
+      <span class="${forProgrammersCss}" style="${moreStyle}"><#recurse></span><#t>
     <#else>
       <#local lastFontBgColor = fontBgColor!>
       <#if !bgcolors[role]??>

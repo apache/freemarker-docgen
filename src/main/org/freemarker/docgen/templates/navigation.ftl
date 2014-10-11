@@ -11,8 +11,8 @@
   <#local captured>
     <#if showNavigationBar>
       <#if top>
-        <@bookmarks />
         <@pagers />
+        <@bookmarks />
       <#else>
         <@pagers />
       </#if>
@@ -48,11 +48,13 @@
   <#if (path?size > 1)>
     <ul class="breadcrumb" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
       <#list path as step>
-        <li><#t>
-          <#if step_has_next><a itemprop="url" href="${CreateLinkFromNode(step)}"></#if><#t>
-            <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
-          <#if step_has_next></a></#if><#t>
-        </li><#t>
+        <#if step_has_next>
+          <li><#t>
+            <a itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
+              <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
+            </a><#t>
+          </li><#t>
+        </#if>
       </#list>
     </ul><#t>
   </#if>
@@ -99,13 +101,18 @@
     </#if>
 </#macro>
 
-<#macro pagers>
+<#macro pagers full=true>
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
     <ul class="pagers"><#t>
-      <@pagerButton "Previous", previousFileElement! />
-      <@pagerButton "Parent page", parentFileElement! />
-      <@pagerButton "Contents", rootElement />
+      <#if full>
+        <@pagerButton "Previous", previousFileElement! />
+
+        <@pagerButton "Parent page", parentFileElement! />
+        <@pagerButton "Contents", rootElement />
+      <#else>
+        <#--><@pagerButton "Previous", previousFileElement!, false />-->
+      </#if>
       <@pagerButton "Next", nextFileElement!, false />
     </ul><#t>
   </#if>

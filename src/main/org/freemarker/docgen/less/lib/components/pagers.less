@@ -15,8 +15,23 @@
         content: '';
         margin: 0;
       }
+
+      a {
+        &::after {
+          font-family: FontAwesome;
+          margin-right: 9px;
+          content: @fa-var-chevron-right;
+          width: 5px;
+          line-height: 100%;
+          box-sizing: border-box;
+          display: inline-block;
+          font-size: 13px;
+          margin-left: 3px;
+        }
+      }
     }
   }
+
   .pager-label {
     margin-right: 3px;
   }

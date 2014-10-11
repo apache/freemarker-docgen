@@ -2,13 +2,11 @@
   padding-top: 24px;
   padding-bottom: 24px;
 
+  background-color: #fff;
+
   a {
     &:hover {
       text-decoration: underline;
-    }
-
-    &:visited {
-      //color: #800080;
     }
   }
 }
@@ -17,10 +15,47 @@
   @media (min-width: @screen-sm-min) {
     display: flex;
     flex-wrap: nowrap;
-    align-items: flex-start;
   }
 
   h1 {
     margin-top: 0;
+  }
+
+  .col-right {
+    width: 100%;
+    flex: 1;
+  }
+}
+
+.header-wrapper {
+
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .pagers {
+
+    li {
+      &:last-child a {
+        &::after {
+          font-family: FontAwesome;
+          margin-right: 9px;
+          content: @fa-var-chevron-right;
+          width: 5px;
+          line-height: 100%;
+          box-sizing: border-box;
+          display: inline-block;
+          font-size: 13px;
+          margin-left: 3px;
+        }
+      }
+    }
+    li::after {
+      content: '';
+      margin: 0;
+    }
   }
 }

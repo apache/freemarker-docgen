@@ -1,16 +1,13 @@
 // table of contents styles
 .table-of-contents-wrapper {
 
-  min-width: 150px;
-  max-width: 300px;
-  padding-right: 12px;
+  min-width: 300px;
+  max-width: 400px;
 
   flex-shrink: 0;
+  font-size: 14px;
 
-  background: #F0F0F0;
-  padding: 6px 12px;
   margin-right: 24px;
-  border: 1px solid black;
 
   & > p {
     margin-top: 0;
@@ -18,9 +15,38 @@
 }
 
 .table-of-contents {
-  .list-unstyled();
+
+  margin: 0;
+  padding: 0;
+
+  list-style-position: inside;
+
+  // don't use bullets for items with no prefix
+  .empty {
+    display: block;
+  }
+
+  .decimal {
+    list-style-type: decimal;
+  }
+
+  .latin {
+    list-style-type: upper-alpha;
+  }
+
+  .roman {
+    list-style-type: upper-roman;
+  }
+
+  ul {
+    margin-bottom: 0;
+  }
 
   a {
     display: block;
+
+    &:visited {
+      color: @link-visited;
+    }
   }
 }

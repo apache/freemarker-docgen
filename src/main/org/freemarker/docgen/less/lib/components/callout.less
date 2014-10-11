@@ -1,34 +1,29 @@
 .callout {
 
   display: block;
-  margin: 0;
+  margin: 9px 0;
 
-  margin: 9px 0 9px 18px;
+  border-left: 3px solid #aaa;
+  padding-left: 9px;
 
-  /*
-  .callout-inner {
-    border-left: 3px solid #333;
-    padding: 3px 12px;
 
-    .note& {
-      border-color: #32bad3; //@todo: move to variables
-    }
+  .warning& {
+    border-left-color: @text-warning;
+  }
 
-    .warning& {
-      border-color: #f54927; //@todo: move to variables
-    }
-  }*/
+  & + & {
+    margin-top: 18px;
+  }
 
   .callout-label {
 
     font-weight: normal;
-    display: block;
-    margin-top: 3px;
+    display: inline-block;
 
     &::before {
       font-family: FontAwesome;
       line-height: 100%;
-      margin-right: 6px;
+      margin-right: 3px;
     }
 
     .note& {
@@ -40,18 +35,36 @@
 
     .warning& {
       &::before {
-        color: #f54927;
-        content: @fa-var-warning;
+        color: @text-warning;
+        //content: @fa-var-warning;
+        content: @fa-var-exclamation-circle;
       }
     }
   }
 
   p {
     display: inline-block;
-    margin: 6px 0;
+    margin: 0 0 6px;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
 }
+
+
+.programmers-note {
+  @text-color: #8158AD;
+
+  color: @text-color;
+
+  &::before {
+    font-family: FontAwesome;
+    line-height: 100%;
+    margin-right: 3px;
+    color: @text-color;
+    content: @fa-var-code;
+  }
+}
+
+

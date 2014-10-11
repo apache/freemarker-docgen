@@ -1,11 +1,24 @@
 .code-block {
-  display: block;
+  display: inline-block;
+  border-color: #999;
 
-  border: 1px solid #e4e4e4;
-  padding: 6px 12px;
-  background-color: #f9f9f9;
+  @media (min-width: @screen-sm-min) {
+    min-width: 500px;
+  }
 
-  word-break: normal;
-  word-wrap: break-word;
-  white-space: pre;
+  &.code-template {
+    background-color: #dcdcdc;
+  }
+
+  &.code-data-model {
+    background-color: #9cf;
+  }
+
+  &.code-output {
+    background-color: #cfc;
+  }
+
+  &.code-unspecified {
+    background-color: #f8f8f8;
+  }
 }

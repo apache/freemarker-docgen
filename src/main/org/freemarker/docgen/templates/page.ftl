@@ -70,7 +70,7 @@
   </div>
 
   <div class="site-content site-width">
-    <@nav.breadcrumb />
+    <#--<@nav.breadcrumb />-->
     <#assign pageType = pageType!.node?node_name>
 
     <#if pageType == "index" || pageType == "glossary">
@@ -88,8 +88,14 @@
 
         <#-- - Render page title: -->
         <div class="col-right">
+          <@nav.breadcrumb />
+          <#-- @todo: remove this and fix anchors -->
           <a name="docgen_afterTheTOC"></a>
-          <#visit titleElement using nodeHandlers>
+
+
+            <#visit titleElement using nodeHandlers>
+            <#--><@nav.pagers full=false />-->
+
 
           <#-- - Render the usual content, like <para>-s etc.: -->
           <#list .node.* as child>
@@ -165,9 +171,9 @@
 <#macro toc att maxDepth title='' minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-    <div class="table-of-contents-wrapper">
-      <p>
-        <strong>
+    <div class="table-of-contents-wrapper"><#t>
+      <p><#t>
+        <strong><#t>
           <#if !title?has_content>
             <#if .node?parent?node_type == "document">
               Table of Contents
@@ -177,15 +183,9 @@
           <#else>
             ${title}
           </#if>
-        </strong>
+        </strong><#t>
         <#if alternativeTOCLink??>
-          &nbsp;&nbsp;<#t>
-          <#-- @todo: removing font tag -->
-          <font size="-1">[<#t>
-          <a href="${alternativeTOCLink?html}"><#t>
-            ${alternativeTOCLabel?cap_first?html}...<#t>
-          </a><#t>
-          ]</font><#t>
+          <a class="alt-toc" href="${alternativeTOCLink?html}">${alternativeTOCLabel?cap_first?html}</a><#t>
         </#if>
       </p>
       <@toc_inner tocElems att maxDepth />
@@ -194,14 +194,27 @@
 </#macro>
 
 <#macro toc_inner tocElems att maxDepth curDepth=1>
+
   <#if tocElems?size == 0><#return></#if>
-  <ul<#if curDepth == 1> class="table-of-contents"</#if>>
+
+  <#if curDepth == 1>
+    <#local tocClass = "table-of-contents">
+
+    <#if .node?parent?node_type == "document">
+      <#local tocClass = tocClass + " main-toc">
+    </#if>
+  </#if>
+
+  <ol<#if tocClass?has_content> class="${tocClass}"</#if>>
     <#if curDepth == 1 && startsWithTopLevelContent>
-      <li><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
+      <li class="empty"><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
     </#if>
     <#list tocElems as tocElem>
-      <li><#t>
+      <#local prefixClass = titlePrefixClass(tocElem)>
+      <li<#if prefixClass?has_content> class="${prefixClass}"</#if>><#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
+
+
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
         <#if (curDepth < maxDepth)>
@@ -209,5 +222,32 @@
         </#if>
       </li><#t>
     </#list>
-  </ul><#t>
+  </ol><#t>
 </#macro>
+
+
+<#---
+  return appropriate css class based on title prefix
+  @fixme can this be on the backend?
+-->
+<#function titlePrefixClass tocElem>
+
+  <#local titlePrefix = u.getTitlePrefix(tocElem, false)?trim>
+
+  <#if !titlePrefix?has_content>
+    <#return "empty">
+
+  <#elseif "01234567890"?contains(titlePrefix)>
+    <#return "decimal">
+
+  <#elseif "IIIVVI"?contains(titlePrefix)>
+    <#return "roman">
+
+  <#elseif "ABCDEFGHIJKLMNOPQRSTUVWXYZ"?contains(titlePrefix)>
+    <#return "latin">
+
+  </#if>
+
+  <#return "">
+
+</#function>
