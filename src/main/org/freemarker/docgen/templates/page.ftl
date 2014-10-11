@@ -138,7 +138,7 @@
 <#macro toc att maxDepth title='' minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-    <div class="table-of-contents-wrapper"><#t>
+    <div class="table-of-contents-wrapper<#if .node?parent?node_type == "document"> main-toc</#if>"><#t>
       <p><#t>
         <strong><#t>
           <#if !title?has_content>
@@ -167,9 +167,9 @@
   <#if curDepth == 1>
     <#local tocClass = "table-of-contents">
 
-    <#if .node?parent?node_type == "document">
+    <#--<#if .node?parent?node_type == "document">
       <#local tocClass = tocClass + " main-toc">
-    </#if>
+    </#if>-->
   </#if>
 
   <ol<#if tocClass?has_content> class="${tocClass}"</#if>>
