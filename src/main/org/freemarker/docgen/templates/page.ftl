@@ -125,37 +125,7 @@
 
   <@nav.navigationBar top=false />
 
-<div class="site-footer">
-  <div class="site-width">
-    <#assign pageGenTimeHTML = "HTML generated: ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}">
-    <#assign footerTitleHTML = topLevelTitle?html>
-    <#assign bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-    <#if bookSubtitle?has_content>
-      <#assign footerTitleHTML = footerTitleHTML + " -- " + bookSubtitle?html>
-    </#if>
-    <#if !showXXELogo>
-      <div class="footer-left">
-          ${footerTitleHTML}
-      </div>
-      <div class="footer-right">
-          ${pageGenTimeHTML}
-      </div>
-    <#else>
-      <div class="footer-left">
-        <#if footerTitleHTML != "">
-          ${footerTitleHTML}
-          <br>
-        </#if>
-        ${pageGenTimeHTML}
-      </div>
-      <div class="footer-right">
-          <a href="http://www.xmlmind.com/xmleditor/">
-            <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
-          </a>
-      </div>
-    </#if>
-  </div>
-</div>
+  <@footer />
 <#if !disableJavaScript>
   <#-- Put pre-loaded images here: -->
   <div style="display: none">
@@ -251,3 +221,49 @@
   <#return "">
 
 </#function>
+
+
+<#---
+  Site footer
+-->
+<#macro footer>
+  <div class="site-footer">
+
+    <#-- keep site-width inside so background extends -->
+    <div class="site-width">
+      <#local pageGenTimeHTML>
+        HTML generated:
+        <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
+          ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
+        </time><#t>
+      </#local>
+
+      <#local footerTitleHTML = topLevelTitle?html>
+      <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+      <#if bookSubtitle?has_content>
+        <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
+      </#if>
+      <#if !showXXELogo>
+        <div class="footer-left">
+            ${footerTitleHTML}
+        </div>
+        <div class="footer-right">
+            ${pageGenTimeHTML}
+        </div>
+      <#else>
+        <div class="footer-left">
+          <#if footerTitleHTML != "">
+            ${footerTitleHTML}
+            <br>
+          </#if>
+          ${pageGenTimeHTML}
+        </div>
+        <div class="footer-right">
+            <a href="http://www.xmlmind.com/xmleditor/">
+              <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+            </a>
+        </div>
+      </#if>
+    </div>
+  </div>
+</#macro>
