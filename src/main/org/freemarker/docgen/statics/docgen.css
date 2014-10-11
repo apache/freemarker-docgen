@@ -20,12 +20,11 @@ html {
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-weight: normal;
-  background: #000000 url(img/diagonal.gif);
+  background-color: #2e2e2e;
 }
 body {
   margin: 0;
   font-size: 14px;
-  -ms-touch-action: none;
 }
 a {
   color: #0099cc;
@@ -97,6 +96,7 @@ th {
   padding: 0;
 }
 .site-header {
+  background: #000000 url(img/diagonal.gif);
   color: #FFF;
 }
 .site-header .header-top {

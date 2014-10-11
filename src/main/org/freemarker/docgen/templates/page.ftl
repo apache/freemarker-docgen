@@ -92,10 +92,7 @@
           <#-- @todo: remove this and fix anchors -->
           <a name="docgen_afterTheTOC"></a>
 
-
-            <#visit titleElement using nodeHandlers>
-            <#--><@nav.pagers full=false />-->
-
+          <#visit titleElement using nodeHandlers>
 
           <#-- - Render the usual content, like <para>-s etc.: -->
           <#list .node.* as child>
@@ -123,18 +120,18 @@
     </#if>
   </div>
 
-  <@nav.navigationBar top=false />
+  <#--<@nav.navigationBar top=false />-->
 
   <@footer />
-<#if !disableJavaScript>
-  <#-- Put pre-loaded images here: -->
-  <div style="display: none">
-    <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
-  </div>
-</#if>
-<#if !offline && onlineTrackerHTML??>
-  ${onlineTrackerHTML}
-</#if>
+  <#if !disableJavaScript>
+    <#-- Put pre-loaded images here: -->
+    <div style="display: none">
+      <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
+    </div>
+  </#if>
+  <#if !offline && onlineTrackerHTML??>
+    ${onlineTrackerHTML}
+  </#if>
 </body>
 </html>
 
