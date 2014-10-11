@@ -92,7 +92,8 @@
         <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
                 <#if tabs[tabTitle]?has_content>
-                    <li><a href="${tabs[tabTitle]}">${tabTitle}</a></li><#t>
+                    <#-- @todo: this should be dynamci -->
+                    <li><a<#if tabTitle == "Java API"> class="external"</#if> href="${tabs[tabTitle]}">${tabTitle}</a></li><#t>
                 <#else>
                     <li class="current">${tabTitle}</li><#t>
                 </#if>

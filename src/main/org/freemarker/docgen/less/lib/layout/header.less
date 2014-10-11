@@ -70,6 +70,16 @@
         transition: background-color .2s ease;
         -webkit-tap-highlight-color: rgba(red(@tab-bg), green(@tab-bg), blue(@tab-bg), 0.1);
 
+        &.external {
+          &::after {
+            font-family: FontAwesome;
+            margin-left: 6px;
+            content: @fa-var-external-link-square; //@todo: find better icon
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+          }
+        }
+
         &:hover {
           background-color: @tab-bg;
         }
