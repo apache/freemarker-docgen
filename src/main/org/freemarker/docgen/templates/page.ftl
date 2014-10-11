@@ -227,40 +227,48 @@
   <div class="site-footer">
 
     <#-- keep site-width inside so background extends -->
-    <div class="site-width footer-inner">
-      <#local pageGenTimeHTML>
-        HTML generated:
-        <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
-          ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
-        </time><#t>
-      </#local>
+    <div class="site-width">
 
-      <#local footerTitleHTML = topLevelTitle?html>
-      <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-      <#if bookSubtitle?has_content>
-        <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
-      </#if>
-      <#if !showXXELogo>
-        <div class="footer-left">
-            ${footerTitleHTML}
-        </div>
-        <div class="footer-right">
+      <div class="footer-inner">
+        <#local pageGenTimeHTML>
+          HTML generated:
+          <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
+            ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
+          </time><#t>
+        </#local>
+
+        <#local footerTitleHTML = topLevelTitle?html>
+        <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+        <#if bookSubtitle?has_content>
+          <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
+        </#if>
+        <#if !showXXELogo>
+          <div class="footer-left">
+              ${footerTitleHTML}
+          </div>
+          <div class="footer-right">
+              ${pageGenTimeHTML}
+          </div>
+        <#else>
+          <div class="footer-left">
+            <#if footerTitleHTML != "">
+              ${footerTitleHTML}
+              <br>
+            </#if>
             ${pageGenTimeHTML}
-        </div>
-      <#else>
-        <div class="footer-left">
-          <#if footerTitleHTML != "">
-            ${footerTitleHTML}
-            <br>
-          </#if>
-          ${pageGenTimeHTML}
-        </div>
-        <div class="footer-right">
-          <a href="http://www.xmlmind.com/xmleditor/" rel="nofollow">
-            <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
-          </a>
-        </div>
-      </#if>
+          </div>
+          <div class="footer-right">
+            <a href="http://www.xmlmind.com/xmleditor/" rel="nofollow">
+              <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+            </a>
+          </div>
+        </#if>
+      </div>
+      <#-- @todo: this should be generic and not hardcoded -->
+      <div class="copyright">
+        <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <span itemtype="http://schema.org/Person" itemprop="copyrightHolder">The FreeMarker Project</span>. All rights reserved.</p>
+        <p>${pageGenTimeHTML}</p>
+      </div>
     </div>
   </div>
 </#macro>
