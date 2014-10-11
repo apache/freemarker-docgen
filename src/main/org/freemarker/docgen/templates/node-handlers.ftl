@@ -570,7 +570,7 @@
   <#local classAtt = "">
 
   <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
-        <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
+        <#if htmlHLevel == 1>id="pageTopTitle" itemprop="name"</#if>>
       <@Anchor hierarElem/><#t>
       ${titleInitial?html}<#recurse><#t>
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>

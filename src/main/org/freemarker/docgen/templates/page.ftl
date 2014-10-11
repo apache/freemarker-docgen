@@ -40,7 +40,7 @@
 </head>
 </#compress>
 
-<body>
+<body itemscope itemtype="http://schema.org/Article">
   <div class="site-header">
     <#-- keep site-width inside site-header so that the background extends -->
     <div class="site-width header-top">
