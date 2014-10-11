@@ -274,33 +274,69 @@ th {
 }
 .site-footer {
   border-top: 4px solid #4a4a4a;
-  color: #FFF;
-  padding-top: 24px;
+  color: #999999;
+  font-weight: 300;
   padding-bottom: 24px;
+}
+.site-footer p {
+  margin: 0;
+}
+.site-footer a {
+  color: #B9B9B9;
+  -webkit-transition: color ease-in-out 0.2s;
+  transition: color ease-in-out 0.2s;
+}
+.site-footer a:hover {
+  color: #ccc;
+}
+.site-footer .footer-inner {
+  padding-top: 12px;
+  text-align: center;
 }
 @media (min-width: 768px) {
   .site-footer .footer-inner {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
+    -webkit-align-items: baseline;
+    -ms-flex-align: baseline;
+    align-items: baseline;
     -webkit-flex-wrap: wrap;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     -webkit-justify-content: space-between;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    text-align: left;
+  }
+}
+.site-footer .footer-inner .footer-title {
+  margin-top: 12px;
+}
+.site-footer .footer-inner .social-icons {
+  margin-top: 24px;
+}
+@media (min-width: 768px) {
+  .site-footer .footer-inner .social-icons {
+    margin-top: 6px;
   }
 }
 .site-footer .copyright {
   text-align: center;
-  color: #999;
   font-size: 12px;
+  margin-top: 24px;
 }
-.site-footer .copyright p {
+.site-footer .copyright .legal {
   margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.site-footer .copyright .legal li {
+  display: inline-block;
+}
+.site-footer .copyright .legal li:first-child::after {
+  content: "·";
+  margin: 0 4px;
 }
 .breadcrumb {
   margin: 0;
@@ -585,6 +621,36 @@ th {
   font-weight: normal;
   text-align: left;
   background-color: #f9f9f9;
+}
+.social-icons {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.social-icons li {
+  display: inline-block;
+}
+.social-icons li:last-child a {
+  padding-right: 0;
+}
+.social-icons li a {
+  display: block;
+  padding: 3px 6px;
+}
+.social-icons li a::before {
+  font-family: FontAwesome;
+  margin-right: 3px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.social-icons li a.twitter::before {
+  content: "\f099";
+}
+.social-icons li a.github::before {
+  content: "\f09b";
+}
+.social-icons li a.stack-overflow::before {
+  content: "\f16c";
 }
 .site-width {
   margin-left: auto;

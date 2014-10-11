@@ -220,10 +220,75 @@
 </#function>
 
 
-<#---
-  Site footer
--->
+
 <#macro footer>
+
+  <#local footerTitleHTML = topLevelTitle?html>
+  <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+  <#if bookSubtitle?has_content>
+    <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
+  </#if>
+
+  <#-- @todo: externalize links to manual -->
+  <#local socialLinks = [
+    {
+      "url": "https://github.com/freemarker",
+      "class": "github",
+      "title": "Github"
+    }, {
+      "url": "https://twitter.com/freemarker",
+      "class": "twitter",
+      "title": "Twitter"
+    }, {
+      "url": "https://stackoverflow.com/questions/tagged/freemarker",
+      "class": "stack-overflow",
+      "title": "Stack Overflow"
+    }
+  ]>
+
+  <div class="site-footer">
+    <#-- keep site-width inside so background extends -->
+    <div class="site-width">
+      <div class="footer-inner">
+        <p class="footer-title">
+          ${footerTitleHTML}<br>
+          Last updated:
+          <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
+            ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
+          </time>
+        </p>
+
+        <ul class="social-icons"><#t>
+          <#list socialLinks as link>
+            <li><#t>
+              <a class="${link.class}" href="${link.url}">${link.title}</a><#t>
+            </li><#t>
+          </#list>
+        </ul><#t>
+      </div>
+
+      <#-- @todo: this should be generic and not hardcoded -->
+      <div class="copyright">
+        <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.</p>
+        <#-- @todo: make license generic -->
+        <ul class="legal"><#t>
+          <li><#t>
+            <a href="app_license.html" itemprop="license">License</a><#t>
+          </li><#t>
+          <li><#t>
+            <a href="http://sourceforge.net/p/freemarker/bugs/">Report a bug</a><#t>
+          </li><#t>
+        </ul><#t>
+      </div>
+    </div>
+  </div>
+</#macro>
+
+
+<#---
+  Old Site footer for backup
+-->
+<#macro Oldfooter>
   <div class="site-footer">
 
     <#-- keep site-width inside so background extends -->
@@ -259,15 +324,11 @@
           </div>
           <div class="footer-right">
             <a href="http://www.xmlmind.com/xmleditor/" rel="nofollow">
-              <img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">
+              Edited with XMLMind XML Editor
+              <#--><img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">-->
             </a>
           </div>
         </#if>
-      </div>
-      <#-- @todo: this should be generic and not hardcoded -->
-      <div class="copyright">
-        <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <span itemtype="http://schema.org/Person" itemprop="copyrightHolder">The FreeMarker Project</span>. All rights reserved.</p>
-        <p>${pageGenTimeHTML}</p>
       </div>
     </div>
   </div>
