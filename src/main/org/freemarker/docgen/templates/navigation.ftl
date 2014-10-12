@@ -57,6 +57,8 @@
         </#if>
       </#list>
     </ul><#t>
+  <#else>
+    <span class="breadcrumb"></span> <#-- empty element so flexbox layout still works -->
   </#if>
 </#macro>
 

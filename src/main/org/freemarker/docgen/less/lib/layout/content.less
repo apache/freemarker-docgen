@@ -10,7 +10,7 @@
 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
-  min-height: 300px;
+  //min-height: 300px;
 
   a {
     word-break: break-word;
@@ -26,11 +26,6 @@
     flex-wrap: nowrap;
   }
 
-  h1 {
-    margin-top: 0;
-    font-size: 33px;
-  }
-
   .col-right {
     width: 100%;
     flex: 1; //needed for some older browsers
@@ -42,7 +37,6 @@
   }
 }
 
-
 .page-header {
   border-bottom: 1px solid @border-gray;
   margin-bottom: 24px;
@@ -52,9 +46,15 @@
 
   .title-wrapper {
     h1 {
-      font-size: 27px;
-      line-height: 1;
+      font-size: 36px;
+      margin-top: 0;
     }
+
+    .subtitle {
+      font-size: 21px;
+      display: block;
+    }
+
     > :last-child {
       margin-bottom: 0;
     }
