@@ -5,29 +5,29 @@
   li {
     display: inline-block;
 
-    a {
+    &::after {
+      .font-awesome();
+      margin-left: 9px;
+      margin-right: 9px;
+      content: @fa-var-caret-right;
+      //content: "/";
+      //color: @text-color;
+      //color: #eee;
+      color: #929292;
+      width: 6px;
       display: inline-block;
-
-      &::after {
-        .font-awesome();
-        margin-left: 9px;
-        margin-right: 9px;
-        //content: @fa-var-caret-right;
-        content: "/";
-        //color: @text-color;
-        color: #eee;
-        width: 5px;
-      }
     }
 
     &:last-child {
-      a {
-        &::after {
-          content: "";
-          margin: 0;
-          width: 0;
-        }
+      &::after {
+        content: "";
+        margin: 0;
+        width: 0;
       }
+    }
+
+    a {
+      display: inline-block;
     }
   }
 }
