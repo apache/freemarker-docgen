@@ -1,6 +1,11 @@
 .bookmarks {
   padding: 3px 0;
 
+  // hide in print view
+  @media print {
+    display: none;
+  }
+
   .bookmark-list {
     .list-unstyled();
     display: inline-block;

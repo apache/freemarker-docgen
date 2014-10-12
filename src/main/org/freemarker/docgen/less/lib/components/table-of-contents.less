@@ -68,6 +68,12 @@
 
     &:visited {
       color: @link-visited;
+
+      @media print {
+        color: @link-color;
+      }
     }
+
+
   }
 }

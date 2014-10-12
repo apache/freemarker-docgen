@@ -2,6 +2,10 @@
   background: #000 url(img/diagonal.gif);
   color: #FFF;
 
+  @media print {
+    color: #000;
+  }
+
   .header-top {
     padding-top: 15px;
     padding-bottom: 15px;
@@ -96,6 +100,10 @@
 
     border-top: 4px solid rgb(red(@nav-bg), green(@nav-bg), blue(@nav-bg));
     background-color: rgba(red(@nav-bg), green(@nav-bg), blue(@nav-bg), 0.5);
+
+    @media print {
+      border-top: 0;
+    }
 
     a {
       @link-color: rgb(107, 173, 207);
