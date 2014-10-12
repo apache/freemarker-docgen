@@ -92,30 +92,30 @@
         <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
                 <#if tabs[tabTitle]?has_content>
-                    <#-- @todo: this should be dynamci -->
-                    <li><a<#if tabTitle == "Java API"> class="external"</#if> href="${tabs[tabTitle]}">${tabTitle}</a></li><#t>
+                    <#-- @todo: need hook for dynamically setting external links -->
+                    <li><#t>
+                      <a<#if tabTitle == "Java API"> class="external"</#if> href="${tabs[tabTitle]}">${tabTitle}</a><#t>
+                    </li><#t>
                 <#else>
-                    <li class="current">${tabTitle}</li><#t>
+                    <#-- @todo: we should still specify a link for the current tab -->
+                    <li class="current"><#t>
+                      <a href="index.html">${tabTitle}</a><#t>
+                    </li><#t>
                 </#if>
             </#list>
         </ul><#t>
     </#if>
 </#macro>
 
-<#macro pagers full=true class="">
+<#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
     <ul class="${('pagers ' + class)?trim}"><#t>
-      <#if full>
-        <@pagerButton label="Previous" element=previousFileElement! textOnly=true class="previous" />
-
-        <#--
-        <@pagerButton "Parent page", parentFileElement!, true, "parent" />
-        <@pagerButton "Contents", rootElement, true, "root" />
-        -->
-      <#else>
-        <#--><@pagerButton "Previous", previousFileElement!, false />-->
-      </#if>
+      <#--
+      <@pagerButton "Parent page", parentFileElement!, true, "parent" />
+      <@pagerButton "Contents", rootElement, true, "root" />
+      -->
+      <@pagerButton label="Previous" element=previousFileElement! textOnly=true class="previous" />
       <@pagerButton label="Next" element=nextFileElement! textOnly=true class="next" />
     </ul><#t>
   </#if>
@@ -152,7 +152,7 @@
         </#if>
       </a><#t>-->
     <#else>
-      ${label}<#t>
+      <#--${label}--><#t>
     </#if>
   </li><#t>
 </#macro>

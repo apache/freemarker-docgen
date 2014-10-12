@@ -66,7 +66,13 @@
         </fieldset>
       </form>
     </div>
-    <@nav.navigationBar top=true />
+    <div class="navigation">
+      <#-- keep site-width inside navigation so that the background extends -->
+      <div class="site-width">
+        <@nav.breadcrumb />
+        <@nav.bookmarks />
+      </div>
+    </div>
   </div>
 
   <div class="content-outer">
@@ -81,14 +87,11 @@
       <#else>
 
         <div class="page-header">
-          <@nav.breadcrumb />
-
-          <#if parentFileElement??>
-            <div class="title-wrapper">
-              <h1><#recurse u.getRequiredTitleElement(parentFileElement) using nodeHandlers></h1><#t>
-              <#--<@nav.pagers full=true />-->
-            </div>
-          </#if>
+          <#--<@nav.breadcrumb />-->
+          <div class="title-wrapper">
+            <@nav.pagers class="top" />
+            <#visit titleElement using nodeHandlers>
+          </div>
         </div>
 
         <div class="page-content">
@@ -102,12 +105,10 @@
 
           <#-- - Render page title: -->
           <div class="col-right">
-            <@nav.pagers full=true class="top" />
+            <#--<#visit titleElement using nodeHandlers>-->
 
-            <#visit titleElement using nodeHandlers>
-
-            <#-- @todo: remove this and fix anchors -->
-            <a name="docgen_afterTheTOC"></a>
+            <#-- @todo: remove this and fix anchors
+            <a name="docgen_afterTheTOC"></a> -->
             <#-- - Render the usual content, like <para>-s etc.: -->
             <#list .node.* as child>
               <#if child.@docgen_file_element?size == 0
@@ -116,11 +117,10 @@
                 <#visit child using nodeHandlers>
               </#if>
             </#list>
-
-            <#-- bottom pagers -->
-            <@nav.pagers full=true class="bottom" />
           </div>
         </div>
+
+        <@nav.pagers class="bottom" />
       </#if>
 
       <#-- Render footnotes, if any: -->
