@@ -13,7 +13,17 @@
   th {
     font-weight: normal;
     text-align: left;
-    background-color: #f9f9f9;
+    background-color: @bg-gray;
   }
+}
 
+.table-responsive {
+  @media screen and (max-width: @screen-xs-max) {
+    width: 100%;
+    margin-bottom: 9px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
 }

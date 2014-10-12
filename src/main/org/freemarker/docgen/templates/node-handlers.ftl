@@ -651,9 +651,11 @@
 <#macro informaltable>
    <div class="informal-table">
       <@Anchor/>
-      <table class="table">
-          <#recurse>
-      </table>
+      <div class="table-responsive">
+        <table class="table">
+            <#recurse>
+        </table>
+      </div>
    </div>
 </#macro>
 
