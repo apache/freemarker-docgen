@@ -11,7 +11,7 @@
   <#local captured>
     <#if showNavigationBar>
       <#if top>
-        <@pagers />
+        <#--><@pagers />-->
         <@bookmarks />
       <#else>
         <@pagers />
@@ -102,31 +102,37 @@
     </#if>
 </#macro>
 
-<#macro pagers full=true>
+<#macro pagers full=true class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
-    <ul class="pagers"><#t>
+    <ul class="${('pagers ' + class)?trim}"><#t>
       <#if full>
-        <@pagerButton "Previous", previousFileElement! />
+        <@pagerButton label="Previous" element=previousFileElement! textOnly=true class="previous" />
 
-        <@pagerButton "Parent page", parentFileElement! />
-        <@pagerButton "Contents", rootElement />
+        <#--
+        <@pagerButton "Parent page", parentFileElement!, true, "parent" />
+        <@pagerButton "Contents", rootElement, true, "root" />
+        -->
       <#else>
         <#--><@pagerButton "Previous", previousFileElement!, false />-->
       </#if>
-      <@pagerButton "Next", nextFileElement!, false />
+      <@pagerButton label="Next" element=nextFileElement! textOnly=true class="next" />
     </ul><#t>
   </#if>
 </#macro>
 
-<#macro pagerButton label element labelOnly=true>
-  <li><#t>
+<#macro pagerButton label element labelOnly=true textOnly=false class="">
+  <li<#if class?has_content> class="${class}"</#if>><#t>
     <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>
       <#local curHref = CreateLinkFromNode(.node)>
     </#if>
     <#if element?has_content && href != curHref>
-      <#if !labelOnly>
+      <#if textOnly>
+        <a href="${href}"><#t>
+          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
+        </a><#t>
+      <#elseif !labelOnly>
         <span class="pager-label">${label}:</span><#t>
         <a href="${href}"><#t>
           <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>

@@ -69,55 +69,73 @@
     <@nav.navigationBar top=true />
   </div>
 
-  <div class="site-content site-width">
-    <#--<@nav.breadcrumb />-->
-    <#assign pageType = pageType!.node?node_name>
+  <div class="content-outer">
+    <div class="site-content site-width">
+      <#--<@nav.breadcrumb />-->
+      <#assign pageType = pageType!.node?node_name>
 
-    <#if pageType == "index" || pageType == "glossary">
-      <#visit .node using nodeHandlers>
-    <#elseif pageType == "docgen:detailed_toc">
-      <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
-    <#else>
-      <div class="page-content">
-        <#-- Normal page content: -->
+      <#if pageType == "index" || pageType == "glossary">
+        <#visit .node using nodeHandlers>
+      <#elseif pageType == "docgen:detailed_toc">
+        <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
+      <#else>
 
-        <#-- - Render either ToF (Table of Files) or Page ToC; -->
-        <#--   both is called, but at least one of them will be empty: -->
-        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-        <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
-
-        <#-- - Render page title: -->
-        <div class="col-right">
+        <div class="page-header">
           <@nav.breadcrumb />
-          <#-- @todo: remove this and fix anchors -->
-          <a name="docgen_afterTheTOC"></a>
 
-          <#visit titleElement using nodeHandlers>
-
-          <#-- - Render the usual content, like <para>-s etc.: -->
-          <#list .node.* as child>
-            <#if child.@docgen_file_element?size == 0
-                && child?node_name != "title"
-                && child?node_name != "subtitle">
-              <#visit child using nodeHandlers>
-            </#if>
-          </#list>
+          <#if parentFileElement??>
+            <div class="title-wrapper">
+              <h1><#recurse u.getRequiredTitleElement(parentFileElement) using nodeHandlers></h1><#t>
+              <#--<@nav.pagers full=true />-->
+            </div>
+          </#if>
         </div>
-      </div>
-    </#if>
 
-    <#-- Render footnotes, if any: -->
-    <#assign footnotes = defaultNodeHandlers.footnotes>
-    <#if footnotes?size != 0>
-      <div id="footnotes">
-        Footnotes:
-        <ol>
-          <#list footnotes as footnote>
-            <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
-          </#list>
-        </ol>
-      </div>
-    </#if>
+        <div class="page-content">
+
+          <#-- Normal page content: -->
+
+          <#-- - Render either ToF (Table of Files) or Page ToC; -->
+          <#--   both is called, but at least one of them will be empty: -->
+          <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+          <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
+
+          <#-- - Render page title: -->
+          <div class="col-right">
+            <@nav.pagers full=true class="top" />
+
+            <#visit titleElement using nodeHandlers>
+
+            <#-- @todo: remove this and fix anchors -->
+            <a name="docgen_afterTheTOC"></a>
+            <#-- - Render the usual content, like <para>-s etc.: -->
+            <#list .node.* as child>
+              <#if child.@docgen_file_element?size == 0
+                  && child?node_name != "title"
+                  && child?node_name != "subtitle">
+                <#visit child using nodeHandlers>
+              </#if>
+            </#list>
+
+            <#-- bottom pagers -->
+            <@nav.pagers full=true class="bottom" />
+          </div>
+        </div>
+      </#if>
+
+      <#-- Render footnotes, if any: -->
+      <#assign footnotes = defaultNodeHandlers.footnotes>
+      <#if footnotes?size != 0>
+        <div id="footnotes">
+          Footnotes:
+          <ol>
+            <#list footnotes as footnote>
+              <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+            </#list>
+          </ol>
+        </div>
+      </#if>
+    </div>
   </div>
 
   <#--<@nav.navigationBar top=false />-->
@@ -139,7 +157,7 @@
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
     <div class="table-of-contents-wrapper<#if .node?parent?node_type == "document"> main-toc</#if>"><#t>
-      <p><#t>
+      <p class="toc-title"><#t>
         <strong><#t>
           <#if !title?has_content>
             <#if .node?parent?node_type == "document">
@@ -173,15 +191,14 @@
   </#if>
 
   <ol<#if tocClass?has_content> class="${tocClass}"</#if>>
+    <#--
     <#if curDepth == 1 && startsWithTopLevelContent>
       <li class="empty"><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
-    </#if>
+    </#if>-->
     <#list tocElems as tocElem>
       <#local prefixClass = titlePrefixClass(tocElem)>
       <li<#if prefixClass?has_content> class="${prefixClass}"</#if>><#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
-
-
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
         <#if (curDepth < maxDepth)>

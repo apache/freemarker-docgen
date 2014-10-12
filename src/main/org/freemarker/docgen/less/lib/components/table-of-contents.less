@@ -16,11 +16,18 @@
     max-width: 400px;
   }
 
+  .toc-title {
+    display: none;
+  }
+
   &.main-toc {
     @media (min-width: @screen-sm-min) {
       max-width: 100%;
     }
 
+    .toc-title {
+      display: block;
+    }
   }
 
   & > p {

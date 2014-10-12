@@ -576,7 +576,7 @@
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem?has_content>
-      <span style="font-size: 50%"><br><#recurse subtitleElem></span>
+      <span class="subtitle"><#recurse subtitleElem></span>
     </#if>
   </${htmlHElem}>
 </#macro>

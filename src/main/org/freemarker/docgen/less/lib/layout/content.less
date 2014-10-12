@@ -1,8 +1,10 @@
 .site-content {
   padding-top: 24px;
-  padding-bottom: 48px;
+  padding-bottom: 24px;
 
   background-color: #fff;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
   min-height: 300px;
 
@@ -21,11 +23,12 @@
 
   h1 {
     margin-top: 0;
+    font-size: 33px;
   }
 
   .col-right {
     width: 100%;
-    flex: 1;
+    flex: 1; //needed for some older browsers
   }
 }
 
@@ -60,4 +63,34 @@
       margin: 0;
     }
   }
+}
+
+// @todo: move to better location
+.content-outer {
+  background-color: #E2E2E2;
+}
+
+// @todo: move to better location
+.page-header {
+  border-bottom: 1px solid @border-gray;
+  margin-bottom: 24px;
+
+  padding-top: 6px;
+  padding-bottom: 24px;
+
+  h1 {
+    font-size: 27px;
+    line-height: 1;
+    margin-bottom: 0;
+  }
+
+  .title-wrapper {
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+
 }
