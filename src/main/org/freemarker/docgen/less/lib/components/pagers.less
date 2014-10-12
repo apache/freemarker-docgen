@@ -5,6 +5,7 @@
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   &.top {
     margin-bottom: 12px;
@@ -17,34 +18,31 @@
   li {
     display: inline-block;
 
+    a {
+      min-width: 100px;
+      display: block;
+      white-space: nowrap;
+    }
+
     &.previous {
       a {
         &::before {
-          font-family: FontAwesome;
-          margin-right: 9px;
+          .paging-icon();
+          margin-right: 6px;
           content: @fa-var-chevron-left;
-          width: 5px;
-          line-height: 100%;
-          box-sizing: border-box;
-          display: inline-block;
-          font-size: 13px;
-          margin-left: 3px;
+
         }
       }
     }
 
     &.next {
       a {
+        text-align: right;
+
         &::after {
-          font-family: FontAwesome;
-          margin-right: 9px;
+          .paging-icon();
           content: @fa-var-chevron-right;
-          width: 5px;
-          line-height: 100%;
-          box-sizing: border-box;
-          display: inline-block;
-          font-size: 13px;
-          margin-left: 3px;
+          margin-left: 6px;
         }
       }
     }
@@ -53,4 +51,13 @@
   .pager-label {
     margin-right: 3px;
   }
+}
+
+
+.paging-icon() {
+  .font-awesome();
+  width: 9px;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 13px;
 }

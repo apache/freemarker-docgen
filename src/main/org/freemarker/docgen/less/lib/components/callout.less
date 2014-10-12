@@ -21,8 +21,7 @@
     display: inline-block;
 
     &::before {
-      font-family: FontAwesome;
-      line-height: 100%;
+      .font-awesome();
       margin-right: 3px;
     }
 
@@ -59,8 +58,7 @@
   color: @text-color;
 
   &::before {
-    font-family: FontAwesome;
-    line-height: 100%;
+    .font-awesome();
     margin-right: 3px;
     color: @text-color;
     content: @fa-var-code;

@@ -1,3 +1,7 @@
+.content-outer {
+  background-color: #E2E2E2;
+}
+
 .site-content {
   padding-top: 24px;
   padding-bottom: 24px;
@@ -29,48 +33,15 @@
   .col-right {
     width: 100%;
     flex: 1; //needed for some older browsers
-  }
-}
 
-.header-wrapper {
-
-  @media (min-width: @screen-sm-min) {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  .pagers {
-
-    li {
-      &:last-child a {
-        &::after {
-          font-family: FontAwesome;
-          margin-right: 9px;
-          content: @fa-var-chevron-right;
-          width: 5px;
-          line-height: 100%;
-          box-sizing: border-box;
-          display: inline-block;
-          font-size: 13px;
-          margin-left: 3px;
-        }
-      }
+    > :first-child {
+      margin-top: 0;
     }
-    li::after {
-      content: '';
-      margin: 0;
-    }
+
   }
 }
 
-// @todo: move to better location
-.content-outer {
-  background-color: #E2E2E2;
-}
 
-// @todo: move to better location
 .page-header {
   border-bottom: 1px solid @border-gray;
   margin-bottom: 24px;
@@ -78,18 +49,13 @@
   padding-top: 6px;
   padding-bottom: 24px;
 
-  h1 {
-    font-size: 27px;
-    line-height: 1;
-    margin-bottom: 0;
-  }
-
   .title-wrapper {
-    @media (min-width: @screen-sm-min) {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
+    h1 {
+      font-size: 27px;
+      line-height: 1;
+    }
+    > :last-child {
+      margin-bottom: 0;
     }
   }
 

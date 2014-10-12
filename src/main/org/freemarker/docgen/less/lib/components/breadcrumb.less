@@ -2,8 +2,6 @@
 .breadcrumb {
   .list-unstyled();
 
-  line-height: 1;
-
   li {
     display: inline-block;
 
@@ -11,16 +9,14 @@
       display: inline-block;
 
       &::after {
-        font-family: FontAwesome;
+        .font-awesome();
         margin-left: 9px;
         margin-right: 9px;
         //content: @fa-var-caret-right;
         content: "/";
-        color: @text-color;
+        //color: @text-color;
+        color: #eee;
         width: 5px;
-        line-height: 100%;
-        box-sizing: border-box;
-        display: inline-block;
       }
     }
 

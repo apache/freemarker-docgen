@@ -4,6 +4,8 @@
   width: 100%;
   position: relative;
 
+  @search-highlight: #2C5F79;
+
   @media (min-width: @screen-md-min) {
     max-width: 300px;
   }
@@ -30,10 +32,10 @@
     &:focus {
       outline: 0;
       box-shadow: 1px 1px 3px #000;
-      border-color: #2C5F79;
+      border-color: @search-highlight;
 
       & + .search-btn {
-        color: #2C5F79;
+        color: @search-highlight;
       }
     }
   }
@@ -65,9 +67,8 @@
     }
 
     &::before {
+      .font-awesome();
       content: @fa-var-search;
-      font-family: FontAwesome;
-      line-height: 100%;
     }
   }
 }
