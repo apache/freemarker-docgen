@@ -263,8 +263,7 @@ th {
 }
 @media (min-width: 768px) {
   .page-content .col-left {
-    min-width: 200px;
-    max-width: 300px;
+    width: 300px;
   }
 }
 @media (min-width: 1420px) {
@@ -420,7 +419,7 @@ th {
   padding: 0 0 0 16px;
   list-style-type: none;
 }
-.table-of-contents li:before {
+.table-of-contents li::before {
   font-family: FontAwesome;
   line-height: 100%;
   -moz-box-sizing: border-box;
@@ -428,26 +427,50 @@ th {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  content: "\f0da";
+  content: "\f0d7";
   display: block;
   float: left;
   width: 10px;
   cursor: pointer;
   font-size: 12px;
-  color: #999;
-  position: relative;
-  top: 3px;
+  color: #666;
+  line-height: 21px;
+}
+.table-of-contents li.current::before {
+  content: "\f0d7";
+}
+.table-of-contents li.closed::before {
+  content: "\f0da";
+}
+.table-of-contents li.closed ul {
+  display: none;
+}
+.table-of-contents li.childless {
+  padding-left: 12px;
+}
+.table-of-contents li.childless::before {
+  content: '';
+  width: auto;
+}
+.table-of-contents li.depth-0::before {
+  line-height: 24px;
+}
+.table-of-contents li.depth-0 > a {
+  font-weight: 400;
+  font-size: 16px;
+  color: #333333;
 }
 .table-of-contents a {
   display: block;
+  white-space: nowrap;
 }
-.table-of-contents a:visited {
-  color: #af09af;
+.table-of-contents a:hover span {
+  background-color: #e3e3e3;
 }
-@media print {
-  .table-of-contents a:visited {
-    color: #0099cc;
-  }
+.table-of-contents a span {
+  display: inline-block;
+  padding: 0 2px;
+  white-space: normal;
 }
 .search-form {
   min-width: 100px;

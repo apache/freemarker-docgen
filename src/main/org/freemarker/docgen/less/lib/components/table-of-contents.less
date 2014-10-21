@@ -7,11 +7,6 @@
   list-style-type: none;
   user-select: none;
 
-  & > li > a {
-    font-weight: 400;
-    font-size: 16px;
-  }
-
   ul {
     padding: 0 0 0 16px;
     list-style-type: none;
@@ -27,18 +22,13 @@
 
       cursor: pointer;
       font-size: 12px;
-      color: #999;
-      position: relative;
-      top: 3px;
+      color: #666;
+      line-height: 21px;
     }
 
     &.current {
       &::before {
         content: @fa-var-caret-down;
-      }
-
-      & > a > span {
-        font-weight: bold;
       }
     }
 
@@ -52,12 +42,24 @@
       }
     }
 
-    &.no-children {
+    &.childless {
       padding-left: 12px;
 
       &::before {
         content: '';
         width: auto;
+      }
+    }
+
+    &.depth-0 {
+      &::before {
+        line-height: 24px;
+      }
+
+      > a {
+        font-weight: 400;
+        font-size: 16px;
+        color: @text-color;
       }
     }
   }
@@ -69,14 +71,6 @@
     &:hover {
       span {
         background-color: #e3e3e3;
-      }
-    }
-
-    &:visited {
-      color: @link-visited;
-
-      @media print {
-        color: @link-color;
       }
     }
 
