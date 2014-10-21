@@ -64,7 +64,7 @@
             menuChildren(node.children, node.title, nodeDepth + 1)
           );
       } else {
-        li.className = 'childless';
+        li.classList.add('childless');
       }
 
       li.classList.add('depth-' + nodeDepth);

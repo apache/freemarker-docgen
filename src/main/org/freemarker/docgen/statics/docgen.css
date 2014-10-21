@@ -44,7 +44,7 @@ h6 {
   font-weight: 400;
 }
 h1 {
-  font-size: 27px;
+  font-size: 36px;
 }
 h2 {
   font-size: 21px;
@@ -392,7 +392,7 @@ th {
   -moz-osx-font-smoothing: grayscale;
   margin-left: 9px;
   margin-right: 9px;
-  content: "\f0da";
+  content: '/';
   color: #929292;
   width: 6px;
   display: inline-block;
@@ -442,6 +442,12 @@ th {
 .table-of-contents li.current::before {
   content: "\f0d7";
 }
+.table-of-contents li.current > a {
+  color: #0099cc !important;
+}
+.table-of-contents li.current.open-section a {
+  color: #0099cc;
+}
 .table-of-contents li.closed::before {
   content: "\f0da";
 }
@@ -479,6 +485,7 @@ th {
 .table-of-contents a {
   display: block;
   white-space: nowrap;
+  color: #333333;
 }
 .table-of-contents a:hover span {
   background-color: #e3e3e3;
