@@ -97,11 +97,12 @@
 
         <div class="page-content">
           <div class="col-left">
-            <p class="toc-title">Table of Contents</p>
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
             <#--   both are called, but at least one of them will be empty: -->
-            <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-            <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
+            <div id="table-of-contents">
+              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
+            </div>
           </div>
 
           <div class="col-right">
@@ -150,6 +151,9 @@
     ${onlineTrackerHTML}
   </#if>
 
+  <script>
+    <@nav.breadcrumbJs />
+  </script>
   <script src="docgen-resources/main.js"></script>
 </body>
 </html>
@@ -167,10 +171,9 @@
 
   <#if curDepth == 1>
     <#local tocClass = "table-of-contents">
-    <#local tocId = "table-of-contents">
   </#if>
 
-  <ul<#if tocId?has_content> id="${tocId}"</#if><#if tocClass?has_content> class="${tocClass}"</#if>>
+  <ul<#if tocClass?has_content> class="${tocClass}"</#if>>
     <#list tocElems as tocElem>
       <li><#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>

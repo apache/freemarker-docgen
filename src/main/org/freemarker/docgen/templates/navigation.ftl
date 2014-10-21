@@ -62,6 +62,27 @@
   </#if>
 </#macro>
 
+
+<#macro breadcrumbJs>
+  var breadcrumb = [<#t>
+  <#local path = []>
+  <#local curNode = .node>
+  <#list 1..99 as _>
+    <#local path = [curNode] + path>
+    <#if curNode.@docgen_root_element?size != 0>
+      <#break>
+    </#if>
+    <#local curNode = curNode?parent>
+  </#list>
+  <#if (path?size > 1)>
+    <#list path as step>
+      "<#noescape>${step.title?js_string}</#noescape>"<#t>
+      <#if step_has_next>,</#if><#t>
+    </#list>
+  </#if>
+  ];<#t>
+</#macro>
+
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
     <div class="bookmarks"><#t>

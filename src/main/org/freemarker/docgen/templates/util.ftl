@@ -48,7 +48,7 @@
     <#-- Just a string... -->
     <#return titleNode>
   </#if>
-  
+
   <#local res = "">
   <#list titleNode?children as child>
     <#if child?node_type == "text">
@@ -62,13 +62,13 @@
           || name == "phrase">
         <#local res = res + titleToString(child)>
       <#elseif name == "quote">
-        <#local res = "\x201C" + titleToString(child) + "\x201D"> 
+        <#local res = "\x201C" + titleToString(child) + "\x201D">
       <#elseif name != "subtitle">
         <#stop 'The "${name}" in titles is not supported by Docgen.'>
       </#if>
     </#if>
   </#list>
-  
+
   <#return res>
 </#function>
 
@@ -80,13 +80,13 @@
   </#if>
 
   <#local type = docStructElem?node_name>
-  
+
   <#if extraSpacing>
     <#local spacer = "\xA0\xA0\xA0">
   <#else>
     <#local spacer = " ">
   </#if>
-  
+
   <#if type = "chapter">
     <#return longForm?string("Chapter ", "") + prefix + spacer>
   <#elseif type = "appendix">
