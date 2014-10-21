@@ -35,10 +35,17 @@
     &.closed {
       &::before {
         content: @fa-var-caret-right;
+
+        .expanded& {
+          content: @fa-var-caret-down;
+        }
       }
 
       ul {
         display: none;
+        .expanded& {
+          display: block;
+        }
       }
     }
 
@@ -60,6 +67,24 @@
         font-weight: 400;
         font-size: 16px;
         color: @text-color;
+      }
+    }
+
+
+    &.depth-1 > a {
+      .expanded& {
+        color: #666;
+      }
+    }
+
+    &.internal,
+    &.childless {
+      .expanded& {
+        display: none;
+      }
+
+      &::before {
+
       }
     }
   }
