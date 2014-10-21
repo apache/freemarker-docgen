@@ -26,6 +26,21 @@
     flex-wrap: nowrap;
   }
 
+  .col-left {
+    flex-shrink: 0;
+
+    @media (min-width: @screen-sm-min) {
+      min-width: 200px;
+      max-width: 300px;
+    }
+
+    @media (min-width: @screen-xl-min) {
+      min-width: 300px;
+      max-width: 400px;
+    }
+
+  }
+
   .col-right {
     width: 100%;
     flex: 1; //needed for some older browsers

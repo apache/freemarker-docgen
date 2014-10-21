@@ -1,66 +1,32 @@
-// table of contents styles
-.table-of-contents-wrapper {
-
-  flex-shrink: 0;
-  font-size: 14px;
-
-  margin-right: 24px;
-
-  @media (min-width: @screen-sm-min) {
-    min-width: 200px;
-    max-width: 300px;
-  }
-
-  @media (min-width: @screen-xl-min) {
-    min-width: 300px;
-    max-width: 400px;
-  }
-
-  .toc-title {
-    display: none;
-  }
-
-  &.main-toc {
-    @media (min-width: @screen-sm-min) {
-      max-width: 100%;
-    }
-
-    .toc-title {
-      display: block;
-    }
-  }
-
-  & > p {
-    margin-top: 0;
-  }
-}
-
 .table-of-contents {
+  font-size: 14px;
 
   margin: 0;
   padding: 0;
 
-  list-style-position: inside;
-
-  // don't use bullets for items with no prefix
-  .empty {
-    display: block;
-  }
-
-  .decimal {
-    list-style-type: decimal;
-  }
-
-  .latin {
-    list-style-type: upper-alpha;
-  }
-
-  .roman {
-    list-style-type: upper-roman;
-  }
+  list-style-type: none;
+  user-select: none;
 
   ul {
-    margin-bottom: 0;
+    padding: 0 0 0 16px;
+    list-style-type: none;
+  }
+
+  li {
+    &:before {
+      .font-awesome();
+
+      content: @fa-var-caret-right;
+      display: block;
+      float: left;
+      width: 10px;
+
+      cursor: pointer;
+      font-size: 12px;
+      color: #999;
+      position: relative;
+      top: 3px;
+    }
   }
 
   a {

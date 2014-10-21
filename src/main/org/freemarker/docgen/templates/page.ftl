@@ -100,11 +100,8 @@
             <p class="toc-title">Table of Contents</p>
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
             <#--   both are called, but at least one of them will be empty: -->
-
-            <div id="toc-menu">
-              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
-            </div>
+            <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+            <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
           </div>
 
           <div class="col-right">
@@ -170,9 +167,10 @@
 
   <#if curDepth == 1>
     <#local tocClass = "table-of-contents">
+    <#local tocId = "table-of-contents">
   </#if>
 
-  <ul<#if tocClass?has_content> class="${tocClass}"</#if>>
+  <ul<#if tocId?has_content> id="${tocId}"</#if><#if tocClass?has_content> class="${tocClass}"</#if>>
     <#list tocElems as tocElem>
       <li><#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
@@ -183,7 +181,7 @@
         </#if>
       </li><#t>
     </#list>
-  </ol><#t>
+  </ul><#t>
 </#macro>
 
 
