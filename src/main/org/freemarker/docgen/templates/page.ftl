@@ -34,8 +34,9 @@
   <meta property="og:url" content="${canonicalUrl}">
   <link rel="canoical" href="${canonicalUrl}">
   <#if !disableJavaScript>
-    <script type="text/javascript" src="docgen-resources/jquery.js"></script>
-    <script type="text/javascript" src="docgen-resources/linktargetmarker.js"></script>
+    <script src="docgen-resources/jquery.js"></script>
+    <script src="docgen-resources/linktargetmarker.js"></script>
+    <script src="docgen-resources/toc.js"></script>
   </#if>
 </head>
 </#compress>
@@ -83,7 +84,7 @@
       <#if pageType == "index" || pageType == "glossary">
         <#visit .node using nodeHandlers>
       <#elseif pageType == "docgen:detailed_toc">
-        <@toc att="docgen_detailed_toc_element" maxDepth=99 title="Detailed Table of Contents" />
+        <@toc att="docgen_detailed_toc_element" maxDepth=99 />
       <#else>
 
         <div class="page-header">
@@ -95,16 +96,19 @@
         </div>
 
         <div class="page-content">
+          <div class="col-left">
+            <p class="toc-title">Table of Contents</p>
+            <#-- - Render either ToF (Table of Files) or Page ToC; -->
+            <#--   both are called, but at least one of them will be empty: -->
 
-          <#-- Normal page content: -->
+            <div id="toc-menu">
+              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
+            </div>
+          </div>
 
-          <#-- - Render either ToF (Table of Files) or Page ToC; -->
-          <#--   both is called, but at least one of them will be empty: -->
-          <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-          <@toc att="docgen_page_toc_element" maxDepth=99 title="Page Contents" minLength=2 />
-
-          <#-- - Render page title: -->
           <div class="col-right">
+            <#-- - Render page title: -->
             <#--<#visit titleElement using nodeHandlers>-->
 
             <#-- @todo: remove this and fix anchors
@@ -138,8 +142,6 @@
     </div>
   </div>
 
-  <#--<@nav.navigationBar top=false />-->
-
   <@footer />
   <#if !disableJavaScript>
     <#-- Put pre-loaded images here: -->
@@ -150,31 +152,15 @@
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
   </#if>
+
+  <script src="docgen-resources/main.js"></script>
 </body>
 </html>
 
-<#macro toc att maxDepth title='' minLength=1>
+<#macro toc att maxDepth minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-    <div class="table-of-contents-wrapper<#if .node?parent?node_type == "document"> main-toc</#if>"><#t>
-      <p class="toc-title"><#t>
-        <strong><#t>
-          <#if !title?has_content>
-            <#if .node?parent?node_type == "document">
-              Table of Contents
-            <#else>
-              ${pageType?cap_first} Contents
-            </#if>
-          <#else>
-            ${title}
-          </#if>
-        </strong><#t>
-        <#if alternativeTOCLink??>
-          <a class="alt-toc" href="${alternativeTOCLink?html}">${alternativeTOCLabel?cap_first?html}</a><#t>
-        </#if>
-      </p>
       <@toc_inner tocElems att maxDepth />
-    </div>
   </#if>
 </#macro>
 
@@ -184,20 +170,11 @@
 
   <#if curDepth == 1>
     <#local tocClass = "table-of-contents">
-
-    <#--<#if .node?parent?node_type == "document">
-      <#local tocClass = tocClass + " main-toc">
-    </#if>-->
   </#if>
 
-  <ol<#if tocClass?has_content> class="${tocClass}"</#if>>
-    <#--
-    <#if curDepth == 1 && startsWithTopLevelContent>
-      <li class="empty"><a href="#docgen_afterTheTOC">Intro.</a></li><#t>
-    </#if>-->
+  <ul<#if tocClass?has_content> class="${tocClass}"</#if>>
     <#list tocElems as tocElem>
-      <#local prefixClass = titlePrefixClass(tocElem)>
-      <li<#if prefixClass?has_content> class="${prefixClass}"</#if>><#t>
+      <li><#t>
         <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
@@ -208,34 +185,6 @@
     </#list>
   </ol><#t>
 </#macro>
-
-
-<#---
-  return appropriate css class based on title prefix
-  @fixme can this be on the backend?
--->
-<#function titlePrefixClass tocElem>
-
-  <#local titlePrefix = u.getTitlePrefix(tocElem, false)?trim>
-
-  <#if !titlePrefix?has_content>
-    <#return "empty">
-
-  <#elseif "01234567890"?contains(titlePrefix)>
-    <#return "decimal">
-
-  <#elseif "IIIVVI"?contains(titlePrefix)>
-    <#return "roman">
-
-  <#elseif "ABCDEFGHIJKLMNOPQRSTUVWXYZ"?contains(titlePrefix)>
-    <#return "latin">
-
-  </#if>
-
-  <#return "">
-
-</#function>
-
 
 
 <#macro footer>
