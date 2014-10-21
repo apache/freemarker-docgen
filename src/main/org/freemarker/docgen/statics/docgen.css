@@ -436,14 +436,23 @@ th {
   color: #666;
   line-height: 21px;
 }
+.expanded.table-of-contents li::before {
+  content: '' !important;
+}
 .table-of-contents li.current::before {
   content: "\f0d7";
 }
 .table-of-contents li.closed::before {
   content: "\f0da";
 }
+.expanded.table-of-contents li.closed::before {
+  content: "\f0d7";
+}
 .table-of-contents li.closed ul {
   display: none;
+}
+.expanded.table-of-contents li.closed ul {
+  display: block;
 }
 .table-of-contents li.childless {
   padding-left: 12px;
@@ -459,6 +468,13 @@ th {
   font-weight: 400;
   font-size: 16px;
   color: #333333;
+}
+.expanded.table-of-contents li.depth-1 > a {
+  color: #666;
+}
+.expanded.table-of-contents li.internal,
+.expanded.table-of-contents li.childless {
+  display: none;
 }
 .table-of-contents a {
   display: block;

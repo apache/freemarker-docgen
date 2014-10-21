@@ -13,10 +13,17 @@
     var tableOfContents = document.getElementById('table-of-contents');
     var tocParent = tableOfContents.parentNode;
 
+    // @todo: find better css class solution
+    var cssClass = 'table-of-contents';
+
+    if (tableOfContents.classList.contains('expanded')) {
+      cssClass = cssClass + ' expanded';
+    }
+
     tocParent.removeChild(tableOfContents);
 
     var newTableOfContents = menuChildren(data.children, '', 0);
-    newTableOfContents.className = 'table-of-contents';
+    newTableOfContents.className = cssClass;
 
     tocParent.appendChild(newTableOfContents);
   }
@@ -46,6 +53,10 @@
         }
       } else {
         li.className = 'closed';
+      }
+
+      if (!node.isFile) {
+        li.classList.add('internal');
       }
 
       if (node.children.length) {
