@@ -99,7 +99,9 @@
           <div class="col-left">
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
             <#--   both are called, but at least one of them will be empty: -->
-            <div id="table-of-contents">
+
+            <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
+
               <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
               <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
             </div>
