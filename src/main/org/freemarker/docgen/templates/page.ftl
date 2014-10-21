@@ -67,13 +67,14 @@
         </fieldset>
       </form>
     </div>
+    <#--
     <div class="navigation">
-      <#-- keep site-width inside navigation so that the background extends -->
+
       <div class="site-width">
         <@nav.breadcrumb />
         <@nav.bookmarks />
       </div>
-    </div>
+    </div>-->
   </div>
 
   <div class="content-outer">
@@ -88,11 +89,7 @@
       <#else>
 
         <div class="page-header">
-          <#--<@nav.breadcrumb />-->
-          <div class="title-wrapper">
-            <@nav.pagers class="top" />
-            <#visit titleElement using nodeHandlers>
-          </div>
+          <@nav.breadcrumb />
         </div>
 
         <div class="page-content">
@@ -109,7 +106,8 @@
 
           <div class="col-right">
             <#-- - Render page title: -->
-            <#--<#visit titleElement using nodeHandlers>-->
+            <@nav.pagers class="top" />
+            <#visit titleElement using nodeHandlers>
 
             <#-- @todo: remove this and fix anchors
             <a name="docgen_afterTheTOC"></a> -->
@@ -121,10 +119,12 @@
                 <#visit child using nodeHandlers>
               </#if>
             </#list>
+
+            <@nav.pagers class="bottom" />
           </div>
         </div>
 
-        <@nav.pagers class="bottom" />
+
       </#if>
 
       <#-- Render footnotes, if any: -->
