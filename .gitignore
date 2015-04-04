@@ -8,3 +8,5 @@
 src/manual/book.xml~
 
 node_modules
+
+npm-debug.log
