@@ -3,14 +3,13 @@
 }
 
 html {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 62.5%;
+  font-family: @font-sans-serif;
+  font-size: 14px;
   color: @text-color;
   line-height: 1.5;
   text-size-adjust: 100%;
   font-weight: normal;
-  background-color: #2e2e2e;
-  //background-color: #E2E2E2;
+  background-color: #fff;
 }
 
 body {
@@ -22,10 +21,6 @@ body {
 a {
   color: @link-color;
   text-decoration: none;
-
-  &:hover {
-    color: @link-hover-color;
-  }
 }
 
 h1,
@@ -34,7 +29,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: @font-sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: @header-color;

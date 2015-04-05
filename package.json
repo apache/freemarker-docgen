@@ -2,8 +2,7 @@
   "name": "docgen-assets",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {
-    "font-awesome": "https://github.com/FortAwesome/Font-Awesome/archive/v4.2.0.tar.gz",
+  "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-less": "^3.0.2",

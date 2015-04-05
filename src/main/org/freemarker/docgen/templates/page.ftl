@@ -19,8 +19,8 @@
     <#assign pageTitle = topLevelTitle + " - " + title>
   </#if>
   <title>${pageTitle?html}</title>
-  <link rel="stylesheet" href="docgen-resources/docgen.css" type="text/css">
-  <meta name="generator" content="FreeMarker Docgen (DocBook 5)">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400" >
+  <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.css">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
   <meta property="og:title" content="${pageTitle?html}">
@@ -33,11 +33,13 @@
   <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
   <meta property="og:url" content="${canonicalUrl}">
   <link rel="canoical" href="${canonicalUrl}">
+  <#--
   <#if !disableJavaScript>
     <script src="docgen-resources/jquery.js"></script>
     <script src="docgen-resources/linktargetmarker.js"></script>
     <script src="docgen-resources/toc.js"></script>
   </#if>
+  -->
 </head>
 </#compress>
 
@@ -51,21 +53,23 @@
             FreeMarker<#t>
             <#-- @todo: replace with new logo -->
             <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
-          </a><#t><#t>
+          </a><#t>
         </#if>
         <@nav.tabs />
       </div>
       <#-- @todo: replace with google search -->
       <#-- @todo: move to better file -->
       <#-- @todo: need flag to disable or enable search -->
-      <form class="search-form">
-        <fieldset>
-          <legend class="sr-only">Search form</legend>
-          <label for="search-field" class="sr-only">Search query</label>
-          <input id="search-field" type="search" class="search-box" placeholder="Search" spellcheck="false" autocorrect="off">
-          <button type="submit" class="search-btn"><span class="sr-only">Search</span></button>
-        </fieldset>
-      </form>
+      <#if !offline>
+        <form class="search-form"><#t>
+          <fieldset><#t>
+            <legend class="sr-only">Search form</legend><#t>
+            <label for="search-field" class="sr-only">Search query</label><#t>
+            <input id="search-field" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off"><#t>
+            <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
+          </fieldset><#t>
+        </form><#t>
+      </#if>
     </div>
     <#--
     <div class="navigation">
@@ -144,19 +148,19 @@
 
   <@footer />
   <#if !disableJavaScript>
-    <#-- Put pre-loaded images here: -->
+    <#-- Put pre-loaded images here:
     <div style="display: none">
       <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
-    </div>
+    </div> -->
   </#if>
   <#if !offline && onlineTrackerHTML??>
-    ${onlineTrackerHTML}
+    <#--${onlineTrackerHTML}-->
   </#if>
 
   <script>
     <@nav.breadcrumbJs />
   </script>
-  <script src="docgen-resources/main.js"></script>
+  <#--<script src="docgen-resources/main.js"></script>-->
 </body>
 </html>
 

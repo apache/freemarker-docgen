@@ -1,79 +1,54 @@
 .search-form {
-
-  // hide in print view
-  @media print {
-    display: none;
-  }
-
-  min-width: 100px;
-  width: 100%;
-  position: relative;
-
-  @search-highlight: #2C5F79;
-
-  @media (min-width: @screen-md-min) {
-    max-width: 300px;
-  }
-
-  @media (min-width: @screen-lg-min) {
-    max-width: 400px;
-  }
-
-  .search-box {
-    padding: 3px 12px;
-    background: none;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid #4a4a4a;
-    height: 36px;
-    line-height: 24px;
-    color: #FFF;
-    width: 100%;
-    font-family: Helvetic, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    transition: border-color ease-in-out .2s, box-shadow ease-in-out .2s;
-    border-radius: 0;
-
-    &:focus {
-      outline: 0;
-      box-shadow: 1px 1px 3px #000;
-      border-color: @search-highlight;
-
-      & + .search-btn {
-        color: @search-highlight;
-      }
-    }
-  }
+  width: 300px;
+  height: 28px;
 
   .search-btn {
-    position: absolute;
-    top: 1px;
-    right: 0;
+    color: @link-color;
+    line-height: 1;
+
+    background-color: #fff;
+    background-image: none;
 
     border: 0;
-    background: rgba(0, 0, 0, 0);
     border-radius: 0;
-    font-size: 17px;
 
-    height: 34px;
-    color: #4a4a4a;
-    transition: color ease-in-out .2s;
-    cursor: pointer;
-    padding: 0 12px;
+    padding: 0 3px;
 
-    &:focus,
+    width: 26px;
+    height: 26px;
+
+    position: relative;
+    top: 1px;
+    margin-left: -27px;
+
     &:hover {
-      outline: 0;
-      color: #2C5F79;
-    }
-
-    &::-ms-clear {
-      display: none;
+      color: lighten(@link-color, 30%);
+      cursor: pointer;
     }
 
     &::before {
-      .font-awesome();
-      content: @fa-var-search;
+      .icon();
+      .icon-magnifying-glass();
+
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
     }
+  }
+
+  .search-input {
+    font-family: @font-sans-serif;
+
+    background-color: #fff;
+    background-image: none;
+
+    border: 1px solid #aec0d6;
+    border-radius: 0;
+
+    height: 28px;
+    padding: 3px 12px;
+    width: 300px;
+
+    float: left;
   }
 }
