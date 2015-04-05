@@ -50,5 +50,20 @@
     width: 300px;
 
     float: left;
+
+    &::-moz-placeholder {
+      color: @link-color;
+      opacity: 0.6;
+    }
+
+    &:-ms-input-placeholder {
+      color: @link-color;
+      opacity: 0.6;
+    }
+
+    &::-webkit-input-placeholder {
+      color: @link-color;
+      opacity: 0.6;
+    }
   }
 }

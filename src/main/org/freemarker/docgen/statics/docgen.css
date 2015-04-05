@@ -137,6 +137,18 @@ th {
   width: 300px;
   float: left;
 }
+.search-form .search-input::-moz-placeholder {
+  color: #0050b2;
+  opacity: 0.6;
+}
+.search-form .search-input:-ms-input-placeholder {
+  color: #0050b2;
+  opacity: 0.6;
+}
+.search-form .search-input::-webkit-input-placeholder {
+  color: #0050b2;
+  opacity: 0.6;
+}
 .site-width {
   margin-left: auto;
   margin-right: auto;
