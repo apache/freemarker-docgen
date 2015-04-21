@@ -1,0 +1,49 @@
+.paging-icon() {
+  .icon();
+
+  width: 14px;
+  height: 22px;
+  display: inline-block;
+  line-height: 22px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.pagers {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  float: right;
+
+  li {
+    display: inline-block;
+
+    a {
+      display: block;
+      height: 22px;
+    }
+
+    &.previous {
+      margin-right: 12px;
+
+      a {
+        &:before {
+          .paging-icon();
+          .icon-chevron-with-circle-left();
+          margin-right: 6px;
+        }
+      }
+    }
+
+    &.next {
+      a {
+        &:after {
+          .paging-icon();
+          .icon-chevron-with-circle-right();
+          margin-left: 6px;
+        }
+      }
+    }
+  }
+}

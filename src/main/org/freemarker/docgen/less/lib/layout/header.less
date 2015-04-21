@@ -1,9 +1,103 @@
-.site-header {
+.header-top-bg {
   background: @brand-color url(img/patterned-bg.png);
   box-shadow: 0 0 9px #9d9d9d;
   border-bottom: 3px solid #003270;
+}
 
-  .logo {
-    color: #fff;
+.header-bottom-bg {
+  background-color: #efefef;
+  border-bottom: 1px solid #dedede;
+}
+
+.logo {
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  padding: 12px 0;
+}
+
+
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tabs {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+
+  li {
+    display: inline-block;
+
+    &:after {
+      width: 1px;
+      background-color: #96a5b8;
+      height: 9px;
+      display: inline-block;
+      content: '';
+      margin: 0 15px;
+    }
+
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+
+    a {
+      color: #c9dbf1;
+    }
+  }
+}
+
+
+.header-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  .category {
+    color: @link-color;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .header-left,
+  .header-right {
+    padding: 24px 0 12px;
+  }
+
+  .header-right {
+    align-self: baseline;
+  }
+
+  .notices {
+    text-align: center;
+    margin: 0 0 6px;
+    display: block;
+
+    strong {
+      font-weight: normal;
+      border-bottom: 1px solid #8fafd7;
+    }
+
+    a {
+      &:before {
+        .icon();
+        .icon-heart-outlined();
+        width: 14px;
+        height: 14px;
+        display: inline-block;
+        position: relative;
+        top: 1px;
+        margin-right: 3px;
+      }
+    }
   }
 }

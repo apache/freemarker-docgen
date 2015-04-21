@@ -1,6 +1,7 @@
 <#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
 <#-- Avoid inital empty line! -->
 <#import "util.ftl" as u>
+<#import "ui.ftl" as ui>
 <#import "navigation.ftl" as nav>
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
@@ -44,106 +45,68 @@
 </#compress>
 
 <body itemscope itemtype="http://schema.org/Article">
-  <div class="site-header">
-    <#-- keep site-width inside site-header so that the background extends -->
-    <div class="site-width header-top">
-      <div class="logo-nav-wrapper">
-        <#if logo??>
-          <a class="logo" href="${logo.href?html}" role="banner"><#t>
-            FreeMarker<#t>
-            <#-- @todo: replace with new logo -->
-            <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
-          </a><#t>
-        </#if>
-        <@nav.tabs />
-      </div>
-      <#-- @todo: replace with google search -->
-      <#-- @todo: move to better file -->
-      <#-- @todo: need flag to disable or enable search -->
-      <#if !offline>
-        <form class="search-form"><#t>
-          <fieldset><#t>
-            <legend class="sr-only">Search form</legend><#t>
-            <label for="search-field" class="sr-only">Search query</label><#t>
-            <input id="search-field" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off"><#t>
-            <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
-          </fieldset><#t>
-        </form><#t>
-      </#if>
-    </div>
-    <#--
-    <div class="navigation">
+  <@ui.siteHeader logo=logo />
 
-      <div class="site-width">
-        <@nav.breadcrumb />
-        <@nav.bookmarks />
-      </div>
-    </div>-->
-  </div>
 
-  <div class="content-outer">
-    <div class="site-content site-width">
-      <#--<@nav.breadcrumb />-->
-      <#assign pageType = pageType!.node?node_name>
+  <div class="site-content site-width">
+    <#--<@nav.breadcrumb />-->
+    <#assign pageType = pageType!.node?node_name>
 
-      <#if pageType == "index" || pageType == "glossary">
-        <#visit .node using nodeHandlers>
-      <#elseif pageType == "docgen:detailed_toc">
-        <@toc att="docgen_detailed_toc_element" maxDepth=99 />
-      <#else>
+    <#if pageType == "index" || pageType == "glossary">
+      <#visit .node using nodeHandlers>
+    <#elseif pageType == "docgen:detailed_toc">
+      <@toc att="docgen_detailed_toc_element" maxDepth=99 />
+    <#else>
 
-        <div class="page-header">
-          <@nav.breadcrumb />
+      <div class="page-content">
+        <div class="col-left">
+          <#-- - Render either ToF (Table of Files) or Page ToC; -->
+          <#--   both are called, but at least one of them will be empty: -->
+
+          <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
+
+            <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+            <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
+          </div>
         </div>
 
-        <div class="page-content">
-          <div class="col-left">
-            <#-- - Render either ToF (Table of Files) or Page ToC; -->
-            <#--   both are called, but at least one of them will be empty: -->
-
-            <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
-
-              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
-            </div>
-          </div>
-
-          <div class="col-right">
-            <#-- - Render page title: -->
-            <@nav.pagers class="top" />
+        <div class="col-right">
+          <#-- - Render page title: -->
+          <div class="page-title">
             <#visit titleElement using nodeHandlers>
-
-            <#-- @todo: remove this and fix anchors
-            <a name="docgen_afterTheTOC"></a> -->
-            <#-- - Render the usual content, like <para>-s etc.: -->
-            <#list .node.* as child>
-              <#if child.@docgen_file_element?size == 0
-                  && child?node_name != "title"
-                  && child?node_name != "subtitle">
-                <#visit child using nodeHandlers>
-              </#if>
-            </#list>
-
-            <@nav.pagers class="bottom" />
+            <@nav.pagers class="top" />
           </div>
+
+          <#-- @todo: remove this and fix anchors
+          <a name="docgen_afterTheTOC"></a> -->
+          <#-- - Render the usual content, like <para>-s etc.: -->
+          <#list .node.* as child>
+            <#if child.@docgen_file_element?size == 0
+                && child?node_name != "title"
+                && child?node_name != "subtitle">
+              <#visit child using nodeHandlers>
+            </#if>
+          </#list>
+
+          <@nav.pagers class="bottom" />
         </div>
+      </div>
 
 
-      </#if>
+    </#if>
 
-      <#-- Render footnotes, if any: -->
-      <#assign footnotes = defaultNodeHandlers.footnotes>
-      <#if footnotes?size != 0>
-        <div id="footnotes">
-          Footnotes:
-          <ol>
-            <#list footnotes as footnote>
-              <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
-            </#list>
-          </ol>
-        </div>
-      </#if>
-    </div>
+    <#-- Render footnotes, if any: -->
+    <#assign footnotes = defaultNodeHandlers.footnotes>
+    <#if footnotes?size != 0>
+      <div id="footnotes">
+        Footnotes:
+        <ol>
+          <#list footnotes as footnote>
+            <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+          </#list>
+        </ol>
+      </div>
+    </#if>
   </div>
 
   <@footer />
