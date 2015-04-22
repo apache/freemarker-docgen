@@ -275,7 +275,7 @@ th {
   -webkit-flex: 0 0 130px;
   -ms-flex: 0 0 130px;
   flex: 0 0 130px;
-  margin-left: 12px;
+  margin-right: 12px;
 }
 @media (min-width: 768px) {
   .page-content .col-left {
