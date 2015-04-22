@@ -1,8 +1,15 @@
 .page-content {
   display: flex;
+  padding-top: 24px;
 
   .col-left {
-    flex: 0 0 300px;
+    flex: 0 0 130px;
+    margin-left: @gutter-width / 2;
+
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 210px;
+      margin-right: @gutter-width;
+    }
   }
 
   .col-right {
@@ -14,9 +21,15 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  flex-wrap: wrap;
 
   .header-section1 {
     margin: 0;
     font-weight: 500;
+    font-size: 24px;
+
+    @media (min-width: @screen-sm-min) {
+      font-size: 36px;
+    }
   }
 }

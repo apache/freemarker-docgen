@@ -28,13 +28,13 @@
 
 <#macro categoryHeader>
   <div class="site-width header-bottom">
-    <div class="header-left">
-      <div class="category">Manual</div>
-      <@nav.breadcrumb />
-    </div>
     <div class="header-right">
       <@notices />
       <@searchForm />
+    </div>
+    <div class="header-left">
+      <div class="category">Manual</div>
+      <@nav.breadcrumb />
     </div>
   </div>
 </#macro>
