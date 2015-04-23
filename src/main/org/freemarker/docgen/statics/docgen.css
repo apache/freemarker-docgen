@@ -318,6 +318,19 @@ th {
     font-size: 36px;
   }
 }
+.site-footer {
+  background: #0050b2 url(img/patterned-bg.png);
+  border-top: 3px solid #003270;
+  color: #fff;
+}
+.site-footer a {
+  color: #fff;
+}
+.legal {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 .breadcrumb {
   list-style-type: none;
   margin: 0;
