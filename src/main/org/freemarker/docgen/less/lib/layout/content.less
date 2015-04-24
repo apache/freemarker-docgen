@@ -1,14 +1,29 @@
+.site-content {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background-color: #fff;
+}
+
 .page-content {
   display: flex;
-  padding-top: 24px;
+  padding-top: 42px;
+  padding-bottom: 42px;
+  min-height: 600px;
+  position: relative;
+
+  &.no-toc {
+    display: block;
+  }
 
   .col-left {
     flex: 0 0 130px;
+    flex-basis: auto;
     margin-right: @gutter-width / 2;
 
     @media (min-width: @screen-sm-min) {
-      flex-basis: 210px;
-      margin-right: @gutter-width;
+      flex-basis: auto;
+      max-width: 240px;
+      margin-right: @gutter-width * 2;
     }
   }
 
@@ -23,7 +38,7 @@
   align-items: baseline;
   flex-wrap: wrap;
 
-  .header-section1 {
+  h1 {
     margin: 0;
     font-weight: 500;
     font-size: 24px;
@@ -31,5 +46,15 @@
     @media (min-width: @screen-sm-min) {
       font-size: 36px;
     }
+  }
+
+  .subtitle {
+    display: block;
+    font-size: 14px;
+
+    @media (min-width: @screen-sm-min) {
+      font-size: 24px;
+    }
+
   }
 }

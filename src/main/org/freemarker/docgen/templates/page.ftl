@@ -2,6 +2,7 @@
 <#-- Avoid inital empty line! -->
 <#import "util.ftl" as u>
 <#import "ui.ftl" as ui>
+<#import "footer.ftl" as footer>
 <#import "navigation.ftl" as nav>
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
@@ -47,69 +48,69 @@
 <body itemscope itemtype="http://schema.org/Article">
   <@ui.siteHeader logo=logo />
 
+  <div class="site-content">
+    <div class="site-width">
+      <#--<@nav.breadcrumb />-->
+      <#assign pageType = pageType!.node?node_name>
 
-  <div class="site-content site-width">
-    <#--<@nav.breadcrumb />-->
-    <#assign pageType = pageType!.node?node_name>
-
-    <#if pageType == "index" || pageType == "glossary">
-      <#visit .node using nodeHandlers>
-    <#elseif pageType == "docgen:detailed_toc">
-      <@toc att="docgen_detailed_toc_element" maxDepth=99 />
-    <#else>
-
-      <div class="page-content">
-        <div class="col-left">
-          <#-- - Render either ToF (Table of Files) or Page ToC; -->
-          <#--   both are called, but at least one of them will be empty: -->
-
-          <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
-
-            <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-            <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
-          </div>
-        </div>
-
-        <div class="col-right">
-          <#-- - Render page title: -->
+      <div class="page-content<#if pageType == "index" || pageType == "glossary" || pageType == "docgen:detailed_toc"> no-toc</#if>">
+        <#if pageType == "index" || pageType == "glossary">
           <div class="page-title">
             <#visit titleElement using nodeHandlers>
             <@nav.pagers class="top" />
           </div>
+          <#visit .node using nodeHandlers>
+        <#elseif pageType == "docgen:detailed_toc">
+          <@toc att="docgen_detailed_toc_element" maxDepth=99 />
+        <#else>
+          <div class="col-left">
+            <#-- - Render either ToF (Table of Files) or Page ToC; -->
+            <#--   both are called, but at least one of them will be empty: -->
+            <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
+              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
+            </div>
+          </div>
 
-          <#-- @todo: remove this and fix anchors
-          <a name="docgen_afterTheTOC"></a> -->
-          <#-- - Render the usual content, like <para>-s etc.: -->
-          <#list .node.* as child>
-            <#if child.@docgen_file_element?size == 0
-                && child?node_name != "title"
-                && child?node_name != "subtitle">
-              <#visit child using nodeHandlers>
-            </#if>
-          </#list>
+          <div class="col-right">
+            <#-- - Render page title: -->
+            <div class="page-title">
+              <#visit titleElement using nodeHandlers>
+              <@nav.pagers class="top" />
+            </div>
 
-          <@nav.pagers class="bottom" />
-        </div>
+            <#-- @todo: remove this and fix anchors
+            <a name="docgen_afterTheTOC"></a> -->
+            <#-- - Render the usual content, like <para>-s etc.: -->
+            <#list .node.* as child>
+              <#if child.@docgen_file_element?size == 0
+                  && child?node_name != "title"
+                  && child?node_name != "subtitle">
+                <#visit child using nodeHandlers>
+              </#if>
+            </#list>
+
+            <@nav.pagers class="bottom" />
+          </div>
+        </#if>
+
+        <#-- Render footnotes, if any: -->
+        <#assign footnotes = defaultNodeHandlers.footnotes>
+        <#if footnotes?size != 0>
+          <div id="footnotes">
+            Footnotes:
+            <ol>
+              <#list footnotes as footnote>
+                <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+              </#list>
+            </ol>
+          </div>
+        </#if>
       </div>
-
-
-    </#if>
-
-    <#-- Render footnotes, if any: -->
-    <#assign footnotes = defaultNodeHandlers.footnotes>
-    <#if footnotes?size != 0>
-      <div id="footnotes">
-        Footnotes:
-        <ol>
-          <#list footnotes as footnote>
-            <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
-          </#list>
-        </ol>
-      </div>
-    </#if>
+    </div>
   </div>
 
-  <@footer />
+  <@footer.footer topLevelTitle=topLevelTitle />
   <#if !disableJavaScript>
     <#-- Put pre-loaded images here:
     <div style="display: none">
@@ -142,10 +143,10 @@
     <#local tocClass = "table-of-contents">
   </#if>
 
-  <ul<#if tocClass?has_content> class="${tocClass}"</#if>>
+  <ul class="depth-${curDepth}<#if tocClass?has_content> ${tocClass}</#if>">
     <#list tocElems as tocElem>
-      <li><#t>
-        <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
+      <li<#if curDepth == 1> class="section"</#if>><#t>
+        <a<#if curDepth == 1> class="header"</#if> href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
         <#if (curDepth < maxDepth)>
@@ -154,70 +155,6 @@
       </li><#t>
     </#list>
   </ul><#t>
-</#macro>
-
-
-<#macro footer>
-
-  <#local footerTitleHTML = topLevelTitle?html>
-  <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-  <#if bookSubtitle?has_content>
-    <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
-  </#if>
-
-  <#-- @todo: externalize links to manual -->
-  <#local socialLinks = [
-    {
-      "url": "https://github.com/freemarker",
-      "class": "github",
-      "title": "Github"
-    }, {
-      "url": "https://twitter.com/freemarker",
-      "class": "twitter",
-      "title": "Twitter"
-    }, {
-      "url": "https://stackoverflow.com/questions/tagged/freemarker",
-      "class": "stack-overflow",
-      "title": "Stack Overflow"
-    }
-  ]>
-
-  <div class="site-footer">
-    <#-- keep site-width inside so background extends -->
-    <div class="site-width">
-      <div class="footer-inner">
-        <p class="footer-title">
-          ${footerTitleHTML}<br>
-          Last updated:
-          <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
-            ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
-          </time>
-        </p>
-
-        <ul class="social-icons"><#t>
-          <#list socialLinks as link>
-            <li><#t>
-              <a class="${link.class}" href="${link.url}">${link.title}</a><#t>
-            </li><#t>
-          </#list>
-        </ul><#t>
-      </div>
-
-      <#-- @todo: this should be generic and not hardcoded -->
-      <div class="copyright">
-        <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.</p>
-        <#-- @todo: make license generic -->
-        <ul class="legal"><#t>
-          <li><#t>
-            <a href="app_license.html" itemprop="license">License</a><#t>
-          </li><#t>
-          <li><#t>
-            <a href="http://sourceforge.net/p/freemarker/bugs/">Report a bug</a><#t>
-          </li><#t>
-        </ul><#t>
-      </div>
-    </div>
-  </div>
 </#macro>
 
 

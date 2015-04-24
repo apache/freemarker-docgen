@@ -7,4 +7,61 @@
   @media (min-width: @screen-sm-min) {
     font-size: 14px;
   }
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    &.depth-3 {
+      display: none;
+    }
+
+    &.depth-2 {
+      ul {
+        margin: 0 0 0 18px;
+      }
+
+      li {
+        list-style-type: none;
+      }
+
+      a {
+        color: #555;
+      }
+    }
+  }
+
+  li {
+    &.section {
+      border-bottom: 1px solid #eee;
+      margin-bottom: 30px;
+
+      &:after {
+        height: 1px;
+        background-color: #ccc;
+        content: '';
+        width: 100%;
+        display: block;
+        margin-top: 30px;
+      }
+    }
+
+    a {
+      display: block;
+
+      &.header {
+        color: @link-color;
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 30px;
+        display: block;
+        width: 100%;
+        line-height: 1;
+      }
+
+      &:hover {
+        color: #666;
+      }
+    }
+  }
 }
