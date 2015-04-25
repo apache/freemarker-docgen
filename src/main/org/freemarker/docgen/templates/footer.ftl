@@ -11,36 +11,51 @@
   <div class="site-footer">
     <#-- keep site-width inside so background extends -->
     <div class="site-width">
+      <#--
       <div class="footer-inner">
         <p class="footer-title">
           ${footerTitleHTML}<br>
-          Last updated:
-          <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
-            ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
-          </time>
+          <@lastUpdated />
         </p>
 
         <@ui.social />
       </div>
+      -->
 
-      <#-- @todo: this should be generic and not hardcoded -->
-      <div class="copyright">
-        <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.</p>
-        <#-- @todo: make license generic -->
-        <ul class="legal"><#t>
-          <li><#t>
-            <a href="app_license.html" itemprop="license">License</a><#t>
-          </li><#t>
-          <li><#t>
-            <a href="http://sourceforge.net/p/freemarker/bugs/">Report a bug</a><#t>
-          </li><#t>
-        </ul><#t>
-      </div>
+      <div class="footer-bottom">
+        <div class="col-left">
+          <p>${footerTitleHTML}</p>
+          <p class="last-updated"><@lastUpdated /></p>
+        </div>
+        <div class="col-right">
+          <@copyright />
+        </div>
     </div>
   </div>
 </#macro>
 
+<#macro lastUpdated>
+  Last updated:
+  <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
+    ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
+  </time>
+</#macro>
 
+<#macro copyright>
+  <#-- @todo: this should be generic and not hardcoded -->
+  <div class="copyright">
+    <p>© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.</p>
+    <#-- @todo: make license generic
+    <ul class="legal"><#t>
+      <li><#t>
+        <a href="app_license.html" itemprop="license">License</a><#t>
+      </li><#t>
+      <li><#t>
+        <a href="http://sourceforge.net/p/freemarker/bugs/">Report a bug</a><#t>
+      </li><#t>
+    </ul><#t> -->
+  </div>
+</#macro>
 
 <#macro siteMap>
   <#local links = {
