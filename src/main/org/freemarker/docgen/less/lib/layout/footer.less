@@ -1,28 +1,73 @@
 .site-footer {
   border-top: 3px solid #003270;
-
+  background-color: @brand-color;
+  background-image: radial-gradient(ellipse at 50% -50px,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 24%,
+    rgba(0, 12, 59, 1) 86%,
+    rgba(0, 12, 59, 1) 100%), url(img/patterned-bg.png);
   color: #fff;
 
   a {
     color: #fff;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
   }
 }
 
 
-.legal {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+.footer-top {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.sitemap {
+  display: flex;
+
+  .column {
+    margin-right: 54px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .column-header {
+      color: #fff;
+      border-bottom: 2px solid #4c76ab;
+      margin: 0 0 6px;
+      padding-bottom: 6px;
+    }
+
+    ul {
+      padding: 0 9px 0 0;
+      margin: 0;
+      list-style-type: none;
+    }
+
+    a {
+      display: block;
+    }
+  }
 }
 
 .footer-bottom {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  padding: 45px 0 30px;
 
+  p {
+    flex-shrink: 0;
+    margin: 0 0 6px;
+  }
 
-}
-
-.last-updated {
-  font-size: 12px;
+  .last-updated {
+    font-size: 12px;
+    display: block;
+  }
 }

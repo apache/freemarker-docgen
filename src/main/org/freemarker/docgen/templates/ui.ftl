@@ -4,15 +4,17 @@
 <#import "google.ftl" as google>
 
 <#macro siteHeader logo>
-  <div class="site-width header-top">
-    <#if logo??>
-      <a class="logo" href="${logo.href?html}" role="banner"><#t>
-        &lt;FreeMarker&gt;<#t>
-        <#-- @todo: replace with new logo -->
-        <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
-      </a><#t>
-    </#if>
-    <@nav.tabs />
+  <div class="header-top-bg">
+    <div class="site-width header-top">
+      <#if logo??>
+        <a class="logo" href="${logo.href?html}" role="banner"><#t>
+          &lt;FreeMarker&gt;<#t>
+          <#-- @todo: replace with new logo -->
+          <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
+        </a><#t>
+      </#if>
+      <@nav.tabs />
+    </div>
   </div>
   <@categoryHeader />
 </#macro>
@@ -75,7 +77,7 @@
       "title": "Stack Overflow"
     }
   ]>
-  
+
   <ul class="social-icons"><#t>
     <#list socialLinks as link>
       <li><#t>
