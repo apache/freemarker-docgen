@@ -20,17 +20,6 @@
           <@ui.social />
         </div>
       </div>
-      <#--
-      <div class="footer-inner">
-        <p class="footer-title">
-          ${footerTitleHTML}<br>
-          <@lastUpdated />
-        </p>
-
-        <@ui.social />
-      </div>
-      -->
-
       <div class="footer-bottom">
           <p>
             ${footerTitleHTML}
@@ -53,8 +42,12 @@
 
 <#macro copyright>
   <#-- @todo: this should be generic and not hardcoded -->
-  <p class="copyright">© <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')} <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.</p>
+  <p class="copyright">
+    © <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')}
+    <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.
+  </p>
 </#macro>
+
 
 <#macro siteMap>
   <#-- @todo: make this dynamic instead of hardcoded -->

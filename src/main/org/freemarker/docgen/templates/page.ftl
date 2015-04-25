@@ -3,6 +3,7 @@
 <#import "util.ftl" as u>
 <#import "ui.ftl" as ui>
 <#import "footer.ftl" as footer>
+<#import "header.ftl" as header>
 <#import "navigation.ftl" as nav>
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
@@ -46,7 +47,7 @@
 </#compress>
 
 <body itemscope itemtype="http://schema.org/Article">
-  <@ui.siteHeader logo=logo />
+  <@header.header logo=logo />
 
   <div class="site-content">
     <div class="site-width">
