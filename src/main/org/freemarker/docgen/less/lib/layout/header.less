@@ -1,6 +1,11 @@
 .header-top-bg {
   background-color: @brand-color;
-  background-image: radial-gradient(circle at 50% 15px, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 420px, #000C3D 1050px, #000c3b 100%), url(img/patterned-bg.png);
+  background-image: radial-gradient(circle at 50% 15px,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 50%,
+    #000C3D 1050px,
+    #000c3b 100%),
+    url(img/patterned-bg.png);
   box-shadow: 0 3px 9px #c1c1c1;
   border-bottom: 3px solid #003270;
   position: relative;
@@ -68,7 +73,6 @@
 
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
     align-items: flex-end;
 
     @media (min-width: @screen-sm-min) {
