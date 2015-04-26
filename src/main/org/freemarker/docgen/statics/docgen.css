@@ -54,16 +54,8 @@ pre {
   -webkit-font-smoothing: antialiased;
 }
 code {
-  background-color: #f9f9f9;
-  border: 1px solid #e4e4e4;
-  border-radius: 4px;
-  padding: 1px 3px;
-  color: #6D180B;
-}
-pre code,
-table code {
-  border: 0;
-  background: transparent;
+  padding: 0 2px;
+  color: #C5351F;
 }
 pre {
   display: block;
@@ -503,7 +495,7 @@ th {
   width: 10px;
   height: 10px;
   display: inline-block;
-  margin-right: 3px;
+  padding-right: 5px;
   font-size: 10px;
 }
 .notices a:hover strong {
@@ -658,6 +650,9 @@ th {
   height: 28px;
   width: 100%;
   margin-left: 24px;
+}
+.search-form.offline {
+  visibility: hidden;
 }
 @media (min-width: 768px) {
   .search-form {

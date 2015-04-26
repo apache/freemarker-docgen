@@ -1103,6 +1103,7 @@ public final class Transform {
         // - Copy the standard statics:
         logger.info("Copying common static files...");
         copyCommonStatic("docgen.css");
+        copyCommonStatic("docgen.min.css");
         copyCommonStatic("img/patterned-bg.png");
 
         copyCommonStatic("fonts/icomoon.eot");

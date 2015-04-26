@@ -22,8 +22,8 @@
     <#assign pageTitle = topLevelTitle + " - " + title>
   </#if>
   <title>${pageTitle?html}</title>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400" >
-  <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400">
+  <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
   <meta property="og:title" content="${pageTitle?html}">
@@ -36,13 +36,6 @@
   <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
   <meta property="og:url" content="${canonicalUrl}">
   <link rel="canoical" href="${canonicalUrl}">
-  <#--
-  <#if !disableJavaScript>
-    <script src="docgen-resources/jquery.js"></script>
-    <script src="docgen-resources/linktargetmarker.js"></script>
-    <script src="docgen-resources/toc.js"></script>
-  </#if>
-  -->
 </head>
 </#compress>
 
@@ -115,17 +108,9 @@
   </div>
 
   <@footer.footer topLevelTitle=topLevelTitle />
-  <#if !disableJavaScript>
-    <#-- Put pre-loaded images here:
-    <div style="display: none">
-      <img src="docgen-resources/img/linktargetmarker.gif" alt="Here!" />
-    </div> -->
-  </#if>
   <#if !offline && onlineTrackerHTML??>
-    <#--${onlineTrackerHTML}-->
+    ${onlineTrackerHTML}
   </#if>
-
-
 </body>
 </html>
 
@@ -143,10 +128,9 @@
 
   <#if curDepth == 1>
     <#local class = "page-menu">
-    <#local id = "table-of-contents2">
   </#if>
 
-  <ul<#if id?has_content> id="${id}"</#if> class="depth-${curDepth}<#if class?has_content> ${class?trim}</#if>">
+  <ul class="depth-${curDepth}<#if class?has_content> ${class?trim}</#if>">
     <#list tocElems as tocElem>
       <li<#if curDepth == 1> class="section"</#if>><#t>
         <a class="depth-${curDepth}-link<#if curDepth == 1> header</#if>" href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
