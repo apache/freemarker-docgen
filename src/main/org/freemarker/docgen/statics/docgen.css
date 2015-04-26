@@ -527,6 +527,10 @@ th {
   padding: 0;
   margin: 11px 0 0;
   font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 @media (min-width: 768px) {
   .table-of-contents {
@@ -568,6 +572,7 @@ th {
   left: 0;
   top: 5px;
   font-size: 10px;
+  cursor: pointer;
 }
 .table-of-contents .has-children.open::before {
   content: "\e600";
@@ -769,7 +774,7 @@ th {
   width: 14px;
   height: 22px;
   display: inline-block;
-  margin-right: 3px;
+  padding-right: 3px;
 }
 .social-icons li a.github::before {
   content: "\f09b";

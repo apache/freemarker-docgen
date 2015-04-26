@@ -12,13 +12,13 @@ var LEVEL = 0;
   function createMenu(data) {
       var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
 
-      var finishedToc = menuChildren(data.children, 0);
+      var finishedToc = menuChildren(data.children, 0, true);
       finishedToc.classList.add('table-of-contents');
 
       menuPlaceholder.appendChild(finishedToc);
   }
 
-  function menuChildren(children, depth) {
+  function menuChildren(children, depth, onPath) {
 
     var ul = document.createElement('ul');
     ul.classList.add('depth-' + LEVEL);
@@ -43,8 +43,7 @@ var LEVEL = 0;
       // add menu link
       li.appendChild(menuLink(node));
 
-      // determine node class
-      if (node.title === breadcrumb[LEVEL + 1]) {
+      if (node.title === breadcrumb[depth + 1] && onPath) {
         li.classList.add('current');
         li.classList.add('open');
 
@@ -52,6 +51,7 @@ var LEVEL = 0;
 
       } else if (LEVEL > 0) {
         li.classList.add('closed');
+      } else {
       }
 
       var isLast = checkIfLast(node);
@@ -72,7 +72,7 @@ var LEVEL = 0;
       if (!isLast) {
         LEVEL++;
 
-        li.appendChild(menuChildren(node.children, depth));
+        li.appendChild(menuChildren(node.children, depth, (node.title === breadcrumb[depth])));
 
         LEVEL--;
       }
