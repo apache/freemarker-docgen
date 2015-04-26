@@ -559,11 +559,11 @@ th {
   display: block;
 }
 .table-of-contents .current::before {
-  color: #800080;
+  color: #0973f5;
 }
 .table-of-contents .current > a:first-child {
   font-weight: 500;
-  color: #800080;
+  color: #0973f5;
 }
 .table-of-contents .current > a:first-child:hover {
   color: #888;
