@@ -10,8 +10,6 @@ var prefix = require('gulp-autoprefixer');
 
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
 var OUT_DIR = path.join(BASE_DIR, 'statics');
-var TEMP_OUT = 'D:\\Projects\\freemarker\\build\\manual\\docgen-resources';
-
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
     .pipe(less({ paths: path.join(__dirname, 'node_modules') }))
@@ -20,7 +18,6 @@ gulp.task('styles', function() {
     .pipe(rename({ basename: 'docgen' }))
     .pipe(prefix({ cascade: false }))
     .pipe(gulp.dest(OUT_DIR))
-    .pipe(gulp.dest(TEMP_OUT))
 
     // minify
     .pipe(rename({ suffix: '.min' }))
