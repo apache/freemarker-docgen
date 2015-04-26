@@ -5,10 +5,14 @@
 
 .content-wrapper {
   display: flex;
-  padding-top: 29px;
+  padding-top: 17px;
   padding-bottom: 42px;
   min-height: 600px;
   position: relative; // so we can position pagers
+
+  @media (min-width: @screen-sm-min) {
+      padding-top: 29px;
+  }
 
   &.no-toc {
     display: block;
@@ -16,7 +20,7 @@
 
   .col-left {
     flex: 0 0 130px;
-    margin-right: @gutter-width;
+    margin-right: @gutter-width / 4 * 3; // 18px
 
     &.expanded {
       flex-basis: auto;

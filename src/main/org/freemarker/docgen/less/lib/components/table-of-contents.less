@@ -30,7 +30,7 @@
     > a:first-child {
       font-weight: 500;
       color: #800080;
-      
+
       &:hover {
         color: #888;
       }
@@ -85,7 +85,11 @@
 
     &.section {
       border-bottom: 1px solid #eee;
-      margin-bottom: @section-spacing;
+      margin-bottom: @section-spacing / 2;
+
+      @media (min-width: @screen-sm-min) {
+        margin-bottom: @section-spacing;
+      }
 
       &.last {
         border-bottom: 0;
@@ -107,7 +111,11 @@
         content: '';
         width: 100%;
         display: block;
-        margin-top: @section-spacing;
+        margin-top: @section-spacing / 2;
+
+        @media (min-width: @screen-sm-min) {
+          margin-top: @section-spacing;
+        }
       }
     }
 
@@ -119,10 +127,14 @@
         color: @link-color;
         text-transform: uppercase;
         font-weight: 500;
-        margin-bottom: @section-spacing;
+        margin-bottom: @section-spacing / 2;
         display: block;
         width: 100%;
         line-height: 1;
+
+        @media (min-width: @screen-sm-min) {
+          margin-bottom: @section-spacing;
+        }
 
         &:hover {
           color: @link-hover;

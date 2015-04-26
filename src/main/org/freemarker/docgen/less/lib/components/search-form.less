@@ -68,3 +68,22 @@
     width: 100%;
   }
 }
+
+.placeholder(@opacity, @color) {
+  &::-moz-placeholder {
+    color: @color;
+    opacity: @opacity;
+    font-size: 14px;
+  }
+
+  &:-ms-input-placeholder {
+    color: @color;
+    font-size: 14px;
+  }
+
+  &::-webkit-input-placeholder {
+    color: @color;
+    opacity: @opacity;
+    font-size: 14px;
+  }
+}
