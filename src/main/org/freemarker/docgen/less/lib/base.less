@@ -37,6 +37,7 @@ h6 {
   line-height: 1.5;
   font-weight: 500;
   color: @header-color;
+  word-break: break-word;
 }
 
 h1 {
@@ -44,7 +45,11 @@ h1 {
 }
 
 h2 {
-  font-size: 21px;
+  font-size: 15px;
+
+  @media (min-width: @screen-sm-min) {
+    font-size: 21px;
+  }
 }
 
 code,

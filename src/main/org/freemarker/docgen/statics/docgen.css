@@ -40,12 +40,18 @@ h6 {
   line-height: 1.5;
   font-weight: 500;
   color: #0050b2;
+  word-break: break-word;
 }
 h1 {
   font-size: 36px;
 }
 h2 {
-  font-size: 21px;
+  font-size: 15px;
+}
+@media (min-width: 768px) {
+  h2 {
+    font-size: 21px;
+  }
 }
 code,
 pre {
@@ -276,7 +282,6 @@ th {
 }
 .page-content .page-title h1 {
   margin: 0;
-  font-weight: 500;
   font-size: 18px;
 }
 @media (min-width: 768px) {
@@ -428,9 +433,6 @@ th {
   padding: 45px 0 30px;
 }
 .footer-bottom p {
-  -webkit-flex-shrink: 0;
-  -ms-flex-negative: 0;
-  flex-shrink: 0;
   margin: 0 0 6px;
 }
 .footer-bottom .last-updated {
@@ -706,6 +708,7 @@ th {
   font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
   background-image: none;
   background: #fff;
+  font-size: 16px;
   border: 1px solid #aec0d6;
   border-radius: 0;
   padding: 3px 24px 3px 12px;
