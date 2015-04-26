@@ -1,7 +1,7 @@
 .table-of-contents {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin: 11px 0 0;
   font-size: 12px;
 
   @media (min-width: @screen-sm-min) {
@@ -10,23 +10,25 @@
 
   ul {
     padding: 0;
+    list-style-type: none;
 
     &.depth-3 {
-      display: none;
-
-      .expanded & {
-        display: block;
-      }
-    }
-
-    &.depth-2 {
       list-style-type: disc;
       margin: 0 0 0 18px;
+      display: none;
+
+      // .expanded & {
+      //   display: block;
+      // }
 
       ul {
         list-style-type: circle;
         margin: 0 0 0 18px;
       }
+    }
+
+    &.depth-4 {
+      display: none;
     }
   }
 
@@ -52,7 +54,7 @@
       display: block;
       color: #444;
 
-      &.header {
+      &.depth-1-link {
         color: @link-color;
         text-transform: uppercase;
         font-weight: 500;

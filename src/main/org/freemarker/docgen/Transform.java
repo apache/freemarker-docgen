@@ -1118,6 +1118,8 @@ public final class Transform {
             copyCommonStatic("img/xxe.png");
         }
         if (!disableJavaScript) {
+          copyCommonStatic("main.js");
+          copyCommonStatic("toc.js");
             // copyCommonStatic("jquery.js");
             // copyCommonStatic("linktargetmarker.js");
             // copyCommonStatic("img/linktargetmarker.gif");
