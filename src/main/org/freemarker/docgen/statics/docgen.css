@@ -122,40 +122,6 @@ th {
     align-items: center;
   }
 }
-.logo {
-  color: #fff;
-  font-size: 30px;
-  line-height: 1;
-  padding: 6px 0 0;
-  display: block;
-}
-.tabs {
-  list-style-type: none;
-  margin: 0;
-  padding: 6px 0 0;
-  text-align: center;
-}
-.tabs li {
-  display: inline-block;
-}
-.tabs li.current a {
-  color: #fff;
-  font-weight: 500;
-}
-.tabs li:after {
-  width: 1px;
-  background-color: #96a5b8;
-  height: 9px;
-  display: inline-block;
-  content: '';
-  margin: 0 15px;
-}
-.tabs li:last-child:after {
-  display: none;
-}
-.tabs li a {
-  color: #c9dbf1;
-}
 .header-bottom-bg {
   background-color: #efefef;
   border-bottom: 1px solid #dedede;
@@ -240,33 +206,6 @@ th {
     display: block;
     max-width: 300px;
   }
-}
-.header-bottom .notices {
-  margin: 0 0 6px;
-  display: block;
-  font-size: 12px;
-}
-@media (min-width: 768px) {
-  .header-bottom .notices {
-    text-align: center;
-  }
-}
-.header-bottom .notices strong {
-  font-weight: normal;
-  border-bottom: 1px solid #8fafd7;
-}
-.header-bottom .notices a:before {
-  font-family: 'icomoon';
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\f08a";
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  position: relative;
-  top: 1px;
-  margin-right: 3px;
 }
 .site-content {
   padding-top: 1px;
@@ -497,6 +436,70 @@ th {
 .footer-bottom .last-updated {
   font-size: 12px;
   display: block;
+}
+.logo {
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  padding: 6px 0 0;
+  display: block;
+}
+.tabs {
+  list-style-type: none;
+  margin: 0;
+  padding: 6px 0 0;
+  text-align: center;
+}
+.tabs li {
+  display: inline-block;
+}
+.tabs li.current a {
+  color: #fff;
+  font-weight: 500;
+}
+.tabs li:after {
+  width: 1px;
+  background-color: #96a5b8;
+  height: 9px;
+  display: inline-block;
+  content: '';
+  margin: 0 15px;
+}
+.tabs li:last-child:after {
+  display: none;
+}
+.tabs li a {
+  color: #c9dbf1;
+}
+.tabs li a:hover {
+  color: #fff;
+}
+.notices {
+  margin: 0 0 6px;
+  display: block;
+  font-size: 12px;
+}
+@media (min-width: 768px) {
+  .notices {
+    text-align: center;
+  }
+}
+.notices strong {
+  font-weight: normal;
+  border-bottom: 1px solid #8fafd7;
+}
+.notices a::before {
+  font-family: 'icomoon';
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\f08a";
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  margin-right: 3px;
 }
 .breadcrumb {
   list-style-type: none;

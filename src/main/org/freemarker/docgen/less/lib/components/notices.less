@@ -1,0 +1,27 @@
+.notices {
+  margin: 0 0 6px;
+  display: block;
+  font-size: 12px;
+
+  @media (min-width: @screen-sm-min) {
+    text-align: center;
+  }
+
+  strong {
+    font-weight: normal;
+    border-bottom: 1px solid #8fafd7;
+  }
+
+  a {
+    &::before {
+      .icon();
+      .icon-heart-o();
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      margin-right: 3px;
+    }
+  }
+}
