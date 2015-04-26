@@ -45,16 +45,25 @@
     </#if>
     <#local curNode = curNode?parent>
   </#list>
-  <#if (path?size > 1)>
+  <#if (path?size > 0)>
     <ul class="breadcrumb"><#t>
+      <#--
+      <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
+        <a itemprop="url" href="http://freemarker.org"><#t>
+          <span itemprop="title">FreeMarker</span><#t>
+        </a><#t>
+      </li>
+      -->
       <#list path as step>
-        <#if step_has_next>
-          <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
-            <a itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
-              <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
-            </a><#t>
-          </li><#t>
-        </#if>
+        <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
+          <#if step_has_next>
+              <a itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
+                <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
+              </a><#t>
+          <#else>
+            <span itemprop="title">${step.title}</span><#t>
+          </#if>
+        </li><#t>
       </#list>
     </ul><#t>
   <#else>

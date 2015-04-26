@@ -107,7 +107,7 @@
 
   .header-right {
     order: 1;
-    flex: 0 0 300px;
+    flex: 1 0 auto;
 
     display: flex;
     justify-content: space-between;
@@ -116,6 +116,7 @@
 
     @media (min-width: @screen-sm-min) {
       display: block;
+      max-width: 300px;
     }
   }
 
@@ -125,7 +126,6 @@
     font-size: 12px;
 
     @media (min-width: @screen-sm-min) {
-      font-size: 14px;
       text-align: center;
     }
 
@@ -137,7 +137,7 @@
     a {
       &:before {
         .icon();
-        .icon-heart-outlined();
+        .icon-heart-o();
         width: 14px;
         height: 14px;
         display: inline-block;

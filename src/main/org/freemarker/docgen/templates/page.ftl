@@ -51,10 +51,9 @@
 
   <div class="site-content">
     <div class="site-width">
-      <#--<@nav.breadcrumb />-->
       <#assign pageType = pageType!.node?node_name>
 
-      <div class="page-content<#if pageType == "index" || pageType == "glossary" || pageType == "docgen:detailed_toc"> no-toc</#if>">
+      <div class="content-wrapper<#if pageType == "index" || pageType == "glossary" || pageType == "docgen:detailed_toc"> no-toc</#if>">
         <#if pageType == "index" || pageType == "glossary">
           <div class="page-title">
             <#visit titleElement using nodeHandlers>
@@ -64,34 +63,33 @@
         <#elseif pageType == "docgen:detailed_toc">
           <@toc att="docgen_detailed_toc_element" maxDepth=99 />
         <#else>
-          <div class="col-left">
+          <div class="col-left<#if .node?parent?node_type == "document"> expanded</#if>">
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
             <#--   both are called, but at least one of them will be empty: -->
-            <div id="table-of-contents"<#if .node?parent?node_type == "document"> class="expanded"</#if>>
-              <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-              <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
-            </div>
+            <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
+            <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
           </div>
 
           <div class="col-right">
-            <#-- - Render page title: -->
-            <div class="page-title">
-              <#visit titleElement using nodeHandlers>
-              <@nav.pagers class="top" />
+            <div class="page-content">
+              <div class="page-title">
+                <#visit titleElement using nodeHandlers>
+                <@nav.pagers class="top" />
+              </div>
+
+              <#-- @todo: remove this and fix anchors
+              <a name="docgen_afterTheTOC"></a> -->
+              <#-- - Render the usual content, like <para>-s etc.: -->
+              <#list .node.* as child>
+                <#if child.@docgen_file_element?size == 0
+                    && child?node_name != "title"
+                    && child?node_name != "subtitle">
+                  <#visit child using nodeHandlers>
+                </#if>
+              </#list>
+
+              <@nav.pagers class="bottom" />
             </div>
-
-            <#-- @todo: remove this and fix anchors
-            <a name="docgen_afterTheTOC"></a> -->
-            <#-- - Render the usual content, like <para>-s etc.: -->
-            <#list .node.* as child>
-              <#if child.@docgen_file_element?size == 0
-                  && child?node_name != "title"
-                  && child?node_name != "subtitle">
-                <#visit child using nodeHandlers>
-              </#if>
-            </#list>
-
-            <@nav.pagers class="bottom" />
           </div>
         </#if>
 
@@ -132,7 +130,7 @@
 <#macro toc att maxDepth minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
   <#if (tocElems?size >= minLength)>
-      <@toc_inner tocElems att maxDepth />
+      <@toc_inner tocElems=tocElems att=att maxDepth=maxDepth curDepth=1 />
   </#if>
 </#macro>
 
@@ -141,13 +139,14 @@
   <#if tocElems?size == 0><#return></#if>
 
   <#if curDepth == 1>
-    <#local tocClass = "table-of-contents">
+    <#local class = " table-of-contents">
+    <#local id = "table-of-contents">
   </#if>
 
-  <ul class="depth-${curDepth}<#if tocClass?has_content> ${tocClass}</#if>">
+  <ul<#if id?has_content> id="${id}"</#if> class="depth-${curDepth}<#if class?has_content> ${class?trim}</#if>">
     <#list tocElems as tocElem>
       <li<#if curDepth == 1> class="section"</#if>><#t>
-        <a<#if curDepth == 1> class="header"</#if> href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
+        <a class="depth-${curDepth}-link<#if curDepth == 1> header</#if>" href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
         <#if (curDepth < maxDepth)>
@@ -156,54 +155,4 @@
       </li><#t>
     </#list>
   </ul><#t>
-</#macro>
-
-
-<#---
-  Old Site footer for backup
--->
-<#macro Oldfooter>
-  <div class="site-footer">
-
-    <#-- keep site-width inside so background extends -->
-    <div class="site-width">
-
-      <div class="footer-inner">
-        <#local pageGenTimeHTML>
-          HTML generated:
-          <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
-            ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
-          </time><#t>
-        </#local>
-
-        <#local footerTitleHTML = topLevelTitle?html>
-        <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
-        <#if bookSubtitle?has_content>
-          <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
-        </#if>
-        <#if !showXXELogo>
-          <div class="footer-left">
-              ${footerTitleHTML}
-          </div>
-          <div class="footer-right">
-              ${pageGenTimeHTML}
-          </div>
-        <#else>
-          <div class="footer-left">
-            <#if footerTitleHTML != "">
-              ${footerTitleHTML}
-              <br>
-            </#if>
-            ${pageGenTimeHTML}
-          </div>
-          <div class="footer-right">
-            <a href="http://www.xmlmind.com/xmleditor/" rel="nofollow">
-              Edited with XMLMind XML Editor
-              <#--><img src="docgen-resources/img/xxe.gif" alt="Edited with XMLMind XML Editor">-->
-            </a>
-          </div>
-        </#if>
-      </div>
-    </div>
-  </div>
 </#macro>

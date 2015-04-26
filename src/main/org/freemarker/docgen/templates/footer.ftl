@@ -18,6 +18,11 @@
         </div>
         <div class="col-right">
           <@ui.social />
+          <#if showXXELogo>
+            <a class="xxe" href="http://www.xmlmind.com/xmleditor/" rel="nofollow" title="Edited with XMLMind XML Editor">
+              <span>Edited with XMLMind XML Editor</span>
+            </a>
+          </#if>
         </div>
       </div>
       <div class="footer-bottom">

@@ -1,3 +1,12 @@
+.social-icon() {
+  .icon();
+
+  width: 14px;
+  height: 22px;
+  display: inline-block;
+  margin-right: 3px;
+}
+
 .social-icons {
   margin: 0;
   padding: 0;
@@ -5,5 +14,29 @@
 
   li {
     display: inline-block;
+    margin-right: 18px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      &::before {
+        .social-icon()
+      }
+
+      &.github::before {
+        .icon-github();
+      }
+
+      &.twitter::before {
+        .icon-twitter();
+      }
+
+      &.stack-overflow::before {
+        .icon-stack-overflow();
+      }
+
+    }
   }
 }
