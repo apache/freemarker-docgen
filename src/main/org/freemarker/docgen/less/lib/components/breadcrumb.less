@@ -11,14 +11,14 @@
   li {
     display: inline-block;
 
-    &:after {
+    &::after {
       content: '/';
       color: #979797;
       margin: 0 6px;
     }
 
     &:last-child {
-      &:after {
+      &::after {
         content: '';
       }
     }

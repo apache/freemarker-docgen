@@ -11,36 +11,84 @@
   ul {
     padding: 0;
     list-style-type: none;
+  }
+  
+  // @todo: fix this mess
+  .open {
+    ul {
+      display: block;
+    }
+  }
 
-    &.depth-3 {
-      list-style-type: disc;
-      margin: 0 0 0 18px;
-      display: none;
-
-      // .expanded & {
-      //   display: block;
-      // }
-
-      ul {
-        list-style-type: circle;
-        margin: 0 0 0 18px;
-      }
+  .current {
+    &::before {
+      color: #800080;
     }
 
-    &.depth-4 {
+    > a:first-child {
+      font-weight: bold;
+      color: #800080;
+    }
+  }
+
+  .closed,
+  &.current {
+    ul {
       display: none;
     }
   }
 
-  li {
+  .has-children {
+    padding-left: 14px;
+    position: relative;
 
+    &::before {
+      .icon();
+      .icon-plus();
+      width: 14px;
+      height: 14px;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 5px;
+      font-size: 10px;
+    }
+
+    &.open {
+      &::before {
+        .icon-minus();
+      }
+    }
+  }
+
+// @todo: fix this mess
+
+  li {
     @section-spacing: 30px;
+
+    &.last a {
+      padding-left: 16px;
+    }
 
     &.section {
       border-bottom: 1px solid #eee;
       margin-bottom: @section-spacing;
 
-      &:after {
+      &.last {
+        border-bottom: 0;
+        margin-bottom: 0;
+
+        &::after {
+          display: none;
+        }
+
+        a {
+          padding-left: 0;
+          margin-bottom: 12px;
+        }
+      }
+
+      &::after {
         height: 1px;
         background-color: #ccc;
         content: '';
@@ -54,7 +102,7 @@
       display: block;
       color: #444;
 
-      &.depth-1-link {
+      &.depth-0-link {
         color: @link-color;
         text-transform: uppercase;
         font-weight: 500;
@@ -63,17 +111,9 @@
         width: 100%;
         line-height: 1;
 
-        &:visited {
-          color: @link-color;
+        &:hover {
+          color: #0973f5;
         }
-      }
-
-      &.depth-2-link {
-        margin-top: 6px;
-      }
-
-      &:visited {
-        color: #800080;
       }
 
       &:hover {

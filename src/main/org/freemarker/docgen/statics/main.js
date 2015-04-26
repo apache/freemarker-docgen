@@ -1,4 +1,4 @@
-var LEVEL = 1;
+var LEVEL = 0;
 
 (function(toc, breadcrumb) {
   //var breadcrumb = ['Reference', 'Built-in Reference', 'Built-ins for strings'];
@@ -12,13 +12,13 @@ var LEVEL = 1;
   function createMenu(data) {
       var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
 
-      var finishedToc = menuChildren(data.children, 1, false);
+      var finishedToc = menuChildren(data.children, 0);
       finishedToc.classList.add('table-of-contents');
 
       menuPlaceholder.appendChild(finishedToc);
   }
 
-  function menuChildren(children, depth, isLast) {
+  function menuChildren(children, depth) {
 
     var ul = document.createElement('ul');
     ul.classList.add('depth-' + LEVEL);
@@ -28,7 +28,7 @@ var LEVEL = 1;
 
       var li = document.createElement('li');
 
-      if (LEVEL === 1) {
+      if (LEVEL === 0) {
         li.classList.add('section');
       }
 
@@ -44,39 +44,35 @@ var LEVEL = 1;
       li.appendChild(menuLink(node));
 
       // determine node class
-      if (node.title === breadcrumb[depth]) {
+      if (node.title === breadcrumb[LEVEL + 1]) {
         li.classList.add('current');
-
-        if (depth === 0) {
-          li.classList.add('active-section');
-        }
-
-        /*
-        if (depth === (breadcrumb.length - 1)) {
-          li.classList.add('active-menu');
-        }*/
+        li.classList.add('open');
 
         depth++;
 
-      } else if (!isLast) {
-        //li.classList.add('closed');
+      } else if (LEVEL > 0) {
+        li.classList.add('closed');
       }
 
-      if (isLast || !node.children.length) {
+      var isLast = checkIfLast(node);
+
+      if (isLast) {
+
         li.classList.add('last');
 
+        // @todo: add flags to docgen
         if (typeof node.flags !== 'undefined') {
           li.classList.add(node.flags.join(' '));
         }
-      } else {
+      } else if (LEVEL > 0) {
+        // don't add for top level elements
         li.classList.add('has-children');
       }
 
-      if (node.children.length) {
+      if (!isLast) {
         LEVEL++;
 
-        li.appendChild(menuChildren(node.children, depth,
-            (depth === breadcrumb.length)));
+        li.appendChild(menuChildren(node.children, depth));
 
         LEVEL--;
       }
@@ -85,6 +81,22 @@ var LEVEL = 1;
     }
 
     return ul;
+  }
+
+  function checkIfLast(nodeData) {
+    if (!nodeData.children.length) {
+      return true;
+    } else {
+
+      // don't print out children if they are only anchors
+      for (var x = 0; x < nodeData.children.length; x++) {
+        if (nodeData.children[x].isFile) {
+          return false;
+        }
+      }
+
+      return true;
+    }
   }
 
   function menuLink(nodeData) {
@@ -104,6 +116,7 @@ var LEVEL = 1;
 
     if (node.tagName.toUpperCase() === 'LI') {
       node.classList.toggle('closed');
+      node.classList.toggle('open');
     }
   }
 
@@ -136,7 +149,6 @@ var LEVEL = 1;
 
   function contentLoaded(e) {
     highlightNode(getHash());
-    console.log('doc loaded', e);
   }
 
   function highlightNode(id) {
