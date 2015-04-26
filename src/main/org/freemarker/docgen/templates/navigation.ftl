@@ -142,18 +142,27 @@
 <#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
-    <ul class="${('pagers ' + class)?trim}"><#t>
-      <#--
-      <@pagerButton "Parent page", parentFileElement!, true, "parent" />
-      <@pagerButton "Contents", rootElement, true, "root" />
-      -->
-      <@pagerButton label="Previous" element=previousFileElement! textOnly=true class="previous" />
-      <@pagerButton label="Next" element=nextFileElement! textOnly=true class="next" />
-    </ul><#t>
+    <div class="${('pagers ' + class)?trim}"><#t>
+      <@pagerButton text="Previous" element=previousFileElement! class="previous" /><#t>
+      <@pagerButton text="Next" element=nextFileElement! class="next" /><#t>
+    </div><#t>
   </#if>
 </#macro>
 
-<#macro pagerButton label element labelOnly=true textOnly=false class="">
+
+<#macro pagerButton text element class>
+  <#compress>
+    <#if element?has_content>
+      <#local href = CreateLinkFromNode(element)>
+
+      <a class="paging-arrow ${class}" href="${href}">${text}</a><#t>
+    <#else>
+      <span class="paging-arrow disabled ${class}">${text}</span><#t>
+    </#if>
+  </#compress>
+</#macro>
+
+<#macro pagerButton_old label element labelOnly=true textOnly=false class="">
   <li<#if class?has_content> class="${class}"</#if>><#t>
     <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>

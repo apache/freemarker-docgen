@@ -128,10 +128,12 @@ var LEVEL = 0;
     // right arrow, wants to open node
     if (e.which === 39) {
       node.classList.remove('closed');
+      node.classList.add('open');
     }
     // left arrow, wants to close node
     else if (e.which === 37) {
       node.classList.add('closed');
+      node.classList.remove('open');
     }
   }
 

@@ -11,9 +11,6 @@
 }
 
 .pagers {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
   float: right;
 
   &.bottom {
@@ -21,35 +18,31 @@
     bottom: 42px;
     right: 0;
   }
+}
 
-  li {
-    display: inline-block;
+.paging-arrow {
+  @paging-icon-spacing: 6px;
 
-    a {
-      display: block;
-      height: 22px;
+  display: inline-block;
+  height: 22px;
+
+  &.previous {
+    margin-right: 12px;
+
+    &::before {
+      .paging-icon();
+      .icon-arrow-circle-o-left();
+
+      padding-right: @paging-icon-spacing;
     }
+  }
 
-    &.previous {
-      margin-right: 12px;
+  &.next {
+    &::after {
+      .paging-icon();
+      .icon-arrow-circle-o-right();
 
-      a {
-        &:before {
-          .paging-icon();
-          .icon-arrow-circle-o-left();
-          margin-right: 6px;
-        }
-      }
-    }
-
-    &.next {
-      a {
-        &:after {
-          .paging-icon();
-          .icon-arrow-circle-o-right();
-          margin-left: 6px;
-        }
-      }
+      padding-left: @paging-icon-spacing;
     }
   }
 }

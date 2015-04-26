@@ -40,6 +40,11 @@
 .page-content {
   padding-bottom: 42px;
 
+  // keep long urls from causing page scrolling
+  a {
+    word-break: break-word;
+  }
+
   .page-title {
     display: flex;
     justify-content: space-between;

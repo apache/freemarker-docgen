@@ -649,14 +649,12 @@
 </#macro>
 
 <#macro informaltable>
-   <div class="informal-table">
-      <@Anchor/>
-      <div class="table-responsive">
-        <table class="table">
-            <#recurse>
-        </table>
-      </div>
-   </div>
+  <@Anchor/>
+  <div class="table-responsive">
+    <table class="table">
+      <#recurse>
+    </table>
+  </div>
 </#macro>
 
 <#-- Re-prints the original tag as is, but restricts the allowed attributes -->

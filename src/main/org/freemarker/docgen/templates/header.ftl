@@ -56,6 +56,6 @@
 
 <#macro notices>
   <p class="notices">
-    <a href="javascript:;">Contributors wanted! <strong>Learn more</strong></a>
+    <a href="javascript:;">Love FreeMarker? <strong>Help it grow!</strong></a>
   </p>
 </#macro>

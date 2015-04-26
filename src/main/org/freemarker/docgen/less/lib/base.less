@@ -21,6 +21,10 @@ body {
 a {
   color: @link-color;
   text-decoration: none;
+
+  &:hover {
+    color: @link-hover;
+  }
 }
 
 h1,
@@ -56,6 +60,12 @@ code {
   border-radius: 4px;
   padding: 1px 3px;
   color: #6D180B;
+
+  pre &,
+  table & {
+    border: 0;
+    background: transparent;
+  }
 }
 
 pre {
