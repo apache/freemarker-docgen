@@ -154,48 +154,11 @@
   <#compress>
     <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>
-
-      <a class="paging-arrow ${class}" href="${href}">${text}</a><#t>
+      <a class="paging-arrow ${class}" href="${href}"><span>${text}</span></a><#t>
     <#else>
       <span class="paging-arrow disabled ${class}">${text}</span><#t>
     </#if>
   </#compress>
-</#macro>
-
-<#macro pagerButton_old label element labelOnly=true textOnly=false class="">
-  <li<#if class?has_content> class="${class}"</#if>><#t>
-    <#if element?has_content>
-      <#local href = CreateLinkFromNode(element)>
-      <#local curHref = CreateLinkFromNode(.node)>
-    </#if>
-    <#if element?has_content && href != curHref>
-      <#if textOnly>
-        <a href="${href}"><#t>
-          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
-        </a><#t>
-      <#elseif !labelOnly>
-        <span class="pager-label">${label}:</span><#t>
-        <a href="${href}"><#t>
-          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
-        </a><#t>
-      <#else>
-        <a href="${href}"><#t>
-          ${label}<#t>
-        </a><#t>
-      </#if>
-      <#--
-      <a href="${href}"><#t>
-        <#if !labelOnly>
-          <span class="hideA">${label}:${' '}</span><#t>
-          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
-        <#else>
-          ${label}<#t>
-        </#if>
-      </a><#t>-->
-    <#else>
-      <#--${label}--><#t>
-    </#if>
-  </li><#t>
 </#macro>
 
 </#escape>

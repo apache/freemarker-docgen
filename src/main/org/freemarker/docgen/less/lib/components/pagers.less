@@ -27,7 +27,9 @@
   height: 22px;
 
   &.previous {
-    margin-right: 12px;
+    @media (min-width: @screen-sm-min) {
+      margin-right: 12px;
+    }
 
     &::before {
       .paging-icon();
@@ -43,6 +45,14 @@
       .icon-arrow-circle-o-right();
 
       padding-left: @paging-icon-spacing;
+    }
+  }
+
+  span {
+    display: none;
+
+    @media (min-width: @screen-sm-min) {
+      display: inline;
     }
   }
 }

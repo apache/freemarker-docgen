@@ -56,6 +56,7 @@ pre {
 code {
   padding: 0 2px;
   color: #C5351F;
+  word-break: break-word;
 }
 pre {
   display: block;
@@ -63,9 +64,9 @@ pre {
   padding: 6px 12px;
   background-color: #f9f9f9;
   word-break: normal;
-  word-wrap: break-word;
   white-space: pre;
   margin: 0 0 9px;
+  overflow-x: auto;
 }
 img {
   border: 0;
@@ -279,7 +280,7 @@ th {
 .page-content .page-title h1 {
   margin: 0;
   font-weight: 500;
-  font-size: 24px;
+  font-size: 18px;
 }
 @media (min-width: 768px) {
   .page-content .page-title h1 {
@@ -480,6 +481,10 @@ th {
   margin: 0 0 6px;
   display: block;
   font-size: 12px;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 @media (min-width: 768px) {
   .notices {
@@ -553,8 +558,11 @@ th {
   color: #800080;
 }
 .table-of-contents .current > a:first-child {
-  font-weight: bold;
+  font-weight: 500;
   color: #800080;
+}
+.table-of-contents .current > a:first-child:hover {
+  color: #888;
 }
 .table-of-contents .closed ul,
 .table-of-contents.current ul {
@@ -563,6 +571,9 @@ th {
 .table-of-contents .has-children {
   padding-left: 14px;
   position: relative;
+}
+.table-of-contents .has-children:hover::before {
+  color: #888;
 }
 .table-of-contents .has-children::before {
   font-family: 'icomoon';
@@ -629,10 +640,18 @@ th {
 }
 .page-menu {
   list-style-type: circle;
-  margin: 24px 0;
-  padding: 24px 0 24px 18px;
+  margin: 12px 0;
+  padding: 12px 0 12px 18px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+}
+@media (min-width: 768px) {
+  .page-menu {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
 }
 .page-menu ul {
   list-style-type: disc;
@@ -722,8 +741,10 @@ th {
   display: inline-block;
   height: 22px;
 }
-.paging-arrow.previous {
-  margin-right: 12px;
+@media (min-width: 768px) {
+  .paging-arrow.previous {
+    margin-right: 12px;
+  }
 }
 .paging-arrow.previous::before {
   font-family: 'icomoon';
@@ -754,6 +775,14 @@ th {
   top: -1px;
   content: "\f18e";
   padding-left: 6px;
+}
+.paging-arrow span {
+  display: none;
+}
+@media (min-width: 768px) {
+  .paging-arrow span {
+    display: inline;
+  }
 }
 .table-responsive {
   min-height: .01%;

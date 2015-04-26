@@ -1,6 +1,6 @@
 .page-menu {
 
-  @border-spacing: 24px;
+  @border-spacing: 12px;
 
   list-style-type: circle;
 
@@ -8,6 +8,14 @@
   padding: @border-spacing 0 @border-spacing 18px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+
+  @media (min-width: @screen-sm-min) {
+    margin-top: @border-spacing * 2;
+    margin-bottom: @border-spacing * 2;
+
+    padding-top: @border-spacing * 2;
+    padding-bottom: @border-spacing * 2;
+  }
 
   ul {
     list-style-type: disc;

@@ -22,13 +22,18 @@
   }
 
   .current {
+
     &::before {
       color: #800080;
     }
 
     > a:first-child {
-      font-weight: bold;
+      font-weight: 500;
       color: #800080;
+      
+      &:hover {
+        color: #888;
+      }
     }
   }
 
@@ -42,6 +47,12 @@
   .has-children {
     padding-left: 14px;
     position: relative;
+
+    &:hover {
+      &::before {
+        color: #888;
+      }
+    }
 
     &::before {
       .icon();
@@ -63,7 +74,7 @@
     }
   }
 
-// @todo: fix this mess
+  // @todo: fix this mess
 
   li {
     @section-spacing: 30px;
