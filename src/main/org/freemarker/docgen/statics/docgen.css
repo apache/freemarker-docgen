@@ -160,7 +160,6 @@ th {
   }
 }
 .header-bottom .category {
-  display: none;
   color: #0050b2;
   font-size: 24px;
   line-height: 1;
@@ -570,7 +569,7 @@ th {
 .breadcrumb {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 6px 0 0 0;
   font-size: 12px;
   display: block;
 }
