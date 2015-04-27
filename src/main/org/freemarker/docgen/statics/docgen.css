@@ -251,8 +251,15 @@ th {
 .page-content a {
   word-break: break-word;
 }
+.page-content .page-title {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eeeeee;
+}
 @media (min-width: 768px) {
   .page-content .page-title {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -714,16 +721,13 @@ th {
   display: block;
 }
 .page-menu {
-  margin: 12px 0;
-  padding: 12px 0 12px 18px;
-  border-top: 1px solid #eeeeee;
+  margin: 0 0 12px;
+  padding: 0 0 12px 18px;
   border-bottom: 1px solid #eeeeee;
 }
 @media (min-width: 768px) {
   .page-menu {
-    margin-top: 24px;
     margin-bottom: 24px;
-    padding-top: 24px;
     padding-bottom: 24px;
   }
 }

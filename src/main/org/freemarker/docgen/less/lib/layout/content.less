@@ -54,7 +54,17 @@
 
   .page-title {
 
+    @border-spacing: 12px;
+
+    padding-bottom: @border-spacing;
+    margin-bottom: @border-spacing;
+
+    border-bottom: 1px solid @border-gray;
+
     @media (min-width: @screen-sm-min) {
+      padding-bottom: @border-spacing * 2;
+      margin-bottom: @border-spacing * 2;
+
       display: flex;
       justify-content: space-between;
       align-items: baseline;
