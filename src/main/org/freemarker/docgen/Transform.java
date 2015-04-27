@@ -358,7 +358,7 @@ public final class Transform {
     static final String FILE_DETAILED_TOC_HTML = "detailed-toc.html";
     static final String FILE_INDEX_HTML = "index.html";
     static final String FILE_TOC_JSON_TEMPLATE = "toc-json.ftl";
-    static final String FILE_TOC_JSON_OUTPUT = "toc.json";
+    static final String FILE_TOC_JSON_OUTPUT = "toc.js";
     static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftl";
     static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
@@ -1114,16 +1114,13 @@ public final class Transform {
         for (int i = 1; i < 15; i++) {
             copyCommonStatic("img/callouts/" + i + ".gif");
         }
-        // copyCommonStatic("img/navigation-gradient.gif");
+
         if (showXXELogo) {
             copyCommonStatic("img/xxe.png");
         }
         if (!disableJavaScript) {
           copyCommonStatic("main.js");
-          copyCommonStatic("toc.js");
-            // copyCommonStatic("jquery.js");
-            // copyCommonStatic("linktargetmarker.js");
-            // copyCommonStatic("img/linktargetmarker.gif");
+          copyCommonStatic("main.min.js");
         }
 
         // - Copy the custom statics:

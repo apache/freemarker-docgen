@@ -56,8 +56,8 @@
             <script>
               <@nav.breadcrumbJs />
             </script>
-            <script src="docgen-resources/toc.js"></script>
-            <script src="docgen-resources/main.js"></script>
+            <script src="toc.js"></script>
+            <script src="docgen-resources/main.min.js"></script>
           </#if>
         </div>
 

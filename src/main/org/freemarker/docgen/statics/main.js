@@ -142,7 +142,6 @@ var LEVEL = 0;
   }
 
   function hashChange(e) {
-    console.log('hashChange');
     highlightNode(getHash());
   }
 
