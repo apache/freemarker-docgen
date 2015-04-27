@@ -297,6 +297,11 @@ th {
 }
 @media (min-width: 768px) {
   .page-content .page-title .subtitle {
+    font-size: 18px;
+  }
+}
+@media (min-width: 992px) {
+  .page-content .page-title .subtitle {
     font-size: 24px;
   }
 }
