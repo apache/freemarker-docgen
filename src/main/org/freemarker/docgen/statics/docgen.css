@@ -472,6 +472,10 @@ th {
 }
 .footer-bottom p {
   margin: 0 0 6px;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 .footer-bottom .last-updated {
   font-size: 12px;
