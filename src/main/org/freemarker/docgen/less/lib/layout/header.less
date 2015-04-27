@@ -19,13 +19,11 @@
   @media (min-width: @screen-sm-min) {
     padding-bottom: 18px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: baseline;
   }
 }
-
-
 
 .header-bottom-bg {
   background-color: #efefef;
@@ -53,7 +51,7 @@
     line-height: 1;
 
     @media (min-width: @screen-sm-min) {
-        display: block;
+      display: block;
     }
   }
 
@@ -64,20 +62,22 @@
 
   .header-left,
   .header-right {
-    padding: 6px 0 0;
+    padding: 6px 0;
   }
 
   .header-right {
     order: 1;
     flex: 1 0 auto;
+    text-align: right;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: flex-end;
 
     @media (min-width: @screen-sm-min) {
-      display: block;
-      max-width: 300px;
+      //display: block;
+      //max-width: 300px;
+      //flex-direction: column;
     }
   }
 }

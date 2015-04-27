@@ -1,0 +1,52 @@
+.bookmarks {
+  text-align: right;
+  display: none;
+
+  @media (min-width: @screen-md-min) {
+    display: block;
+    padding-bottom: 9px;
+  }
+
+  &::before {
+    .icon();
+    .icon-bookmark();
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    margin-right: 1px;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    font-size: 13px;
+
+    li {
+      display: inline-block;
+
+      &::after {
+        content: ",";
+        display: inline-block;
+        margin: 0 3px 0 0;
+        // .icon();
+        // .icon-dot-single();
+        // margin: 0 1px;
+        // position: relative;
+        // top: 1px;
+        // width: 13px;
+        // display: inline-block;
+        // opacity: 0.5;
+      }
+
+      &:last-child {
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+}

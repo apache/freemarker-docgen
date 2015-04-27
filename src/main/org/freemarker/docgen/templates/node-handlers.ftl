@@ -545,7 +545,7 @@
   </#if>
 
   <#local type = hierarElem?node_name>
-  <#local titleInitial = u.getTitlePrefix(hierarElem, true, true)>
+  <#local titleInitial = u.getTitlePrefix(hierarElem, false, true)>
 
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
   <#local htmlHLevel = 1>
@@ -570,8 +570,7 @@
   <#local classAtt = "">
 
   <${htmlHElem} class="header-${hierarElem.@docgen_rank}"
-        <#if htmlHLevel == 1>id="pageTopTitle" itemprop="name"</#if>>
-      <@Anchor hierarElem/><#t>
+      <#if htmlHLevel == 1>id="pageTopTitle" itemprop="name"</#if>>
       ${titleInitial?html}<#recurse><#t>
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>

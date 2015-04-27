@@ -24,7 +24,11 @@ gulp.task('styles', function() {
 
     // minify
     .pipe(rename({ suffix: '.min' }))
-    .pipe(minifyCss())
+    .pipe(minifyCss({
+      advanced: false,
+      restructuring: false,
+      aggressiveMerging: false
+    }))
     .pipe(gulp.dest(OUT_DIR))
     .pipe(gulp.dest(TEMP_OUT));
 });

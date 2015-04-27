@@ -18,6 +18,11 @@
     bottom: 42px;
     right: 0;
   }
+
+  &.top {
+    order: 1;
+    margin-left: 12px;
+  }
 }
 
 .paging-arrow {
@@ -27,7 +32,7 @@
   height: 22px;
 
   &.previous {
-    @media (min-width: @screen-sm-min) {
+    @media (min-width: @screen-md-min) {
       margin-right: 12px;
     }
 
@@ -51,7 +56,7 @@
   span {
     display: none;
 
-    @media (min-width: @screen-sm-min) {
+    @media (min-width: @screen-md-min) {
       display: inline;
     }
   }

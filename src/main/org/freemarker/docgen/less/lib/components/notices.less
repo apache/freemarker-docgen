@@ -1,14 +1,16 @@
 .notices {
-  margin: 0 0 6px;
-  display: block;
-  font-size: 12px;
-  flex: 1 0 auto;
+  margin: 0;
+  display: none;  
 
   @media (min-width: @screen-sm-min) {
-    text-align: center;
+    display: block;
+    text-align: right;
+    flex: 1 0 auto;
   }
 
   a {
+    color: #fff;
+
     &::before {
       .icon();
       .icon-heart-o();

@@ -22,8 +22,11 @@
     flex: 0 0 130px;
     margin-right: @gutter-width / 4 * 3; // 18px
 
-    &.expanded {
-      flex-basis: auto;
+    // hide for really, really small screens
+    display: none;
+
+    @media (min-width: 400px) {
+      display: block;
     }
 
     @media (min-width: @screen-sm-min) {
@@ -50,10 +53,13 @@
   }
 
   .page-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
+
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
 
     h1 {
       margin: 0;

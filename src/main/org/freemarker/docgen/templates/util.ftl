@@ -81,19 +81,16 @@
 
   <#local type = docStructElem?node_name>
 
-  <#if extraSpacing>
-    <#local spacer = "\xA0\xA0\xA0">
-  <#else>
-    <#local spacer = " ">
-  </#if>
+  <#local spacer = ": ">
 
-  <#if type = "chapter">
+
+  <#if type == "chapter">
     <#return longForm?string("Chapter ", "") + prefix + spacer>
-  <#elseif type = "appendix">
+  <#elseif type == "appendix">
     <#return longForm?string("Appendix ", "") + prefix + spacer>
-  <#elseif type = "part">
+  <#elseif type == "part">
     <#return longForm?string("Part ", "") + prefix + spacer>
-  <#elseif type = "article">
+  <#elseif type == "article">
     <#return longForm?string("Article ", "") + prefix + spacer>
   <#else>
     <#return prefix + spacer>

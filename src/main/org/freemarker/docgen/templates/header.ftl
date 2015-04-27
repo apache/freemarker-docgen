@@ -5,8 +5,8 @@
 
 
 <#macro header logo>
-  <div class="header-top-bg">
-    <div class="site-width header-top">
+  <div class="header-top-bg"><#t>
+    <div class="site-width header-top"><#t>
       <#if logo??>
         <a class="logo" href="${logo.href?html}" role="banner"><#t>
           &lt;FreeMarker&gt;<#t>
@@ -14,23 +14,24 @@
           <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
         </a><#t>
       </#if>
-      <@nav.tabs />
-    </div>
-  </div>
-  <@categoryHeader />
+      <@nav.tabs /><#t>
+      <@notices /><#t>
+    </div><#t>
+  </div><#t>
+  <@categoryHeader /><#t>
 </#macro>
 
 
 <#macro categoryHeader>
   <div class="header-bottom-bg">
     <div class="site-width header-bottom">
-      <div class="header-right">
-        <@notices />
-        <@searchForm />
-      </div>
       <div class="header-left">
         <div class="category">Manual</div>
-        <@nav.breadcrumb />
+        <@nav.breadcrumb /><#t>
+      </div>
+      <div class="header-right">
+        <@nav.bookmarks /><#t>
+        <@searchForm /><#t>
       </div>
     </div>
   </div>

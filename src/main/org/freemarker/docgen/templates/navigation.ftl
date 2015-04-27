@@ -45,16 +45,16 @@
     </#if>
     <#local curNode = curNode?parent>
   </#list>
-  <#if (path?size > 0)>
+  <#if (path?size > 1)>
     <ul class="breadcrumb"><#t>
       <#list path as step>
-        <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
+        <li class="step-${step_index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
           <#if step_has_next>
-              <a class="step-${step_index}" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
+              <a class="label" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
                 <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
               </a><#t>
           <#else>
-            <span<#if (path?size == 1)> class="single"</#if> itemprop="title">${step.title}</span><#t>
+            <span class="label" itemprop="title">${step.title}</span><#t>
           </#if>
         </li><#t>
       </#list>
@@ -88,8 +88,8 @@
 
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
-    <div class="bookmarks"><#t>
-        Bookmarks:<#t>
+    <div class="bookmarks" title="Bookmarks"><#t>
+        <span class="sr-only">Bookmarks:</span><#t>
         <ul class="bookmark-list"><#t>
           <#local curHref = CreateLinkFromNode(.node)>
           <#list internalBookmarks?keys as k>
@@ -108,7 +108,7 @@
             </li><#t>
           </#list>
         </ul><#t>
-    </div>
+    </div><#t>
   </#if>
 </#macro>
 

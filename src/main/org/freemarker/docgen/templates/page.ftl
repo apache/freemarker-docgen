@@ -64,8 +64,8 @@
         <div class="col-right">
           <div class="page-content">
             <div class="page-title">
-              <#visit titleElement using nodeHandlers>
               <@nav.pagers class="top" />
+              <#visit titleElement using nodeHandlers>              
             </div>
 
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
