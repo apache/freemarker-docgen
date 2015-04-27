@@ -84,4 +84,29 @@
 
     }
   }
+
+  .active {
+    font-weight: bold;
+
+    &::before {
+      .icon();
+      .icon-star-outlined();
+      margin-left: -20px;
+      font-weight: normal;
+      opacity: 0;
+      position: absolute;
+      line-height: 31px;
+      font-size: 18px;
+      color: #C82222;
+      width: 18px;
+      animation: header-pulse 2s;
+    }
+  }
+}
+
+
+@keyframes header-pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
 }

@@ -294,6 +294,48 @@ th {
     font-size: 24px;
   }
 }
+.page-content .active {
+  font-weight: bold;
+}
+.page-content .active::before {
+  font-family: 'icomoon';
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e605";
+  margin-left: -20px;
+  font-weight: normal;
+  opacity: 0;
+  position: absolute;
+  line-height: 31px;
+  font-size: 18px;
+  color: #C82222;
+  width: 18px;
+  -webkit-animation: header-pulse 2s;
+  animation: header-pulse 2s;
+}
+@-webkit-keyframes header-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes header-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 .site-footer {
   border-top: 3px solid #003270;
   background-color: #0050b2;
