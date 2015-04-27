@@ -46,3 +46,13 @@ This will shadow the `docgen` artifact that comes from the Ivy repo on
 have to issue `ant update-deps` so that it picks up your version.
 
 [fmProj]: https://github.com/freemarker/freemarker
+
+### Compiling LESS and Minify JS
+
+```sh
+ant gulp
+```
+
+Notes:
+* To compile the docgen styles, you must have Node.js installed.
+* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`)

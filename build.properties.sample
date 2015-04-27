@@ -2,3 +2,5 @@
 # You may comment this property out, but for releases it should be set,
 # so Java 8 incompatibilities will cause compilation-time errors.
 boot.classpath=C:/Program Files/Java/jdk1.8.0/jre/lib/rt.jar
+
+nodeJsCommand=C:/Program Files/nodejs/node.exe
