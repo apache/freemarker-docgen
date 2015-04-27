@@ -47,7 +47,7 @@ have to issue `ant update-deps` so that it picks up your version.
 
 [fmProj]: https://github.com/freemarker/freemarker
 
-### Compiling LESS and Minify JS
+### Compiling LESS and Minifying JS
 
 ```sh
 ant gulp
