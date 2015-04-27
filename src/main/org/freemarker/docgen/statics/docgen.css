@@ -160,14 +160,13 @@ th {
   }
 }
 .header-bottom .category {
-  color: #0050b2;
+  display: block;
   font-size: 18px;
   line-height: 1;
 }
 @media (min-width: 768px) {
   .header-bottom .category {
     font-size: 24px;
-    display: block;
   }
 }
 .header-bottom .header-left {
@@ -604,18 +603,7 @@ th {
 .breadcrumb li:last-child::after {
   display: none;
 }
-.breadcrumb li.step-0 a::after {
-  font-family: 'icomoon';
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\e603";
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  font-size: 12px;
-}
-.breadcrumb li.step-0 a span {
+.breadcrumb li.step-0 {
   display: none;
 }
 .table-of-contents {

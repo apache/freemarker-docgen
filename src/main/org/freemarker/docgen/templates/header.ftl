@@ -26,7 +26,7 @@
   <div class="header-bottom-bg">
     <div class="site-width header-bottom">
       <div class="header-left">
-        <div class="category">Manual</div>
+        <a href="index.html" class="category">Manual</>
         <@nav.breadcrumb /><#t>
       </div>
       <div class="header-right">
