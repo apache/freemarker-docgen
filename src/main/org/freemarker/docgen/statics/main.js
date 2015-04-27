@@ -45,7 +45,11 @@ var LEVEL = 0;
 
       if (node.title === breadcrumb[depth + 1] && onPath) {
         li.classList.add('current');
-        li.classList.add('open');
+
+        // 'section' is always open
+        if (LEVEL !== 0) {
+          li.classList.add('open');
+        }
 
         depth++;
 

@@ -2,12 +2,11 @@
 
   @border-spacing: 12px;
 
-  list-style-type: circle;
-
   margin: @border-spacing 0;
   padding: @border-spacing 0 @border-spacing 18px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+
+  border-top: 1px solid @border-gray;
+  border-bottom: 1px solid @border-gray;
 
   @media (min-width: @screen-sm-min) {
     margin-top: @border-spacing * 2;
@@ -18,7 +17,6 @@
   }
 
   ul {
-    list-style-type: disc;
     margin: 0 0 0 18px;
     padding: 0;
   }

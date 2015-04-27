@@ -47,21 +47,14 @@
   </#list>
   <#if (path?size > 0)>
     <ul class="breadcrumb"><#t>
-      <#--
-      <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
-        <a itemprop="url" href="http://freemarker.org"><#t>
-          <span itemprop="title">FreeMarker</span><#t>
-        </a><#t>
-      </li>
-      -->
       <#list path as step>
         <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
           <#if step_has_next>
-              <a itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
+              <a class="step-${step_index}" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
                 <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
               </a><#t>
           <#else>
-            <span itemprop="title">${step.title}</span><#t>
+            <span<#if (path?size == 1)> class="single"</#if> itemprop="title">${step.title}</span><#t>
           </#if>
         </li><#t>
       </#list>
@@ -92,6 +85,7 @@
   ];<#t>
 </#macro>
 
+
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
     <div class="bookmarks"><#t>
@@ -118,6 +112,7 @@
   </#if>
 </#macro>
 
+
 <#macro tabs>
     <#local tabs = .data_model.tabs>
     <#if tabs?size != 0>
@@ -139,6 +134,7 @@
     </#if>
 </#macro>
 
+
 <#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
@@ -156,7 +152,7 @@
       <#local href = CreateLinkFromNode(element)>
       <a class="paging-arrow ${class}" href="${href}"><span>${text}</span></a><#t>
     <#else>
-      <span class="paging-arrow disabled ${class}">${text}</span><#t>
+      <span class="paging-arrow disabled ${class}"><span>${text}</span></span><#t>
     </#if>
   </#compress>
 </#macro>

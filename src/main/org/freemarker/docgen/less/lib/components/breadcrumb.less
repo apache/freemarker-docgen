@@ -14,12 +14,31 @@
     &::after {
       content: '/';
       color: #979797;
-      margin: 0 6px;
+      margin: 0 3px;
+
+      @media (min-width: @screen-sm-min) {
+        margin: 0 6px;
+      }
     }
 
     &:last-child {
       &::after {
         content: '';
+      }
+    }
+
+    .step-0 {
+      &::after {
+        .icon();
+        .icon-book();
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        font-size: 12px;
+      }
+
+      span {
+        display: none;
       }
     }
   }
