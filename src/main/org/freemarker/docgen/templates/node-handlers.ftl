@@ -429,7 +429,6 @@
 <#assign simplesect = sectionLikeElement>
 
 <#macro index>
-  <#visit u.getRequiredTitleElement(.node)>
 
   <#-- ABC links -->
   <#local lastLetter = "">
@@ -509,8 +508,6 @@
 </#function>
 
 <#macro glossary>
-  <#visit u.getRequiredTitleElement(.node)>
-
   <#local ges = .node.glossentry?sort_by("glossterm")>
 
   <#-- Print alphabetical index links: -->
