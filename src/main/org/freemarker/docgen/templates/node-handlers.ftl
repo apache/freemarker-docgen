@@ -701,7 +701,7 @@
     <#if imageobject?node_name == "imageobject">
       <#list imageobject.* as imagedata>
         <#if imagedata?node_name == "imagedata">
-          <p align="center"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
+          <p class="center-img"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
         <#else>
           <#stop "Unexpected element when \"imagedata\" was expected: "
               + imagedata?node_name>
