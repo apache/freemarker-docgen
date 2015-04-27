@@ -3,18 +3,16 @@
   margin: 0;
   padding: 0;
   font-size: 12px;
+  display: block;
 
   @media (min-width: @screen-sm-min) {
     font-size: 13px;
     padding-top: 9px;
-    //padding-bottom: 9px;
+    height: 28px;
   }
 
   li {
     display: inline-block;
-    height: 19px;
-    line-height: 19px;
-    vertical-align: middle;
 
     &::after {
       content: '/';
@@ -29,14 +27,6 @@
     &:last-child {
       &::after {
         display: none;
-      }
-
-      .label {
-        max-width: 180px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: inline-block;
       }
     }
 
