@@ -39,20 +39,19 @@
 
 
 <#macro searchForm>
-  <#-- @todo: replace with google search -->
-  <#-- @todo: need flag to disable or enable search -->
 
-  <form class="search-form<#if offline> offline</#if>"><#t>
-    <fieldset><#t>
-      <legend class="sr-only">Search form</legend><#t>
-      <label for="search-field" class="sr-only">Search query</label><#t>
-      <input id="search-field" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off"><#t>
-      <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
-    </fieldset><#t>
-  </form><#t>
-  <#if !offline>
-    <@google.search />
+  <#if showSearch>
+    <#-- @todo: need flag to disable or enable search -->
+    <form method="get" class="search-form<#if offline> offline</#if>" action="search.html"><#t>
+      <fieldset><#t>
+        <legend class="sr-only">Search form</legend><#t>
+        <label for="search-field" class="sr-only">Search query</label><#t>
+        <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off"><#t>
+        <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
+      </fieldset><#t>
+    </form><#t>
   </#if>
+
 </#macro>
 
 

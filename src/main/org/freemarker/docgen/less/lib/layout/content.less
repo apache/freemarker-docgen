@@ -20,6 +20,8 @@
 
   .col-left {
     flex: 0 0 130px;
+    max-width: 130px; // set max-width to prevent flicker
+
     margin-right: @gutter-width / 4 * 3; // 18px
 
     // hide for really, really small screens
@@ -31,7 +33,7 @@
 
     @media (min-width: @screen-sm-min) {
       flex-basis: 210px;
-      width: 210px;
+      max-width: 210px;
       margin-right: @gutter-width * 2;
 
       &.expanded {

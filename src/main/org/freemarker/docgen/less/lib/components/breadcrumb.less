@@ -25,27 +25,31 @@
     }
 
     &:last-child {
+
+      a {
+        color: @text-color;
+      }
+
       &::after {
         display: none;
       }
     }
 
     &.step-0 {
-      display: none;
-      // a {
-      //   &::after {
-      //     .icon();
-      //     .icon-book();
-      //     display: inline-block;
-      //     width: 14px;
-      //     height: 14px;
-      //     font-size: 12px;
-      //   }
-      //
-      //   span {
-      //     display: none;
-      //   }
-      // }
+      a {
+        &::after {
+          .icon();
+          .icon-book();
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          font-size: 12px;
+        }
+
+        span {
+          display: none;
+        }
+      }
     }
   }
 }

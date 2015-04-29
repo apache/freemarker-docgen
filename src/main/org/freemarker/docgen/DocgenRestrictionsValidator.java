@@ -19,13 +19,13 @@ import static org.freemarker.docgen.DocBook5Constants.*;
  * Adds Docgen-specific restrictions to an already existing DocBook 5 validator.
  */
 class DocgenRestrictionsValidator implements ContentHandler {
-    
+
     public static final int MAX_SECTION_NESTING_LEVEL = 3;
 
     private static final Set<String> SUPPORTED_ELEMENTS;
     static {
         Set<String> supportedElements = new TreeSet<String>();
-        
+
         supportedElements.add(E_ANCHOR);
         supportedElements.add("answer");
         supportedElements.add(E_APPENDIX);
@@ -39,6 +39,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add("entry");
         supportedElements.add(E_FOOTNOTE);
         supportedElements.add(E_GLOSSARY);
+        supportedElements.add(E_SEARCH);
         supportedElements.add("glossdef");
         supportedElements.add(E_GLOSSENTRY);
         supportedElements.add("glosssee");
@@ -84,17 +85,17 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add(E_TITLE);
         supportedElements.add(E_WARNING);
         supportedElements.add("xref");
-        
+
         SUPPORTED_ELEMENTS = Collections.unmodifiableSet(supportedElements);
     }
-    
+
     private static final Set<String> ELEMENTS_ALLOW_ID;
     static {
         // Attention! When adding entries here, be sure that the corresponding
         // element indeed generates HTML anchors (or is an output-file element).
-        
+
         Set<String> elementsAllowId = new TreeSet<String>();
-        
+
         elementsAllowId.add(E_PART);
         elementsAllowId.add(E_APPENDIX);
         elementsAllowId.add(E_CHAPTER);
@@ -103,6 +104,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         elementsAllowId.add(E_PREFACE);
         elementsAllowId.add(E_INDEX);
         elementsAllowId.add(E_GLOSSARY);
+        elementsAllowId.add(E_SEARCH);
 
         elementsAllowId.add(E_PARA);
         elementsAllowId.add(E_MEDIAOBJECT);
@@ -111,7 +113,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         elementsAllowId.add(E_ITEMIZEDLIST);
         elementsAllowId.add(E_ORDEREDLIST);
         elementsAllowId.add(E_LISTITEM);
-        
+
         elementsAllowId.add(E_GLOSSENTRY);
         elementsAllowId.add(E_QUANDAENTRY);
 
@@ -119,12 +121,12 @@ class DocgenRestrictionsValidator implements ContentHandler {
 
         ELEMENTS_ALLOW_ID = Collections.unmodifiableSet(elementsAllowId);
     }
-    
+
     private final ContentHandler docbook5Validator;
     private final ErrorHandler errorHandler;
     private final MessageStreamActivityMonitor errorMessageMonitor;
     private final DocgenValidationOptions options;
-    
+
     private Locator locator;
     private String documentElementName;
     private int sectionNestingLevel;
@@ -142,10 +144,10 @@ class DocgenRestrictionsValidator implements ContentHandler {
     private int programlistingNestingLevel;
     private int invisibleElementNestingLevel;
     private int programlistingLineLength;
-    
+
     /**
      * @param errorMessageMonitor Used for preventing reporting a violation
-     *      that was also a DocBook 5 violation. 
+     *      that was also a DocBook 5 violation.
      */
     DocgenRestrictionsValidator(
             ContentHandler docbook5Validator, ErrorHandler errorHandler,
@@ -156,19 +158,19 @@ class DocgenRestrictionsValidator implements ContentHandler {
                     "\"docbook5Validator\" can't be null");
         }
         this.docbook5Validator = docbook5Validator;
-        
+
         if (errorHandler == null) {
             throw new IllegalArgumentException(
                     "\"errorHandler\" can't be null");
         }
         this.errorHandler = errorHandler;
-        
+
         if (errorMessageMonitor == null) {
             throw new IllegalArgumentException(
                     "\"messageMonitor\" can't be null");
         }
         this.errorMessageMonitor = errorMessageMonitor;
-        
+
         if (options == null) {
             throw new IllegalArgumentException("\"options\" can't be null");
         }
@@ -177,12 +179,12 @@ class DocgenRestrictionsValidator implements ContentHandler {
 
     public void startElement(String uri, final String localName, String name,
             Attributes atts) throws SAXException {
-        boolean xmlnsOK = uri.equals(XMLNS_DOCBOOK5); 
+        boolean xmlnsOK = uri.equals(XMLNS_DOCBOOK5);
         if (xmlnsOK) {
             hadClosedPara.add(false);
             elemPath.add(localName);
         }
-        
+
         errorMessageMonitor.reset();
         docbook5Validator.startElement(uri, localName, name, atts);
         if (!errorMessageMonitor.hadNewErrorMessage()) {
@@ -218,7 +220,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         } else {
             isDocumentElem = false;
         }
-        
+
         if (localName.equals(E_SECTION)) {
             sectionNestingLevel++;
             if (sectionNestingLevel > MAX_SECTION_NESTING_LEVEL) {
@@ -257,7 +259,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
                             ));
                 }
                 checkHasPrecedingParaInListitem(localName);
-                
+
                 programlistingLineLength = 0;
                 programlistingNestingLevel++;
             }
@@ -278,7 +280,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
             }
             paraNestingLevelsHiddenByFootnote.add(paraNestingLevel);
             paraNestingLevel = 0;
-            
+
             programlistingNestingLevelsHiddenByFootnote.add(
                     programlistingNestingLevel);
             programlistingNestingLevel = 0;
@@ -302,7 +304,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
                         + AV_CONFORMANCE_DOCGEN + "\"."));
             }
         }
-        
+
         if (atts.getIndex(A_XML_ID) != -1
                 && !ELEMENTS_ALLOW_ID.contains(localName)) {
             errorHandler.error(newSAXException("The \"" + localName
@@ -317,7 +319,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
                               + " higher in the element hierarchy.")
                     + ")"));
         }
-        
+
         if (atts.getIndex(A_XREFLABEL) != -1
                 && !ELEMENTS_ALLOW_ID.contains(localName)) {
             errorHandler.error(newSAXException("The \"" + localName
@@ -360,7 +362,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
 
     public void endElement(String uri, String localName, String name)
             throws SAXException {
-        boolean xmlnsOK = uri.equals(XMLNS_DOCBOOK5); 
+        boolean xmlnsOK = uri.equals(XMLNS_DOCBOOK5);
         try {
             docbook5Validator.endElement(uri, localName, name);
             if (xmlnsOK) {
@@ -391,7 +393,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
             }
         }
     }
-    
+
     public void characters(char[] ch, int start, int length)
             throws SAXException {
         if (invisibleElementNestingLevel == 0
@@ -400,7 +402,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
             for (int i = start; i < end; i++) {
                 char c = ch[i];
                 if (c == 0x0A || c == 0x0D) {
-                    programlistingLineLength = 0; 
+                    programlistingLineLength = 0;
                 } else {
                     if (c == 0x09) {
                         // Assuming tab-width 8:
@@ -442,7 +444,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
     public void ignorableWhitespace(char[] ch, int start, int length)
             throws SAXException {
         docbook5Validator.ignorableWhitespace(ch, start, length);
-        
+
     }
 
     public void processingInstruction(String target, String data)

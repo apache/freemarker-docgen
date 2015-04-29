@@ -49,13 +49,9 @@
     <ul class="breadcrumb"><#t>
       <#list path as step>
         <li class="step-${step_index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
-          <#if step_has_next>
               <a class="label" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
                 <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
               </a><#t>
-          <#else>
-            <span class="label" itemprop="title">${step.title}</span><#t>
-          </#if>
         </li><#t>
       </#list>
     </ul><#t>

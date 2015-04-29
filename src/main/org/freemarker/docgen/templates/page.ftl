@@ -5,6 +5,7 @@
 <#import "footer.ftl" as footer>
 <#import "header.ftl" as header>
 <#import "navigation.ftl" as nav>
+<#import "google.ftl" as google>
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
@@ -67,10 +68,11 @@
               <@nav.pagers class="top" />
               <#visit titleElement using nodeHandlers>
             </div>
-
             <#-- - Render either ToF (Table of Files) or Page ToC; -->
             <#--   both are called, but at least one of them will be empty: -->
-            <#if pageType == "index" || pageType == "glossary">
+            <#if pageType == "search">
+              <@google.searchResults />
+            <#elseif pageType == "index" || pageType == "glossary">
               <#visit .node using nodeHandlers>
             <#elseif pageType == "docgen:detailed_toc">
               <@toc att="docgen_detailed_toc_element" maxDepth=99 />

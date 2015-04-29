@@ -2,7 +2,7 @@ var LEVEL = 0;
 
 (function(toc, breadcrumb) {
   //var breadcrumb = ['Reference', 'Built-in Reference', 'Built-ins for strings'];
-  var skipList = ['Preface', 'XML Processing Guide'];
+  var skipList = ['Preface', 'XML Processing Guide', 'Search'];
 
   createMenu(toc);
 

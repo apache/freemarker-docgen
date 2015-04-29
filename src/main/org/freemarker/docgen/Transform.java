@@ -8,6 +8,7 @@ import static org.freemarker.docgen.DocBook5Constants.E_BOOK;
 import static org.freemarker.docgen.DocBook5Constants.E_CHAPTER;
 import static org.freemarker.docgen.DocBook5Constants.E_FOOTNOTE;
 import static org.freemarker.docgen.DocBook5Constants.E_GLOSSARY;
+import static org.freemarker.docgen.DocBook5Constants.E_SEARCH;
 import static org.freemarker.docgen.DocBook5Constants.E_GLOSSENTRY;
 import static org.freemarker.docgen.DocBook5Constants.E_IMAGEDATA;
 import static org.freemarker.docgen.DocBook5Constants.E_INDEX;
@@ -378,6 +379,7 @@ public final class Transform {
     static final String SETTING_SHOW_EDITORAL_NOTES = "showEditoralNotes";
     static final String SETTING_GENERATE_ECLIPSE_TOC = "generateEclipseTOC";
     static final String SETTING_SHOW_XXE_LOGO = "showXXELogo";
+    static final String SETTING_SHOW_SEARCH = "showSearch";
     static final String SETTING_DISABLE_JAVASCRIPT = "disableJavaScript";
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
@@ -411,6 +413,8 @@ public final class Transform {
             = "transformStartTime";
     private static final String VAR_SHOW_XXE_LOGO
             = SETTING_SHOW_XXE_LOGO;
+    private static final String VAR_SHOW_SEARCH
+            = SETTING_SHOW_SEARCH;
     private static final String VAR_DISABLE_JAVASCRIPT
             = SETTING_DISABLE_JAVASCRIPT;
     private static final String VAR_ECLIPSE_LINK_TO = SETTING_ECLIPSE_LINK_TO;
@@ -522,6 +526,7 @@ public final class Transform {
 
         idAttElems.add(E_GLOSSARY);
         idAttElems.add(E_GLOSSENTRY);
+        idAttElems.add(E_SEARCH);
 
         GUARANTEED_ID_ELEMENTS = Collections.unmodifiableSet(idAttElems);
     }
@@ -571,6 +576,8 @@ public final class Transform {
     private boolean showEditoralNotes;
 
     private boolean showXXELogo;
+
+    private boolean showSearch;
 
     private boolean disableJavaScript;
 
@@ -836,7 +843,10 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_SHOW_XXE_LOGO)) {
                     showXXELogo = itIsABooleanSetting(
                             cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
+                } else if (settingName.equals(SETTING_SHOW_SEARCH)) {
+                    showSearch = itIsABooleanSetting(
+                            cfgFile, settingName, settingValue);
+                }else if (settingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
                     disableJavaScript = itIsABooleanSetting(
                             cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_CONTENT_DIRECTORY)) {
@@ -1012,6 +1022,8 @@ public final class Transform {
                     VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
             fmConfig.setSharedVariable(
                     VAR_SHOW_XXE_LOGO, showXXELogo);
+            fmConfig.setSharedVariable(
+                    VAR_SHOW_SEARCH, showSearch);
             fmConfig.setSharedVariable(
                     VAR_DISABLE_JAVASCRIPT, disableJavaScript);
             fmConfig.setSharedVariable(
@@ -1379,7 +1391,8 @@ public final class Transform {
             // Add default titles:
             if (elemName.equals(E_PREFACE)
                     || elemName.equals(E_GLOSSARY)
-                    || elemName.equals(E_INDEX)) {
+                    || elemName.equals(E_INDEX)
+                    || elemName.equals(E_SEARCH)) {
                 ensureTitleExists(
                         elem,
                         Character.toUpperCase(elemName.charAt(0))
