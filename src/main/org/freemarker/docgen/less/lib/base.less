@@ -73,9 +73,13 @@ pre {
   background-color: @bg-gray;
 
   word-break: normal;
-  
+
   white-space: pre;
-  white-space: -moz-pre-wrap !important;
+
+  @-moz-document url-prefix() {
+    white-space: pre-wrap;    
+    word-break: break-all;
+  }
 
 
   margin: 0 0 9px;
