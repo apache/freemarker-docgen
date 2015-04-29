@@ -8,10 +8,14 @@
   }
 
   .gs-title {
-    color: @link-color;
+    &,
+    & * {
+      color: @link-color !important;
+      text-decoration: none !important;
 
-    &:hover {
-      color: @link-hover;
+      &:hover {
+        color: @link-hover !important;
+      }
     }
   }
 }

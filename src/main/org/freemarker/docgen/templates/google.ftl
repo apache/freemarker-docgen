@@ -1,4 +1,4 @@
-<#assign searchKey = "014728049242975963158:8awjt03uofm">
+<#assign searchKey = searchKey>
 
 <#macro search>
   <script>

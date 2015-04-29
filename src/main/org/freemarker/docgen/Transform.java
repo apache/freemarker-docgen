@@ -379,7 +379,7 @@ public final class Transform {
     static final String SETTING_SHOW_EDITORAL_NOTES = "showEditoralNotes";
     static final String SETTING_GENERATE_ECLIPSE_TOC = "generateEclipseTOC";
     static final String SETTING_SHOW_XXE_LOGO = "showXXELogo";
-    static final String SETTING_SHOW_SEARCH = "showSearch";
+    static final String SETTING_SEARCH_KEY = "searchKey";
     static final String SETTING_DISABLE_JAVASCRIPT = "disableJavaScript";
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
@@ -413,8 +413,8 @@ public final class Transform {
             = "transformStartTime";
     private static final String VAR_SHOW_XXE_LOGO
             = SETTING_SHOW_XXE_LOGO;
-    private static final String VAR_SHOW_SEARCH
-            = SETTING_SHOW_SEARCH;
+    private static final String VAR_SEARCH_KEY
+            = SETTING_SEARCH_KEY;
     private static final String VAR_DISABLE_JAVASCRIPT
             = SETTING_DISABLE_JAVASCRIPT;
     private static final String VAR_ECLIPSE_LINK_TO = SETTING_ECLIPSE_LINK_TO;
@@ -577,7 +577,7 @@ public final class Transform {
 
     private boolean showXXELogo;
 
-    private boolean showSearch;
+    private String searchKey;
 
     private boolean disableJavaScript;
 
@@ -843,8 +843,8 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_SHOW_XXE_LOGO)) {
                     showXXELogo = itIsABooleanSetting(
                             cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_SHOW_SEARCH)) {
-                    showSearch = itIsABooleanSetting(
+                } else if (settingName.equals(SETTING_SEARCH_KEY)) {
+                    searchKey = itIsAStringSetting(
                             cfgFile, settingName, settingValue);
                 }else if (settingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
                     disableJavaScript = itIsABooleanSetting(
@@ -1023,7 +1023,7 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     VAR_SHOW_XXE_LOGO, showXXELogo);
             fmConfig.setSharedVariable(
-                    VAR_SHOW_SEARCH, showSearch);
+                    VAR_SEARCH_KEY, searchKey);
             fmConfig.setSharedVariable(
                     VAR_DISABLE_JAVASCRIPT, disableJavaScript);
             fmConfig.setSharedVariable(
