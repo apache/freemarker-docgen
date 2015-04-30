@@ -1,0 +1,16 @@
+{
+  "name": "docgen-assets",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "preinstall": "npm install gulp -g"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-autoprefixer": "^2.2.0",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-css": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}

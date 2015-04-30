@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 final class DocBook5Constants {
-    
+
     // Can't be instantiated
     private DocBook5Constants() {
         // Nop
     }
 
     public static final String XMLNS_DOCBOOK5 = "http://docbook.org/ns/docbook";
-    
+
     public static final String E_BOOK = "book";
     public static final String E_ARTICLE = "article";
     public static final String A_CONFORMANCE = "conformance";
@@ -46,10 +46,11 @@ final class DocBook5Constants {
     public static final String E_TITLE = "title";
     public static final String E_SUBTITLE = "subtitle";
     public static final String E_INFO = "info";
-    
+    public static final String E_SEARCH = "search";
+
     public static final String A_XML_ID = "xml:id";
     public static final String A_XREFLABEL = "xreflabel";
-    
+
     public static final String E_INDEXTERM = "indexterm";
     public static final String E_PRIMARY = "primary";
     public static final String E_SECONDARY = "secondary";
@@ -70,17 +71,17 @@ final class DocBook5Constants {
 
     public static final String E_OLINK = "olink";
     public static final String E_LINK = "link";
-    
+
     public static final String E_NOTE = "note";
     public static final String E_WARNING = "warning";
-    
+
     /**
      * Elements that are like parts, chapters, sections and like.
      */
     public static final Set<String> DOCUMENT_STRUCTURE_ELEMENTS;
     static {
         HashSet<String> docStructElems = new HashSet<String>();
-        
+
         docStructElems.add(E_APPENDIX);
         docStructElems.add(E_BOOK);
         docStructElems.add(E_ARTICLE);
@@ -91,7 +92,8 @@ final class DocBook5Constants {
         docStructElems.add(E_PREFACE);
         docStructElems.add(E_SECTION);
         docStructElems.add(E_SIMPLESECT);
-        
+        docStructElems.add(E_SEARCH);
+
         DOCUMENT_STRUCTURE_ELEMENTS = Collections.unmodifiableSet(
                 docStructElems);
     }
@@ -103,7 +105,7 @@ final class DocBook5Constants {
     public static final Set<String> VISIBLE_TOPLEVEL_ELEMENTS;
     static {
         HashSet<String> visibleTopLevelElems = new HashSet<String>();
-        
+
         visibleTopLevelElems.addAll(DOCUMENT_STRUCTURE_ELEMENTS);
         visibleTopLevelElems.add(E_INFO);
         visibleTopLevelElems.add(E_TITLE);
@@ -119,9 +121,9 @@ final class DocBook5Constants {
         visibleTopLevelElems.add(E_PROGRAMLISTING);
         visibleTopLevelElems.add(E_NOTE);
         visibleTopLevelElems.add(E_WARNING);
-        
+
         VISIBLE_TOPLEVEL_ELEMENTS = Collections.unmodifiableSet(
                 visibleTopLevelElems);
     }
-    
+
 }

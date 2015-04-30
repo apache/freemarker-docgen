@@ -14,15 +14,15 @@
 <!-- See http://docbook.org/ns/docbook -->
 <!--
     This file is part of DocBook V5.0
-    
+
     Copyright 1992-2008 HaL Computer Systems, Inc.,
     O'Reilly & Associates, Inc., ArborText, Inc., Fujitsu Software
     Corporation, Norman Walsh, Sun Microsystems, Inc., and the
     Organization for the Advancement of Structured Information
     Standards (OASIS).
-    
+
     Release: $Id: docbook.rnc 7661 2008-02-06 13:52:59Z nwalsh $
-    
+
     Permission to use, copy, modify and distribute the DocBook schema
     and its accompanying documentation for any purpose and without fee
     is hereby granted in perpetuity, provided that the above copyright
@@ -30,16 +30,16 @@
     holders make no representation about the suitability of the schema
     for any purpose. It is provided "as is" without expressed or implied
     warranty.
-    
+
     If you modify the DocBook schema in any way, label your schema as a
     variant of DocBook. See the reference documentation
     (http://docbook.org/tdg5/en/html/ch05.html#s-notdocbook)
     for more information.
-    
+
     Please direct all questions, bug reports, or suggestions for changes
     to the docbook@lists.oasis-open.org mailing list. For more
     information, see http://www.oasis-open.org/docbook/.
-    
+
     ======================================================================
   -->
   <start>
@@ -6074,6 +6074,7 @@ O, the molecular formula for water)</a:documentation>
   <define name="db.navigation.components">
     <choice>
       <notAllowed/>
+      <ref name="db.search"/>
       <ref name="db.glossary"/>
       <ref name="db.bibliography"/>
       <ref name="db.index"/>
@@ -8087,6 +8088,21 @@ O, the molecular formula for water)</a:documentation>
         <optional>
           <ref name="db.bibliography"/>
         </optional>
+      </element>
+    </define>
+    <define name="db.search">
+      <element name="search">
+        <a:documentation>A search reuslts page</a:documentation>
+        <s:pattern name="Root must have version">
+          <s:rule context="/db:search">
+            <s:assert test="@version">The root element must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.glossary.attlist"/>
+        <ref name="db.glossary.info"/>
+        <zeroOrMore>
+          <ref name="db.all.blocks"/>
+        </zeroOrMore>
       </element>
     </define>
   </div>

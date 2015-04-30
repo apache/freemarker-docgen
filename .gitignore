@@ -8,3 +8,11 @@
 .DS_Store
 src/manual/book.xml~
 
+node_modules
+
+npm-debug.log
+
+main.min.js
+docgen.min.css
+docgen.css
+selection.json

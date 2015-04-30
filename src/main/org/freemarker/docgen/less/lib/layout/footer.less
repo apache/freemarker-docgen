@@ -1,0 +1,135 @@
+.site-footer {
+  border-top: 3px solid #003270;
+  background-color: @brand-color;
+  background-image: radial-gradient(ellipse at 50% -50px,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 24%,
+    rgba(0, 12, 59, 1) 86%,
+    rgba(0, 12, 59, 1) 100%), url(img/patterned-bg.png);
+
+  color: #fff;
+
+  a {
+    color: #fff;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+
+.footer-top-padding() {
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  @media (min-width: @screen-md-min) {
+      padding-top: 24px;
+  }
+}
+
+.footer-top {
+
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  @media (min-width: @screen-md-min) {
+    justify-content: space-between;
+  }
+
+  .col-left {
+    flex: 1 1 auto;
+  }
+
+  .col-right {
+    .footer-top-padding();
+    flex: 1 0 auto;
+  }
+
+
+  .col-right {
+    @media (min-width: @screen-sm-min) {
+      text-align: right;
+    }
+  }
+}
+
+.sitemap {
+
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    .footer-top-padding();
+
+    margin-right: 12px;
+    flex: 0 1 auto;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    @media (min-width: @screen-sm-min) {
+      margin-right: 54px;
+    }
+
+    .column-header {
+      color: #fff;
+      border-bottom: 2px solid #4c76ab;
+      margin: 0 0 6px;
+      padding-bottom: 6px;
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+    }
+
+    a {
+      padding-right: 9px;
+      display: block;
+    }
+  }
+}
+
+.xxe {
+  display: inline-block;
+  width: 110px;
+  height: 34px;
+  margin-top: 15px;
+
+  background: #fff url(img/xxe.png) 50% no-repeat;
+  border: 1px solid #002254;
+
+  span {
+    display: none;
+  }
+}
+
+.footer-bottom {
+
+  padding: 45px 0 30px;
+  
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  p {
+    margin: 0 0 6px;
+    flex: 0 1 auto;
+    -webkit-box-flex: 1;
+  }
+
+  .last-updated {
+    font-size: 12px;
+    display: block;
+  }
+}

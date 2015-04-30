@@ -1,0 +1,117 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: @font-sans-serif;
+  font-size: 14px;
+  color: @text-color;
+  line-height: 1.5;
+  text-size-adjust: 100%;
+  font-weight: normal;
+  background-color: #fff;
+}
+
+body {
+  margin: 0;
+  font-size: 14px;
+  text-size-adjust: 100%;
+  //-ms-touch-action: none; //@todo: decide if we want to use this
+}
+
+a {
+  color: @link-color;
+  text-decoration: none;
+
+  &:hover {
+    color: @link-hover;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: @font-sans-serif;
+  line-height: 1.5;
+  font-weight: 500;
+  color: @header-color;
+  word-break: break-word;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 15px;
+
+  @media (min-width: @screen-sm-min) {
+    font-size: 21px;
+  }
+}
+
+code,
+pre {
+  font-size: 13px;
+  font-family: Courier, Monaco, Consolas, "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  padding: 0 2px;
+  color: #C5351F;
+  word-break: break-word;
+}
+
+pre {
+  display: block;
+  border: 1px solid @border-gray;
+  padding: 6px 12px;
+  background-color: @bg-gray;
+
+  word-break: normal;
+
+  white-space: pre;
+
+  @-moz-document url-prefix() {
+    white-space: pre-wrap;    
+    word-break: break-all;
+  }
+
+
+  margin: 0 0 9px;
+
+  overflow-x: auto;
+}
+
+img {
+  border: 0;
+  vertical-align: middle;
+}
+
+// forms
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+input[type=search],
+::-webkit-search-cancel-button,
+::-webkit-search-results-button {
+  -webkit-appearance: none;
+}
+
+// tables
+table {
+  border: 0;
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 0;
+}

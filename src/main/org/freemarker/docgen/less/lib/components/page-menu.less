@@ -1,0 +1,25 @@
+.page-menu {
+
+  @border-spacing: 12px;
+
+  margin: 0 0 @border-spacing;
+  padding:0 0 @border-spacing 18px;
+
+  border-bottom: 1px solid @border-gray;
+
+  @media (min-width: @screen-sm-min) {
+    margin-bottom: @border-spacing * 2;
+    padding-bottom: @border-spacing * 2;
+  }
+
+  ul {
+    margin: 0 0 0 18px;
+    padding: 0;
+  }
+
+  a {
+    &:visited {
+      color: #800080;
+    }
+  }
+}

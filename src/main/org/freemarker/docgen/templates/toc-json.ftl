@@ -16,4 +16,4 @@
     }
 </#macro>
 
-<#compress><@tocNodeToJSON tocRoot /></#compress>
+<#compress>var toc = <@tocNodeToJSON tocRoot />;</#compress>

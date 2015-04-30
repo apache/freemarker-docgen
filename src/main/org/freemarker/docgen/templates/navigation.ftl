@@ -11,12 +11,10 @@
   <#local captured>
     <#if showNavigationBar>
       <#if top>
-        <@breadcrumb />
+        <#--><@pagers />-->
         <@bookmarks />
-        <@pagers />
       <#else>
         <@pagers />
-        <@breadcrumb />
       </#if>
     </#if>
   </#local>
@@ -26,7 +24,10 @@
     </#if>
   <#else>
     <div class="navigation">
-      <#noescape>${captured}</#noescape><#t>
+      <#-- keep site-width inside navigation so that the background extends -->
+      <div class="site-width">
+        <#noescape>${captured}</#noescape><#t>
+      </div>
     </div>
   </#if>
 </#macro>
@@ -45,94 +46,111 @@
     <#local curNode = curNode?parent>
   </#list>
   <#if (path?size > 1)>
-    <div class="breadcrumb">
-      <span class="breadcrumb"><#t>
-        You are here:
-        <#list path as step>
-          <#if step_has_next><a href="${CreateLinkFromNode(step)}"></#if><#rt>
-            <#recurse u.getRequiredTitleElement(step) using nodeHandlers><#t>
-          <#if step_has_next></a></#if><#lt>
-          <#if step_has_next>
-            <b>></b>
-          </#if>
-        </#list>
-      </span><#t>
-    </div>
+    <ul class="breadcrumb"><#t>
+      <#list path as step>
+        <li class="step-${step_index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
+          <a class="label" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
+            <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
+          </a><#t>
+        </li><#t>
+      </#list>
+    </ul><#t>
+  <#else>
+    <span class="breadcrumb">For FreeMarker v${.version}</span> <#-- empty element so flexbox layout still works -->
   </#if>
 </#macro>
 
+
+<#macro breadcrumbJs>
+  var breadcrumb = [<#t>
+  <#local path = []>
+  <#local curNode = .node>
+  <#list 1..99 as _>
+    <#local path = [curNode] + path>
+    <#if curNode.@docgen_root_element?size != 0>
+      <#break>
+    </#if>
+    <#local curNode = curNode?parent>
+  </#list>
+  <#if (path?size > 1)>
+    <#list path as step>
+      "<#noescape>${step.title?js_string}</#noescape>"<#t>
+      <#if step_has_next>,</#if><#t>
+    </#list>
+  </#if>
+  ];<#t>
+</#macro>
+
+
 <#macro bookmarks>
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
-    <div class="bookmarks">
-      <span class="bookmarks"><#t>
-        Bookmarks:<#lt>
-        <#local curHref = CreateLinkFromNode(.node)>
-        <#list internalBookmarks?keys as k>
-          <#local target = CreateLinkFromID(internalBookmarks[k])>
-          <#if target != curHref>
-            <a href="${target}">${k}</a><#t>
-          <#else>
-            <span class="disabledBookmark">${k}</span><#t>
-          </#if>
-          <#if k_has_next>, </#if><#t>
-        </#list>
-        <#if internalBookmarks?size != 0 && externalBookmarks?size != 0>, </#if><#t>
-        <#list externalBookmarks?keys as k>
-          <a href="${externalBookmarks[k]}">${k}</a><#if k_has_next>, </#if><#t>
-        </#list>
-      </span><#t>
-    </div>
+    <div class="bookmarks" title="Bookmarks"><#t>
+        <span class="sr-only">Bookmarks:</span><#t>
+        <ul class="bookmark-list"><#t>
+          <#local curHref = CreateLinkFromNode(.node)>
+          <#list internalBookmarks?keys as k>
+            <li><#t>
+              <#local target = CreateLinkFromID(internalBookmarks[k])>
+              <#if target != curHref>
+                <a href="${target}">${k}</a><#t>
+              <#else>
+                ${k}<#t>
+              </#if>
+            </li><#t>
+          </#list>
+          <#list externalBookmarks?keys as k>
+            <li><#t>
+              <a href="${externalBookmarks[k]}">${k}</a><#t>
+            </li><#t>
+          </#list>
+        </ul><#t>
+    </div><#t>
   </#if>
 </#macro>
+
 
 <#macro tabs>
     <#local tabs = .data_model.tabs>
     <#if tabs?size != 0>
-        <ul class="tabs">
+        <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
                 <#if tabs[tabTitle]?has_content>
-                    <li><a href="${tabs[tabTitle]}">${tabTitle}</a></li>
+                    <#-- @todo: need hook for dynamically setting external links -->
+                    <li><#t>
+                      <a<#if tabTitle == "Java API"> class="external"</#if> href="${tabs[tabTitle]}">${tabTitle}</a><#t>
+                    </li><#t>
                 <#else>
-                    <li class="current">${tabTitle}</li>
+                    <#-- @todo: we should still specify a link for the current tab -->
+                    <li class="current"><#t>
+                      <a href="index.html">${tabTitle}</a><#t>
+                    </li><#t>
                 </#if>
             </#list>
-        </ul>
+        </ul><#t>
     </#if>
 </#macro>
 
-<#macro pagers>
+
+<#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
-    <div class="pagers">
-      <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
-      <@pagerButton "Next page", nextFileElement!, false />
-      <@pagerButton "Previous page", previousFileElement! />
-      <@pagerButton "Parent page", parentFileElement! />
-      <@pagerButton "Contents", rootElement />
-      <div class="pagersVerticalSpacer"><@u.invisible1x1Img /></div>
-    </div>
+    <div class="${('pagers ' + class)?trim}"><#t>
+      <@pagerButton text="Previous" element=previousFileElement! class="previous" /><#t>
+      <@pagerButton text="Next" element=nextFileElement! class="next" /><#t>
+    </div><#t>
   </#if>
 </#macro>
 
-<#macro pagerButton label element labelOnly=true>
-  <div class="pagerButton"><#t>
+
+<#macro pagerButton text element class>
+  <#compress>
     <#if element?has_content>
       <#local href = CreateLinkFromNode(element)>
-      <#local curHref = CreateLinkFromNode(.node)>
-    </#if>
-    <#if element?has_content && href != curHref>
-      <a href="${href}"><#t>
-        <#if !labelOnly>
-          <span class="hideA">${label}:${' '}</span><#t>
-          <#recurse u.getRequiredTitleElement(element) using nodeHandlers><#t>
-        <#else>
-          ${label}<#t>
-        </#if>
-      </a><#t>
+      <a class="paging-arrow ${class}" href="${href}"><span>${text}</span></a><#t>
     <#else>
-      <span class="disabledPager">${label}</span><#t>
+      <span class="paging-arrow disabled ${class}"><span>${text}</span></span><#t>
     </#if>
-  </div><#t>
+  </#compress>
 </#macro>
 
 </#escape>

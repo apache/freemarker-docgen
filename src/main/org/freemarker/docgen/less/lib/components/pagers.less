@@ -1,0 +1,63 @@
+.paging-icon() {
+  .icon();
+
+  width: 14px;
+  height: 22px;
+  display: inline-block;
+  line-height: 22px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.pagers {
+  float: right;
+
+  &.bottom {
+    position: absolute;
+    bottom: 42px;
+    right: 0;
+  }
+
+  &.top {
+    order: 1;
+    margin-left: 12px;
+  }
+}
+
+.paging-arrow {
+  @paging-icon-spacing: 6px;
+
+  display: inline-block;
+  height: 22px;
+
+  &.previous {
+    @media (min-width: @screen-md-min) {
+      margin-right: 12px;
+    }
+
+    &::before {
+      .paging-icon();
+      .icon-arrow-circle-o-left();
+
+      padding-right: @paging-icon-spacing;
+    }
+  }
+
+  &.next {
+    &::after {
+      .paging-icon();
+      .icon-arrow-circle-o-right();
+
+      padding-left: @paging-icon-spacing;
+    }
+  }
+
+  span {
+    display: none;
+
+    @media (min-width: @screen-md-min) {
+      display: inline;
+    }
+  }
+}

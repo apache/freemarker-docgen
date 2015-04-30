@@ -1,0 +1,55 @@
+.breadcrumb {
+  list-style-type: none;
+  margin: 0;
+  padding: 6px 0 0 0;
+  font-size: 12px;
+  display: block;
+
+  @media (min-width: @screen-sm-min) {
+    font-size: 13px;
+    padding-top: 9px;
+    height: 28px;
+  }
+
+  li {
+    display: inline-block;
+
+    &::after {
+      content: '/';
+      color: #979797;
+      margin: 0 3px;
+
+      @media (min-width: @screen-sm-min) {
+        margin: 0 6px;
+      }
+    }
+
+    &:last-child {
+
+      a {
+        color: @text-color;
+      }
+
+      &::after {
+        display: none;
+      }
+    }
+
+    &.step-0 {
+      a {
+        &::after {
+          .icon();
+          .icon-book();
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          font-size: 12px;
+        }
+
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}

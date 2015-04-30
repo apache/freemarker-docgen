@@ -3,7 +3,8 @@
 <#import "util.ftl" as u>
 
 <#-- Constants: -->
-<#assign forProgrammersStyle = "color:#333399; font-style:italic">
+<#assign forProgrammersCss = "programmers-note">
+
 
 <#-- State variables: -->
 <#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
@@ -190,17 +191,21 @@
 <#assign varname = _inlineMonospaced>
 
 <#macro note>
-<div class="note">
-   <p class="rank_note">Note</p>
-   <#recurse>
-</div>
+  <div class="callout note">
+    <div class="callout-inner">
+      <strong class="callout-label">Note:</strong>
+      <#recurse>
+    </div>
+  </div>
 </#macro>
 
 <#macro warning>
-<div class="warning">
-  <p class="rank_note">Warning!</p>
-  <#recurse>
-</div>
+  <div class="callout warning">
+    <div class="callout-inner">
+      <strong class="callout-label">Warning!</strong>
+      <#recurse>
+    </div>
+  </div>
 </#macro>
 
 <#macro olink>
@@ -226,22 +231,22 @@
 
 <#macro para>
   <#if .node.@role[0]! = "forProgrammers">
-    <#local style = forProgrammersStyle>
+    <#local cssClass = forProgrammersCss>
   <#else>
-    <#local style = ''>
+    <#local cssClass = "">
   </#if>
   <#if compactPara!>
-    <#if style != ''>
-      <span style="${style}"><#t>
+    <#if cssClass?has_content>
+      <span<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
     </#if>
     <@Anchor/><#t>
     <#recurse>
-    <#if style != ''>
+    <#if cssClass?has_content>
       </span><#t>
     </#if>
   <#else>
     <#assign inHtmlP = true>
-    <p<#if style != ''> style="${style}"</#if>><#t>
+    <p<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
     <#local content><@Anchor/><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
     <#if !content?matches(r".*<p>\s*$", "s")>
@@ -282,7 +287,7 @@
       <#if fontBgColor! != "">
         <#local moreStyle = ";background-color:${fontBgColor}">
       </#if>
-      <span style="${forProgrammersStyle}${moreStyle}"><#recurse></span><#t>
+      <span class="${forProgrammersCss}" style="${moreStyle}"><#recurse></span><#t>
     <#else>
       <#local lastFontBgColor = fontBgColor!>
       <#if !bgcolors[role]??>
@@ -424,7 +429,6 @@
 <#assign simplesect = sectionLikeElement>
 
 <#macro index>
-  <#visit u.getRequiredTitleElement(.node)>
 
   <#-- ABC links -->
   <#local lastLetter = "">
@@ -504,8 +508,6 @@
 </#function>
 
 <#macro glossary>
-  <#visit u.getRequiredTitleElement(.node)>
-
   <#local ges = .node.glossentry?sort_by("glossterm")>
 
   <#-- Print alphabetical index links: -->
@@ -540,7 +542,7 @@
   </#if>
 
   <#local type = hierarElem?node_name>
-  <#local titleInitial = u.getTitlePrefix(hierarElem, true, true)>
+  <#local titleInitial = u.getTitlePrefix(hierarElem, false, true)>
 
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
   <#local htmlHLevel = 1>
@@ -564,14 +566,13 @@
 
   <#local classAtt = "">
 
-  <${htmlHElem} class="rank_${hierarElem.@docgen_rank}"
-        <#if htmlHLevel == 1>id="pageTopTitle"</#if>>
-      <@Anchor hierarElem/><#t>
+  <${htmlHElem} class="header-${hierarElem.@docgen_rank}" <#if !disableAnchors && hierarElem.@id[0]??>id="${hierarElem.@id[0]}"</#if>
+      <#if htmlHLevel == 1>id="pageTopTitle" itemprop="name"</#if>>
       ${titleInitial?html}<#recurse><#t>
       <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem?has_content>
-      <span style="font-size: 50%"><br><#recurse subtitleElem></span>
+      <span class="subtitle"><#recurse subtitleElem></span>
     </#if>
   </${htmlHElem}>
 </#macro>
@@ -644,13 +645,12 @@
 </#macro>
 
 <#macro informaltable>
-   <div class="informal-table">
-      <@Anchor/>
-      <#-- @todo: remove table, fix spacing -->
-      <table>
-          <#recurse>
-      </table>
-   </div>
+  <@Anchor/>
+  <div class="table-responsive">
+    <table class="table">
+      <#recurse>
+    </table>
+  </div>
 </#macro>
 
 <#-- Re-prints the original tag as is, but restricts the allowed attributes -->
@@ -698,7 +698,7 @@
     <#if imageobject?node_name == "imageobject">
       <#list imageobject.* as imagedata>
         <#if imagedata?node_name == "imagedata">
-          <p align="center"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
+          <p class="center-img"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
         <#else>
           <#stop "Unexpected element when \"imagedata\" was expected: "
               + imagedata?node_name>

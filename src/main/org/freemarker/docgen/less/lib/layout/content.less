@@ -1,0 +1,129 @@
+.site-content {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.content-wrapper {
+  display: flex;
+  padding-top: 17px;
+  padding-bottom: 42px;
+  min-height: 600px;
+  position: relative; // so we can position pagers
+
+  @media (min-width: @screen-sm-min) {
+      padding-top: 29px;
+  }
+
+  &.no-toc {
+    display: block;
+  }
+
+  .col-left {
+    flex: 0 0 130px;
+    max-width: 130px; // set max-width to prevent flicker
+
+    margin-right: @gutter-width / 4 * 3; // 18px
+
+    // hide for really, really small screens
+    display: none;
+
+    @media (min-width: 400px) {
+      display: block;
+    }
+
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 210px;
+      max-width: 210px;
+      margin-right: @gutter-width * 2;
+
+      &.expanded {
+        max-width: 100%;
+      }
+    }
+  }
+
+  .col-right {
+    flex: 1;
+  }
+}
+
+.page-content {
+  padding-bottom: 42px;
+
+  // keep long urls from causing page scrolling
+  a {
+    word-break: break-word;
+  }
+
+  .page-title {
+
+    @border-spacing: 12px;
+
+    padding-bottom: @border-spacing;
+    margin-bottom: @border-spacing;
+
+    border-bottom: 1px solid @border-gray;
+
+    @media (min-width: @screen-sm-min) {
+      padding-bottom: @border-spacing * 2;
+      margin-bottom: @border-spacing * 2;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+
+      @media (min-width: @screen-sm-min) {
+        font-size: 21px;
+      }
+
+      @media (min-width: @screen-md-min) {
+        font-size: 30px;
+      }
+    }
+
+    .subtitle {
+      display: block;
+      font-size: 14px;
+
+      @media (min-width: @screen-sm-min) {
+        font-size: 18px;
+      }
+
+      @media (min-width: @screen-md-min) {
+        font-size: 24px;
+      }
+
+    }
+  }
+
+  .active {
+    font-weight: bold;
+
+    &::before {
+      .icon();
+      .icon-star-outlined();
+      margin-left: -20px;
+      font-weight: normal;
+      opacity: 0;
+      position: absolute;
+      line-height: 31px;
+      font-size: 18px;
+      color: #C82222;
+      width: 18px;
+      animation: header-pulse 2s;
+    }
+  }
+}
+
+
+@keyframes header-pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}

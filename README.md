@@ -55,9 +55,21 @@ ant ide-dependencies
 
 This will create an `ide-dependencies` library that contains all the jars that
 you have to add to the classpath in the IDE. Note that here we assume that you
-have run the build or at least `ant update-deps` earlier. 
+have run the build or at least `ant update-deps` earlier.
 
 You could also use IvyDE instead, with configuration "IDE", but as the
 dependencies hardly ever change, it's unnecessary.
 
 [fmProj]: https://github.com/freemarker/freemarker
+
+### Compiling LESS and Minifying JS
+
+```sh
+ant gulp
+```
+
+Notes:
+* To compile the docgen styles, you must have [Node.js](https://nodejs.org/) installed.
+* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`)
+* Run `npm install` to install dependencies, then `ant gulp` to compile dependencies.
+=======

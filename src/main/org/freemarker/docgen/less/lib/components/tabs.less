@@ -1,0 +1,46 @@
+.tabs {
+  list-style-type: none;
+  margin: 0;
+  padding: 6px 0 0;
+  text-align: center;
+
+  @media (min-width: @screen-sm-min) {
+    margin-left: @gutter-width;
+    flex: 0 0 auto;
+    padding-top: 0;
+  }
+
+  li {
+    display: inline-block;
+
+    &.current {
+      a {
+        color: #fff;
+        font-weight: 500;
+      }
+    }
+
+    &:after {
+      width: 1px;
+      background-color: #96a5b8;
+      height: 9px;
+      display: inline-block;
+      content: '';
+      margin: 0 15px;
+    }
+
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+
+    a {
+      color: #c9dbf1;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}
