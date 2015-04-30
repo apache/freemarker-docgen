@@ -208,7 +208,6 @@
     />
   </target>
 
-
   <target name="all" depends="jar, javadoc"
     description='Build "docgen.jar" + javadocs'
   />
@@ -294,13 +293,12 @@
     <delete dir=".ivy" />
   </target>
 
-    <!-- See BUILD.txt about installing node.js and Gulp! -->
+  <!-- See README.md about installing node.js and Gulp! -->
   <target name="gulp">
     <exec executable="${nodeJsCommand}" failonerror="true" dir="${basedir}">
       <arg value="node_modules/gulp/bin/gulp.js"/>
     </exec>
   </target>
-
 
   <target name="publish-override" depends="artifacts"
     description="Ivy-publishes THIS project locally as an override"
@@ -345,6 +343,16 @@
     <mkdir dir="build/deps-report" />
     <ivy:resolve />
     <ivy:report todir="build/deps-report" />
+  </target>
+
+  <target name="ide-dependencies" description="If your IDE has no Ivy support, this generates ide-lib/*.jar for it">
+    <mkdir dir="ide-dependencies" />
+    <delete includeEmptyDirs="true">
+      <fileset dir="ide-dependencies">
+         <include name="*/**" />
+      </fileset>
+    </delete>
+    <ivy:retrieve pattern="ide-dependencies/[artifact]-[revision].[ext]" />
   </target>
 
   <!--

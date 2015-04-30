@@ -1,31 +1,6 @@
 package org.freemarker.docgen;
 
-import static org.freemarker.docgen.DocBook5Constants.A_FILEREF;
-import static org.freemarker.docgen.DocBook5Constants.DOCUMENT_STRUCTURE_ELEMENTS;
-import static org.freemarker.docgen.DocBook5Constants.E_APPENDIX;
-import static org.freemarker.docgen.DocBook5Constants.E_ARTICLE;
-import static org.freemarker.docgen.DocBook5Constants.E_BOOK;
-import static org.freemarker.docgen.DocBook5Constants.E_CHAPTER;
-import static org.freemarker.docgen.DocBook5Constants.E_FOOTNOTE;
-import static org.freemarker.docgen.DocBook5Constants.E_GLOSSARY;
-import static org.freemarker.docgen.DocBook5Constants.E_SEARCH;
-import static org.freemarker.docgen.DocBook5Constants.E_GLOSSENTRY;
-import static org.freemarker.docgen.DocBook5Constants.E_IMAGEDATA;
-import static org.freemarker.docgen.DocBook5Constants.E_INDEX;
-import static org.freemarker.docgen.DocBook5Constants.E_INDEXTERM;
-import static org.freemarker.docgen.DocBook5Constants.E_INFO;
-import static org.freemarker.docgen.DocBook5Constants.E_INFORMALTABLE;
-import static org.freemarker.docgen.DocBook5Constants.E_PART;
-import static org.freemarker.docgen.DocBook5Constants.E_PREFACE;
-import static org.freemarker.docgen.DocBook5Constants.E_PRIMARY;
-import static org.freemarker.docgen.DocBook5Constants.E_SECONDARY;
-import static org.freemarker.docgen.DocBook5Constants.E_SECTION;
-import static org.freemarker.docgen.DocBook5Constants.E_SIMPLESECT;
-import static org.freemarker.docgen.DocBook5Constants.E_SUBTITLE;
-import static org.freemarker.docgen.DocBook5Constants.E_TABLE;
-import static org.freemarker.docgen.DocBook5Constants.E_TITLE;
-import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOPLEVEL_ELEMENTS;
-import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
+import static org.freemarker.docgen.DocBook5Constants.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -980,13 +955,20 @@ public final class Transform {
         // Do the actual job:
 
         // - Load and validate the book XML
-        File docFile = new File(contentDir, FILE_BOOK);
-        if (!docFile.isFile()) {
-            docFile = new File(contentDir, FILE_ARTICLE);
-        }
-        if (!docFile.isFile()) {
-            throw new DocgenException("The book file is missing: "
-                    + docFile.getAbsolutePath());
+        final File docFile;
+        {
+            final File docFile1 = new File(contentDir, FILE_BOOK);
+            if (docFile1.isFile()) {
+                docFile = docFile1;
+            } else {
+                final File docFile2 = new File(contentDir, FILE_ARTICLE);
+                if (docFile2.isFile()) {
+                    docFile = docFile2;
+                } else {
+                    throw new DocgenException("The book file is missing: "
+                            + docFile1.getAbsolutePath() + " or " + docFile2.getAbsolutePath());
+                }
+            }
         }
         Document doc = XMLUtil.loadDocBook5XML(
                 docFile, validate, validationOps, logger);
