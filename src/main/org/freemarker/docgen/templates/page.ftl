@@ -25,6 +25,7 @@
   <title>${pageTitle?html}</title>
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
   <meta property="og:title" content="${pageTitle?html}">
