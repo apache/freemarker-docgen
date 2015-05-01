@@ -30,8 +30,8 @@
         <@nav.breadcrumb /><#t>
       </div>
       <div class="header-right">
-        <@nav.bookmarks /><#t>
         <@searchForm /><#t>
+        <@nav.bookmarks /><#t>
       </div>
     </div>
   </div>

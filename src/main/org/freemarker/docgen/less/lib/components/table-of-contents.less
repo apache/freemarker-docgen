@@ -7,6 +7,18 @@
   @media (min-width: @screen-sm-min) {
     font-size: 13px;
   }
+
+  .current {
+    &::before {
+      color: @link-hover;
+    }
+
+    > a {
+      &:first-child {
+        color: @link-hover;
+      }
+    }
+  }
 }
 
 @section-spacing: 24px;
@@ -56,11 +68,12 @@
   list-style-type: none;
 
   li {
-    padding-left: 16px;
+    padding-left: 14px;
     position: relative;
 
     &::before {
       .icon();
+      .icon-dot-single();
       width: 14px;
       height: 14px;
       display: block;
@@ -72,13 +85,15 @@
 
     &.has-children {
       &::before {
-        .icon-chevron-small-right();
+        .icon-plus();
+        font-size: 13px;
         cursor: pointer;
       }
 
       &.open {
         &::before {
-          .icon-chevron-small-down();
+          .icon-minus();
+          font-size: 13px;
         }
       }
 
@@ -106,18 +121,6 @@
   padding: 0;
   list-style-type: none;
   font-size: 13px;
-}
-
-.current {
-  &::before {
-    color: @link-hover;
-  }
-
-  > a {
-    &:first-child {
-      color: @link-hover;
-    }
-  }
 }
 
 .closed {

@@ -27,6 +27,7 @@ var LEVEL = 0;
       var node = children[x];
 
       var li = document.createElement('li');
+      var isLast = checkIfLast(node);
 
       if (LEVEL === 0) {
         li.classList.add('section');
@@ -44,7 +45,10 @@ var LEVEL = 0;
       li.appendChild(menuLink(node));
 
       if (node.title === breadcrumb[depth + 1] && onPath) {
-        li.classList.add('current');
+
+        if (depth + 2 === breadcrumb.length) {
+          li.classList.add('current');
+        }
 
         // 'section' is always open
         if (LEVEL !== 0) {
@@ -58,7 +62,7 @@ var LEVEL = 0;
       } else {
       }
 
-      var isLast = checkIfLast(node);
+
 
       if (isLast) {
 
