@@ -24,9 +24,19 @@
 
 <#macro categoryHeader>
   <div class="header-bottom-bg">
+    <div class="site-width search-row"><#t>
+      <a href="index.html" class="category">Manual</a><#t>
+      <@searchForm /><#t>
+    </div><#t>
+    <div class="site-width breadcrumb-row"><#t>
+      <@nav.breadcrumb /><#t>
+      <@nav.bookmarks /><#t>
+    </div>
+
+    <#--
     <div class="site-width header-bottom">
       <div class="header-left">
-        <a href="index.html" class="category">Manual</a>
+
         <@nav.breadcrumb /><#t>
       </div>
       <div class="header-right">
@@ -34,6 +44,7 @@
         <@nav.bookmarks /><#t>
       </div>
     </div>
+    -->
   </div>
 </#macro>
 

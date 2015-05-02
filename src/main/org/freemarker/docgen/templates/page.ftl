@@ -38,6 +38,9 @@
   <link rel="canoical" href="${canonicalUrl}">
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
+  <#if !offline && onlineTrackerHTML??>
+    ${onlineTrackerHTML}
+  </#if>
 </head>
 </#compress>
 
@@ -111,9 +114,6 @@
   </div>
 
   <@footer.footer topLevelTitle=topLevelTitle />
-  <#if !offline && onlineTrackerHTML??>
-    ${onlineTrackerHTML}
-  </#if>
 </body>
 </html>
 
