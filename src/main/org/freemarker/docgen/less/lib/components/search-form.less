@@ -40,9 +40,11 @@
     float: right;
     right: 1px;
 
-    &:hover {
+    &:hover,
+    &:focus {
       color: lighten(@link-color, 30%);
       cursor: pointer;
+      outline: 0;
     }
 
     &::before {
@@ -75,6 +77,13 @@
     padding: 3px 24px 3px 9px;
     height: @input-height;
     width: 100%;
+
+    transition: border-color .2s ease-in;
+
+    &:focus {
+      outline: 0;
+      border-color: @link-color;
+    }
   }
 }
 

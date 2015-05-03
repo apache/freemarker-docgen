@@ -32,19 +32,6 @@
       <@nav.breadcrumb /><#t>
       <@nav.bookmarks /><#t>
     </div>
-
-    <#--
-    <div class="site-width header-bottom">
-      <div class="header-left">
-
-        <@nav.breadcrumb /><#t>
-      </div>
-      <div class="header-right">
-        <@searchForm /><#t>
-        <@nav.bookmarks /><#t>
-      </div>
-    </div>
-    -->
   </div>
 </#macro>
 
@@ -54,7 +41,7 @@
     <fieldset><#t>
       <legend class="sr-only">Search form</legend><#t>
       <label for="search-field" class="sr-only">Search query</label><#t>
-      <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off"><#t>
+      <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off" autocomplete="off"><#t>
       <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
     </fieldset><#t>
   </form><#t>

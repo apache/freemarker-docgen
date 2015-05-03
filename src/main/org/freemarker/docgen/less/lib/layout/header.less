@@ -34,8 +34,6 @@
   z-index: 1;
 }
 
-
-
 .search-row {
   padding-top: 12px;
 
@@ -56,10 +54,14 @@
     display: block;
     font-size: 18px;
     line-height: 1;
-    flex: 1;
+    flex: 1 1 auto;
 
     @media (min-width: @screen-xs-min) {
       font-size: 27px;
+    }
+
+    @media (min-width: @screen-sm-min) {
+      flex-grow: 0;
     }
   }
 }
