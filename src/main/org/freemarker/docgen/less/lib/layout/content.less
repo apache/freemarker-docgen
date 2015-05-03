@@ -39,10 +39,14 @@
   .col-right {
     flex: 1;
     position: relative; // so we can position bottom pager
+
   }
 }
 
 .page-content {
+  @media (min-width: @screen-sm-min) {
+    padding-bottom: 42px; // to accomodate bottom pager when it becomes positioned absolutely
+  }
 
   a {
     word-break: break-word; // keep long urls from causing page scrolling
@@ -78,7 +82,7 @@
       margin: 0;
       font-size: 24px;
 
-      @media (min-width: @screen-md-min) {
+      @media (min-width: @screen-sm-min) {
         font-size: 30px;
       }
     }

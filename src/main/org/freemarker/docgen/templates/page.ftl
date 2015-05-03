@@ -94,7 +94,10 @@
               </#if>
             </#list>
           </#if>
-          <@nav.pagers class="bottom" />
+
+          <div class="bottom-pagers-wrapper">
+            <@nav.pagers class="bottom" />
+          </div>
         </div>
       </div>
 

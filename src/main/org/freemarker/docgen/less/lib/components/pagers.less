@@ -6,6 +6,16 @@
   vertical-align: middle;
 }
 
+.bottom-pagers-wrapper {
+  .clearfix();
+
+  @media (min-width: @screen-sm-min) {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}
+
 .pagers {
   display: flex;
   white-space: nowrap;
@@ -17,9 +27,9 @@
 
   &.bottom {
     @media (min-width: @screen-sm-min) {
-      position: absolute;
-      bottom: 42px;
-      right: 0;
+      // position: absolute;
+      // bottom: 42px;
+      // right: 0;
     }
   }
 
