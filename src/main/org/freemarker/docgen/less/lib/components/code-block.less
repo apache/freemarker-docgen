@@ -8,22 +8,32 @@
   font-weight: bold;
   font-family: @font-sans-serif;
   text-transform: uppercase;
-  color: rgba(94, 94, 94, 0.6);
+  color: rgba(94, 94, 94, 0.8);
 }
 
 .code-block {
   border: 0;
   position:relative;
   padding: 36px 15px 15px;
+
+  .callout & {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+
+    &::after {
+      display: none;
+    }
+  }
 }
 
 .code-template {
-  background-color: #fbf9e9;
+  background-color: #f7f7f7;
 
   &::after {
     .code-label();
-    background-color: #f6f2dc;
-    content: "Template";
+    background-color: #e4e4e4;
+    content: "Example";
   }
 }
 
@@ -48,11 +58,11 @@
 }
 
 .code-unspecified {
-  background-color: #f7f7f7;
+  background-color: #fbf9e9;
 
   &::after {
     .code-label();
-    background-color: #e4e4e4;
-    content: "Example";
+    background-color: #f6f2dc;
+    content: "Template";
   }
 }
