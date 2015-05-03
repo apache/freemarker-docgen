@@ -190,19 +190,15 @@
 
 <#macro note>
   <div class="callout note">
-    <div class="callout-inner">
-      <strong class="callout-label">Note:</strong>
-      <#recurse>
-    </div>
+    <strong class="callout-label">Note:</strong>
+    <#recurse>
   </div>
 </#macro>
 
 <#macro warning>
   <div class="callout warning">
-    <div class="callout-inner">
-      <strong class="callout-label">Warning!</strong>
-      <#recurse>
-    </div>
+    <strong class="callout-label">Warning!</strong>
+    <#recurse>
   </div>
 </#macro>
 
@@ -296,7 +292,7 @@
       <#break>
     <#case "forProgrammers">
       <#return "marked-for-programmers">
-      <#break>     
+      <#break>
   </#switch>
 
 
@@ -307,12 +303,12 @@
   <#local moreStyle = "">
   <#local role = .node.@role[0]!>
   <#local bgcolors = {
-    "markedComment": "#6af666", 
-    "markedTemplate": "#D8D8D8", 
-    "markedDataModel": "#99CCFF", 
-    "markedOutput" : "#CCFFCC", 
-    "markedText" : "#8acbfa", 
-    "markedInterpolation" : "#ffb85d", 
+    "markedComment": "#6af666",
+    "markedTemplate": "#D8D8D8",
+    "markedDataModel": "#99CCFF",
+    "markedOutput" : "#CCFFCC",
+    "markedText" : "#8acbfa",
+    "markedInterpolation" : "#ffb85d",
     "markedFTLTag" : "#dbfe5e"
     }>
   <#if role != "">
@@ -322,7 +318,7 @@
       <#if fontBgColor! != "">
         <#local moreStyle = "; background-color:${fontBgColor}">
       </#if>
-      <em><span class="${convertRoleClass(role)}"><#recurse></span></em><#t>    
+      <em><span class="${convertRoleClass(role)}"><#recurse></span></em><#t>
     <#else>
       <span class="${convertRoleClass(role)}"><#recurse></span><#t>
     </#if>
