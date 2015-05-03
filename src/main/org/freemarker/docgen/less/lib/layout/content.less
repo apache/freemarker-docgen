@@ -44,6 +44,7 @@
 }
 
 .page-content {
+
   @media (min-width: @screen-sm-min) {
     padding-bottom: 42px; // to accomodate bottom pager when it becomes positioned absolutely
   }
@@ -76,6 +77,10 @@
 
     .title-wrapper {
       flex: 1;
+
+      @media (min-width: @screen-sm-min) {
+        padding-top: 15px;
+      }
     }
 
     h1 {
