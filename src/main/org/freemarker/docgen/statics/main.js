@@ -1,13 +1,13 @@
 var LEVEL = 0;
 
 (function(toc, breadcrumb) {
-  //var breadcrumb = ['Reference', 'Built-in Reference', 'Built-ins for strings'];
   var skipList = ['Preface', 'XML Processing Guide', 'Search'];
 
   createMenu(toc);
 
-  window.addEventListener('hashchange', hashChange);
-  document.addEventListener('DOMContentLoaded', contentLoaded);
+  window.addEventListener('hashchange', highlightNode);
+  window.addEventListener('popstate', highlightNode);
+  document.addEventListener('DOMContentLoaded', highlightNode);
 
   function createMenu(data) {
       var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
@@ -27,6 +27,7 @@ var LEVEL = 0;
       var node = children[x];
 
       var li = document.createElement('li');
+      var isLast = checkIfLast(node);
 
       if (LEVEL === 0) {
         li.classList.add('section');
@@ -44,7 +45,10 @@ var LEVEL = 0;
       li.appendChild(menuLink(node));
 
       if (node.title === breadcrumb[depth + 1] && onPath) {
-        li.classList.add('current');
+
+        if (depth + 2 === breadcrumb.length) {
+          li.classList.add('current');
+        }
 
         // 'section' is always open
         if (LEVEL !== 0) {
@@ -55,10 +59,7 @@ var LEVEL = 0;
 
       } else if (LEVEL > 0) {
         li.classList.add('closed');
-      } else {
       }
-
-      var isLast = checkIfLast(node);
 
       if (isLast) {
 
@@ -141,31 +142,31 @@ var LEVEL = 0;
     }
   }
 
-  function hashChange(e) {
-    highlightNode(getHash());
-  }
-
-  function getHash() {
+  function getNodeFromHash() {
     if (window.location.hash) {
-      return window.location.hash.substring(1);
+      var id = window.location.hash.substring(1);
+
+      return document.getElementById(id);
     } else {
       return '';
     }
   }
 
-  function contentLoaded(e) {
-    highlightNode(getHash());
+  // remove highlight class so animation can be repeated on same node again
+  function unHighlight() {
+    var node = getNodeFromHash();
+
+    if (node) {
+      node.classList.remove('active');
+    }
   }
 
-  function highlightNode(id) {
-    if (id === '') {
-      return;
-    }
-
-    var node = document.getElementById(id);
+  function highlightNode() {
+    var node = getNodeFromHash();
 
     if (node) {
       node.classList.add('active');
+      window.setTimeout(unHighlight, 1000);
     }
   }
 

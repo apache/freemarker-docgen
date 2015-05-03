@@ -1,38 +1,49 @@
 .paging-icon() {
   .icon();
 
-  width: 14px;
-  height: 22px;
-  display: inline-block;
-  line-height: 22px;
+  display: block;
+  line-height: 21px;
   vertical-align: middle;
-  position: relative;
-  top: -1px;
+  width: 17px; // define width to prevent flicker
+}
+
+.bottom-pagers-wrapper {
+  .clearfix();
+
+  @media (min-width: @screen-sm-min) {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 .pagers {
-  float: right;
+  display: flex;
+  white-space: nowrap;
 
-  &.bottom {
-    position: absolute;
-    bottom: 42px;
-    right: 0;
+  @media (min-width: @screen-sm-min) {
+    float: right;
+    font-size: 14px;
   }
 
   &.top {
     order: 1;
-    margin-left: 12px;
+    margin-bottom: 6px;
+
+    @media (min-width: @screen-sm-min) {
+      margin-left: 12px;
+      margin-bottom: 0;
+    }
   }
 }
 
 .paging-arrow {
-  @paging-icon-spacing: 6px;
+  flex: 1 0 auto;
 
-  display: inline-block;
-  height: 22px;
+  @paging-icon-spacing: 3px;
 
   &.previous {
-    @media (min-width: @screen-md-min) {
+    @media (min-width: @screen-xs-min) {
       margin-right: 12px;
     }
 
@@ -41,23 +52,18 @@
       .icon-arrow-circle-o-left();
 
       padding-right: @paging-icon-spacing;
+      float: left;
     }
   }
 
   &.next {
+    text-align: right;
     &::after {
       .paging-icon();
       .icon-arrow-circle-o-right();
 
       padding-left: @paging-icon-spacing;
-    }
-  }
-
-  span {
-    display: none;
-
-    @media (min-width: @screen-md-min) {
-      display: inline;
+      float: right;
     }
   }
 }

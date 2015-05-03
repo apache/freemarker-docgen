@@ -1,0 +1,81 @@
+.code-label() {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: @font-sans-serif;
+  text-transform: uppercase;
+  color: rgba(94, 94, 94, 0.8);
+}
+
+.code-block {
+  border: 0;
+  position:relative;
+  padding: 36px 15px 15px;
+  margin: 12px 0;
+
+  @media(min-width: @screen-md-min) {
+    display: inline-block;
+    min-width: 600px;
+    margin: 0;
+
+    // reduce min-width for code inside lists
+    ul & {
+      min-width: 300px;
+      display: block;
+    }
+  }
+
+  .callout & {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.code-template {
+  background-color: #f7f7f7;
+
+  &::after {
+    .code-label();
+    background-color: #e4e4e4;
+    content: "Template";
+  }
+}
+
+.code-data-model {
+  background-color: #ecf3f8;
+
+  &::after {
+    .code-label();
+    background-color: #D2E2EF;
+    content: "Data Model";
+  }
+}
+
+.code-output {
+  background-color: #ECF8EE;
+
+  &::after {
+    .code-label();
+    background-color: #D5EAD7;
+    content: "Ouput";
+  }
+}
+
+.code-unspecified {
+  background-color: #fbf9e9;
+
+  &::after {
+    .code-label();
+    background-color: #f6f2dc;
+    content: "Example";
+  }
+}

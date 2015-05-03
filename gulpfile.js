@@ -28,7 +28,7 @@ gulp.task('styles', function() {
       restructuring: false,
       aggressiveMerging: false
     }))
-    .pipe(gulp.dest(OUT_DIR))
+    .pipe(gulp.dest(OUT_DIR));
 });
 
 gulp.task('js', function() {

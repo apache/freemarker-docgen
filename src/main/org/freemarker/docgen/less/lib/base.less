@@ -1,27 +1,21 @@
-* {
-  box-sizing: border-box;
-}
-
 html {
   font-family: @font-sans-serif;
   font-size: 14px;
   color: @text-color;
   line-height: 1.5;
-  text-size-adjust: 100%;
   font-weight: normal;
   background-color: #fff;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  font-size: 14px;
-  text-size-adjust: 100%;
-  //-ms-touch-action: none; //@todo: decide if we want to use this
 }
 
 a {
   color: @link-color;
   text-decoration: none;
+  touch-action: manipulation; 
 
   &:hover {
     color: @link-hover;
@@ -46,17 +40,13 @@ h1 {
 }
 
 h2 {
-  font-size: 15px;
-
-  @media (min-width: @screen-sm-min) {
-    font-size: 21px;
-  }
+  font-size: 21px;
 }
 
 code,
 pre {
   font-size: 13px;
-  font-family: Courier, Monaco, Consolas, "Courier New", monospace;
+  font-family: "Droid Sans Mono", Courier, Monaco, Consolas, "Courier New", monospace;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -64,27 +54,31 @@ code {
   padding: 0 2px;
   color: #C5351F;
   word-break: break-word;
+
+  a > & {
+    color: @link-color;
+  }
+
+  a:hover > & {
+    color: @link-hover;
+  }
 }
 
 pre {
   display: block;
-  border: 1px solid @border-gray;
+  border: 0;
   padding: 6px 12px;
-  background-color: @bg-gray;
+
+  margin: 0 0 9px;
+  overflow-x: auto;
 
   word-break: normal;
-
   white-space: pre;
 
   @-moz-document url-prefix() {
-    white-space: pre-wrap;    
+    white-space: pre-wrap;
     word-break: break-all;
   }
-
-
-  margin: 0 0 9px;
-
-  overflow-x: auto;
 }
 
 img {
@@ -114,4 +108,12 @@ table {
 td,
 th {
   padding: 0;
+}
+
+// lists
+// @todo: remove paragraph inside lists
+li {
+  p {
+    margin: 0;
+  }
 }

@@ -10,23 +10,15 @@
     padding-left: @gutter-width;
     padding-right: @gutter-width;
 
-    //width: @container-sm;
+    width: @container-sm;
   }
 
   @media (min-width: @screen-md-min) {
-    //width: @container-md;
+    width: @container-md;
   }
 
   @media (min-width: @screen-lg-min) {
     width: @container-lg;
-  }
-
-  @media (min-width: @screen-xl-min) {
-    //width: @container-xl;
-  }
-
-  @media (min-width: @screen-xxl-min) {
-    //width: @container-xxl;
   }
 }
 
@@ -45,5 +37,8 @@
 
 .center-img {
   text-align: center;
-  max-width: 100%;
+
+  img {
+    max-width: 100%;
+  }
 }

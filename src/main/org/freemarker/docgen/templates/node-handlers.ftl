@@ -101,7 +101,6 @@
        <#assign compactPara = true>
     </#if>
     <@CantBeNestedIntoP>
-    <div class="itemizedlist">
         <@Anchor/>
         <#local mark=.node.@mark[0]!>
         <#if mark = "bullet">
@@ -117,7 +116,6 @@
         </#if>
         <#recurse>
         </ul><#t>
-    </div>
     </@CantBeNestedIntoP>
     <#assign compactPara = prevCompactPara>
 </#macro>
@@ -192,19 +190,15 @@
 
 <#macro note>
   <div class="callout note">
-    <div class="callout-inner">
-      <strong class="callout-label">Note:</strong>
-      <#recurse>
-    </div>
+    <strong class="callout-label">Note:</strong>
+    <#recurse>
   </div>
 </#macro>
 
 <#macro warning>
   <div class="callout warning">
-    <div class="callout-inner">
-      <strong class="callout-label">Warning!</strong>
-      <#recurse>
-    </div>
+    <strong class="callout-label">Warning!</strong>
+    <#recurse>
   </div>
 </#macro>
 
@@ -270,32 +264,63 @@
 </#if>
 </#macro>
 
+<#function convertRoleClass role>
+  <#switch role>
+    <#case "markedComment">
+      <#return "marked-comment">
+      <#break>
+    <#case "markedTemplate">
+      <#return "marked-template">
+      <#break>
+    <#case "markedDataModel">
+      <#return "marked-data-model">
+      <#break>
+    <#case "markedOutput">
+      <#return "marked-output">
+      <#break>
+    <#case "markedText">
+      <#return "marked-text">
+      <#break>
+    <#case "markedInterpolation">
+      <#return "marked-interpolation">
+      <#break>
+    <#case "markedFTLTag">
+      <#return "marked-ftl-tag">
+      <#break>
+    <#case "markedInvisibleText">
+      <#return "marked-invisible-text">
+      <#break>
+    <#case "forProgrammers">
+      <#return "marked-for-programmers">
+      <#break>
+  </#switch>
+
+
+</#function>
+
 <#macro phrase>
-  <#local lastFontBgColor=fontBgColor!>
-  <#local moreStyle="">
-  <#local role=.node.@role[0]!>
-  <#local bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}>
+  <#local lastFontBgColor = fontBgColor!>
+  <#local moreStyle = "">
+  <#local role = .node.@role[0]!>
+  <#local bgcolors = {
+    "markedComment": "#6af666",
+    "markedTemplate": "#D8D8D8",
+    "markedDataModel": "#99CCFF",
+    "markedOutput" : "#CCFFCC",
+    "markedText" : "#8acbfa",
+    "markedInterpolation" : "#ffb85d",
+    "markedFTLTag" : "#dbfe5e"
+    }>
   <#if role != "">
     <#if role = "homepage">
       http://freemarker.org<#t>
     <#elseif role = "markedInvisibleText">
       <#if fontBgColor! != "">
-        <#local moreStyle = ";background-color:${fontBgColor}">
+        <#local moreStyle = "; background-color:${fontBgColor}">
       </#if>
-      <i><span style="color: #999999 ${moreStyle}"><#recurse></span></i><#t>
-    <#elseif role = "forProgrammers">
-      <#if fontBgColor! != "">
-        <#local moreStyle = ";background-color:${fontBgColor}">
-      </#if>
-      <span class="${forProgrammersCss}" style="${moreStyle}"><#recurse></span><#t>
+      <em><span class="${convertRoleClass(role)}"><#recurse></span></em><#t>
     <#else>
-      <#local lastFontBgColor = fontBgColor!>
-      <#if !bgcolors[role]??>
-        <#stop "Invalid role attribute value, \"" + role + "\"">
-      </#if>
-      <#assign fontBgColor = bgcolors[role]>
-      <span style="background-color:${bgcolors[role]}"><#recurse></span><#t>
-      <#assign fontBgColor = lastFontBgColor>
+      <span class="${convertRoleClass(role)}"><#recurse></span><#t>
     </#if>
   </#if>
 </#macro>
@@ -329,19 +354,12 @@
     <#default>
       <#local codeType = "code-default">
   </#switch>
-  <#--
-    We will use a table instead of a div, because div-s has to problems:
-    - If their content is wider than the main content div, the bgcolor and
-      border will finish but the text will flow out of it.
-    - The above can be avoided if the div has "position: absolute" (and then
-      the proper horizontal space is ensured with other tricks), but then if a
-      program line is so wide that it doesn't fit the screen width, there will
-      be no be horizontal scrollbar, so it becomes unreadable.
-  -->
+
   <@CantBeNestedIntoP>
+    <div class="code-wrapper"><#t>
     <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
-      ${content?chop_linebreak}</pre><#t>
+      ${content?chop_linebreak}</pre></div><#t>
   </@CantBeNestedIntoP>
 </#macro>
 

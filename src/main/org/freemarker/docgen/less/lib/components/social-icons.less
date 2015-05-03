@@ -21,22 +21,11 @@
     }
 
     a {
-      &::before {
-        .social-icon()
-      }
-
-      &.github::before {
-        .icon-github();
-      }
-
-      &.twitter::before {
-        .icon-twitter();
-      }
-
-      &.stack-overflow::before {
-        .icon-stack-overflow();
-      }
-
+      &::before { .social-icon(); }
     }
+
+    .github::before { .icon-github(); }
+    .twitter::before { .icon-twitter(); }
+    .stack-overflow::before { .icon-stack-overflow(); }
   }
 }

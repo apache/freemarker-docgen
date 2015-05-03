@@ -1,33 +1,28 @@
-.site-content {
-  padding-top: 1px;
-  padding-bottom: 1px;
-}
-
 .content-wrapper {
   display: flex;
-  padding-top: 17px;
-  padding-bottom: 42px;
-  min-height: 600px;
-  position: relative; // so we can position pagers
+  padding-top: 18px;
+  padding-bottom: 18px;
 
   @media (min-width: @screen-sm-min) {
-      padding-top: 29px;
+    padding-top: 30px;
+    padding-bottom: 48px;
   }
 
+  // when js is disabled
   &.no-toc {
     display: block;
   }
 
   .col-left {
-    flex: 0 0 130px;
-    max-width: 130px; // set max-width to prevent flicker
+    flex: 0 0 160px;
+    max-width: 160px; // set max-width to prevent flicker
 
     margin-right: @gutter-width / 4 * 3; // 18px
 
-    // hide for really, really small screens
+    // hide for really small screens
     display: none;
 
-    @media (min-width: 400px) {
+    @media (min-width: @screen-xs-min) {
       display: block;
     }
 
@@ -44,25 +39,32 @@
 
   .col-right {
     flex: 1;
+    position: relative; // so we can position bottom pager
+
   }
 }
 
 .page-content {
-  padding-bottom: 42px;
 
-  // keep long urls from causing page scrolling
+  @media (min-width: @screen-sm-min) {
+    padding-bottom: 42px; // to accomodate bottom pager when it becomes positioned absolutely
+  }
+
   a {
-    word-break: break-word;
+    word-break: break-word; // keep long urls from causing page scrolling
   }
 
   .page-title {
 
-    @border-spacing: 12px;
+    border-bottom: 1px solid @border-gray;
 
+    @border-spacing: 12px;
     padding-bottom: @border-spacing;
     margin-bottom: @border-spacing;
 
-    border-bottom: 1px solid @border-gray;
+    @media (min-width: @screen-sm-min) {
+      display: flex;
+    }
 
     @media (min-width: @screen-sm-min) {
       padding-bottom: @border-spacing * 2;
@@ -74,15 +76,19 @@
       flex-wrap: wrap;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 18px;
+    .title-wrapper {
+      flex: 1;
 
       @media (min-width: @screen-sm-min) {
-        font-size: 21px;
+        padding-top: 15px;
       }
+    }
 
-      @media (min-width: @screen-md-min) {
+    h1 {
+      margin: 0;
+      font-size: 24px;
+
+      @media (min-width: @screen-sm-min) {
         font-size: 30px;
       }
     }
@@ -103,27 +109,30 @@
   }
 
   .active {
-    font-weight: bold;
-
     &::before {
       .icon();
-      .icon-star-outlined();
-      margin-left: -20px;
+      .icon-keyboard-return();
+      margin-left: -18px;
       font-weight: normal;
-      opacity: 0;
-      position: absolute;
-      line-height: 31px;
+      line-height: 1;
       font-size: 18px;
       color: #C82222;
       width: 18px;
-      animation: header-pulse 2s;
+      visibility: hidden;
+      float: left;
+      margin-top: 4px;
+
+      animation: header-pulse .3s 3 steps(2, end);
+
+      @media (min-width: @screen-sm-min) {
+        margin-left: -20px;
+      }
     }
   }
 }
 
 
 @keyframes header-pulse {
-  0%   { opacity: 1; }
-  50%  { opacity: 1; }
-  100% { opacity: 0; }
+  0%   { visibility: hidden; }
+  100% { visibility: visible; }
 }
