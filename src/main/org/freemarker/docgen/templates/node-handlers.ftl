@@ -101,7 +101,6 @@
        <#assign compactPara = true>
     </#if>
     <@CantBeNestedIntoP>
-    <div class="itemizedlist">
         <@Anchor/>
         <#local mark=.node.@mark[0]!>
         <#if mark = "bullet">
@@ -117,7 +116,6 @@
         </#if>
         <#recurse>
         </ul><#t>
-    </div>
     </@CantBeNestedIntoP>
     <#assign compactPara = prevCompactPara>
 </#macro>
@@ -270,32 +268,63 @@
 </#if>
 </#macro>
 
+<#function convertRoleClass role>
+  <#switch role>
+    <#case "markedComment">
+      <#return "marked-comment">
+      <#break>
+    <#case "markedTemplate">
+      <#return "marked-template">
+      <#break>
+    <#case "markedDataModel">
+      <#return "marked-data-model">
+      <#break>
+    <#case "markedOutput">
+      <#return "marked-output">
+      <#break>
+    <#case "markedText">
+      <#return "marked-text">
+      <#break>
+    <#case "markedInterpolation">
+      <#return "marked-interpolation">
+      <#break>
+    <#case "markedFTLTag">
+      <#return "marked-ftl-tag">
+      <#break>
+    <#case "markedInvisibleText">
+      <#return "marked-invisible-text">
+      <#break>
+    <#case "forProgrammers">
+      <#return "marked-for-programmers">
+      <#break>     
+  </#switch>
+
+
+</#function>
+
 <#macro phrase>
-  <#local lastFontBgColor=fontBgColor!>
-  <#local moreStyle="">
-  <#local role=.node.@role[0]!>
-  <#local bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}>
+  <#local lastFontBgColor = fontBgColor!>
+  <#local moreStyle = "">
+  <#local role = .node.@role[0]!>
+  <#local bgcolors = {
+    "markedComment": "#6af666", 
+    "markedTemplate": "#D8D8D8", 
+    "markedDataModel": "#99CCFF", 
+    "markedOutput" : "#CCFFCC", 
+    "markedText" : "#8acbfa", 
+    "markedInterpolation" : "#ffb85d", 
+    "markedFTLTag" : "#dbfe5e"
+    }>
   <#if role != "">
     <#if role = "homepage">
       http://freemarker.org<#t>
     <#elseif role = "markedInvisibleText">
       <#if fontBgColor! != "">
-        <#local moreStyle = ";background-color:${fontBgColor}">
+        <#local moreStyle = "; background-color:${fontBgColor}">
       </#if>
-      <i><span style="color: #999999 ${moreStyle}"><#recurse></span></i><#t>
-    <#elseif role = "forProgrammers">
-      <#if fontBgColor! != "">
-        <#local moreStyle = ";background-color:${fontBgColor}">
-      </#if>
-      <span class="${forProgrammersCss}" style="${moreStyle}"><#recurse></span><#t>
+      <em><span class="${convertRoleClass(role)}"><#recurse></span></em><#t>    
     <#else>
-      <#local lastFontBgColor = fontBgColor!>
-      <#if !bgcolors[role]??>
-        <#stop "Invalid role attribute value, \"" + role + "\"">
-      </#if>
-      <#assign fontBgColor = bgcolors[role]>
-      <span style="background-color:${bgcolors[role]}"><#recurse></span><#t>
-      <#assign fontBgColor = lastFontBgColor>
+      <span class="${convertRoleClass(role)}"><#recurse></span><#t>
     </#if>
   </#if>
 </#macro>
