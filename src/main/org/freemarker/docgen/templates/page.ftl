@@ -36,8 +36,12 @@
   <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
   <meta property="og:url" content="${canonicalUrl}">
   <link rel="canoical" href="${canonicalUrl}">
+
+  <!--[if gt IE 9]><!-->
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
+  <!--<![endif]-->
+
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
   </#if>
@@ -45,6 +49,9 @@
 </#compress>
 
 <body itemscope itemtype="http://schema.org/Article">
+  <!--[if lte IE 9]>
+  <div style="background-color: #C00; color: #fff; padding: 12px 24px; margin-bottom: 18px;">Please use a modern browser to browse this website.</div>
+  <![endif]-->
   <@header.header logo=logo />
 
   <div class="site-width">
