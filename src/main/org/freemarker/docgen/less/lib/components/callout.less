@@ -1,21 +1,27 @@
 .callout {
-  padding: 9px 15px;
+  padding: 9px 12px;
+  margin: 12px 0;
+
   border-left: 4px solid #eee;
   background-color: #f9f9f9;
   max-width: 600px;
 
   &.note {
     border-left-color: #668EB0;
-    background-color: #DCE5ED;
+    background-color: #e9f0f7;
+
+    .callout-label {
+      color: #006;
+    }
   }
 
   &.warning {
     border-left-color: #EDBABA;
     background-color: #FCEAEA;
-  }
 
-  & + {
-    margin-top: 18px;
+    .callout-label {
+      color: #900;
+    }
   }
 
   p:first-of-type {
@@ -24,5 +30,23 @@
 
   p:last-child {
     margin-bottom: 0;
+  }
+}
+
+
+.callout-label {
+  &::before {
+    .icon();
+    font-size: 12px;
+    margin-right: 6px;
+
+    .note & {
+      .icon-info();
+    }
+
+    .warning & {
+      .icon-warning();
+      font-size: 14px;
+    }
   }
 }

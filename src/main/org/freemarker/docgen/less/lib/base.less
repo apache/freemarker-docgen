@@ -10,7 +10,6 @@ html {
 
 body {
   margin: 0;
-  font-size: 14px;
   text-size-adjust: 100%;
 }
 
@@ -55,13 +54,20 @@ code {
   padding: 0 2px;
   color: #C5351F;
   word-break: break-word;
+
+  a > & {
+    color: @link-color;
+  }
+
+  a:hover > & {
+    color: @link-hover;
+  }
 }
 
 pre {
   display: block;
   border: 0;
   padding: 6px 12px;
-  background-color: @bg-gray;
 
   margin: 0 0 9px;
   overflow-x: auto;
@@ -102,4 +108,12 @@ table {
 td,
 th {
   padding: 0;
+}
+
+// lists
+// @todo: remove paragraph inside lists
+li {
+  p {
+    margin: 0;
+  }
 }

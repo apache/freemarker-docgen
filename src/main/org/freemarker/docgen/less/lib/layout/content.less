@@ -112,7 +112,6 @@
     &::before {
       .icon();
       .icon-keyboard-return();
-      transform: scaleX(-1); // reverse so it flips horizontally
       margin-left: -18px;
       font-weight: normal;
       position: absolute;
@@ -122,7 +121,7 @@
       width: 18px;
       visibility: hidden;
 
-      animation: header-pulse .2s 3 steps(2, end);
+      animation: header-pulse .3s 3 steps(2, end);
 
       @media (min-width: @screen-sm-min) {
         margin-left: -20px;
