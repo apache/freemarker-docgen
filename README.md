@@ -70,9 +70,8 @@ ant gulp
 
 Notes:
 * To compile the docgen styles, you must have [Node.js](https://nodejs.org/) installed.
-* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`)
+* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`.)
 * Run `npm install` to install dependencies, then `ant gulp` to compile dependencies.
-=======
 
 ## Icon Font Attribution
 
