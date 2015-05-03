@@ -26,7 +26,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
-  <meta property="og:title" content="${pageTitle?html}">
+
+  <meta property="og:site_name" content="${topLevelTitle?html}">
+  <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
   <meta property="og:locale" content="en_US">
   <#-- @todo: improve this logic -->
   <#assign nodeId = .node.@id>
@@ -42,9 +44,11 @@
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
   <!--<![endif]-->
 
+<#--
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
   </#if>
+-->
 </head>
 </#compress>
 
