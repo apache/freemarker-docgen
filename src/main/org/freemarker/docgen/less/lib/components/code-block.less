@@ -20,6 +20,12 @@
   @media(min-width: @screen-md-min) {
     display: inline-block;
     min-width: 600px;
+
+    // reduce min-width for code inside lists
+    ul & {
+      min-width: 300px;
+      display: block;
+    }
   }
 
   .callout & {
