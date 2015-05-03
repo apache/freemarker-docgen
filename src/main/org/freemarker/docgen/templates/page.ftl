@@ -20,9 +20,9 @@
   <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
   <#assign pageTitle = topLevelTitle />
   <#if title != topLevelTitle>
-    <#assign pageTitle = topLevelTitle + " - " + title>
+    <#assign pageTitle = title + " - " + topLevelTitle>
   </#if>
-  <title>${pageTitle?html}</title>
+  <title>${pageTitle?html?replace("&#39;", "'")}</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
