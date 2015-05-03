@@ -25,12 +25,23 @@
     text-align: left;
     background-color: #f9f9f9;
     border-bottom: 1px solid #ddd;
+    white-space: nowrap;
   }
 
   th,
   td {
     padding: 3px 6px;
     border: 1px solid #ddd;
+    vertical-align: top;
+  }
+
+  td {
+    // dont wrap whitespace for smaller screens
+    // since tables are going to scroll anyway
     white-space: nowrap;
+
+    @media (min-width: @screen-md-min) {
+      white-space: normal;
+    }
   }
 }
