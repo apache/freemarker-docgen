@@ -28,7 +28,7 @@
   <meta name="format-detection" content="telephone=no">
 
   <meta property="og:site_name" content="${topLevelTitle?html}">
-  <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
+  <meta property="og:title" content="${pageTitle?html?replace('&#39;', '\'')}">
   <meta property="og:locale" content="en_US">
   <#-- @todo: improve this logic -->
   <#assign nodeId = .node.@id>
@@ -44,11 +44,9 @@
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
   <!--<![endif]-->
 
-<#--
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
   </#if>
--->
 </head>
 </#compress>
 
