@@ -7,11 +7,11 @@
   max-width: 600px;
 
   &.note {
-    border-left-color: #668EB0;
-    background-color: #e9f0f7;
+    border-left-color: #A181AE;
+    background-color: #F9F2FA;
 
     .callout-label {
-      color: #006;
+      color: #7D578C;
     }
   }
 
@@ -41,15 +41,16 @@
   &::before {
     .icon();
     font-size: 12px;
-    margin-right: 6px;
 
     .note & {
       .icon-info();
+      margin-right: 3px;
     }
 
     .warning & {
       .icon-warning();
       font-size: 14px;
+      margin-right: 6px;
     }
   }
 }
