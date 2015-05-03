@@ -73,3 +73,11 @@ Notes:
 * Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`)
 * Run `npm install` to install dependencies, then `ant gulp` to compile dependencies.
 =======
+
+## Icon Font Attribution
+
+The icon font in this project was built using [IcoMoon](https://icomoon.io/) and contains selected icons from:
+
+* [Entypo](http://www.entypo.com/) by [Daniel Bruce](http://www.danielbruce.se/)
+* [Font Awesome](http://fontawesome.io) by Dave Gandy.
+* [Google's Material Design Icons](https://github.com/google/material-design-icons)
