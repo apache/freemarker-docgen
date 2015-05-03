@@ -42,8 +42,8 @@
 @screen-xl-max:   (@screen-xxl-min - 1);
 
 // container widths
-@container-sm:  @screen-sm-min - (@gutter-width * 2);
-@container-md:  @screen-md-min - (@gutter-width * 2);
-@container-lg:  @screen-lg-min - (@gutter-width * 2);
-@container-xl:  @screen-xl-min - (@gutter-width * 2);
-@container-xxl: @screen-xxl-min - (@gutter-width * 2);
+@container-sm:  @screen-sm-min - (@gutter-width * 2) - 20px; // subtract for scrollbar
+@container-md:  @screen-md-min - (@gutter-width * 2) - 20px; // subtract for scrollbar
+@container-lg:  @screen-lg-min - (@gutter-width * 2) - 20px; // subtract for scrollbar
+@container-xl:  @screen-xl-min - (@gutter-width * 2) - 20px; // subtract for scrollbar
+@container-xxl: @screen-xxl-min - (@gutter-width * 2) - 20px; // subtract for scrollbar

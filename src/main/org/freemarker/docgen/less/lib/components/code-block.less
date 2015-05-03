@@ -1,0 +1,69 @@
+.code-label() {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 3px 7px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: @font-sans-serif;
+  text-transform: uppercase;
+  color: #5E5E5E;
+}
+
+.code-block {
+  border: 0;
+  position:relative;
+  padding: 30px 14px 14px;
+
+  @media(min-width: @screen-md-min) {
+    min-width: 600px;
+    display: inline-block;
+
+    // reduce min-width inside uls to prevent horizontal scrolling
+    ul & {
+      min-width: 200px;
+      display: block;
+    }
+  }
+}
+
+.code-template {
+  background: #f8f5ec;
+
+  &::after {
+    .code-label();
+    background-color: #f1ede4;
+    content: "Template";
+  }
+}
+
+.code-data-model {
+  background: #ecf3f8;
+
+  &::after {
+    .code-label();
+    background-color: #D2E2EF;
+    content: "Data Model";
+  }
+}
+
+.code-output {
+  background-color: #ECF8EE;
+
+  &::after {
+    .code-label();
+    background-color: #E4F1E5;
+    content: "Ouput";
+  }
+}
+
+.code-unspecified {
+  background-color: #f7f7f7;
+
+  &::after {
+    .code-label();
+    background-color: #e4e4e4;
+    content: "Example";
+  }
+}

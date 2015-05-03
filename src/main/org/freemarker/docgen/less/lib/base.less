@@ -47,7 +47,7 @@ h2 {
 code,
 pre {
   font-size: 13px;
-  font-family: Courier, Monaco, Consolas, "Courier New", monospace;
+  font-family: "Droid Sans Mono", Courier, Monaco, Consolas, "Courier New", monospace;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -59,23 +59,20 @@ code {
 
 pre {
   display: block;
-  border: 1px solid @border-gray;
+  border: 0;
   padding: 6px 12px;
   background-color: @bg-gray;
 
-  word-break: normal;
+  margin: 0 0 9px;
+  overflow-x: auto;
 
+  word-break: normal;
   white-space: pre;
 
   @-moz-document url-prefix() {
     white-space: pre-wrap;
     word-break: break-all;
   }
-
-
-  margin: 0 0 9px;
-
-  overflow-x: auto;
 }
 
 img {

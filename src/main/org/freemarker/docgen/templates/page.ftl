@@ -36,7 +36,7 @@
   <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
   <meta property="og:url" content="${canonicalUrl}">
   <link rel="canoical" href="${canonicalUrl}">
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}

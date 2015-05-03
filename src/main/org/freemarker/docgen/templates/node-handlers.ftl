@@ -329,19 +329,12 @@
     <#default>
       <#local codeType = "code-default">
   </#switch>
-  <#--
-    We will use a table instead of a div, because div-s has to problems:
-    - If their content is wider than the main content div, the bgcolor and
-      border will finish but the text will flow out of it.
-    - The above can be avoided if the div has "position: absolute" (and then
-      the proper horizontal space is ensured with other tricks), but then if a
-      program line is so wide that it doesn't fit the screen width, there will
-      be no be horizontal scrollbar, so it becomes unreadable.
-  -->
+
   <@CantBeNestedIntoP>
+    <div class="code-wrapper"><#t>
     <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
-      ${content?chop_linebreak}</pre><#t>
+      ${content?chop_linebreak}</pre></div><#t>
   </@CantBeNestedIntoP>
 </#macro>
 
