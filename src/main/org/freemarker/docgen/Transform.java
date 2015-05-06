@@ -92,6 +92,8 @@ import freemarker.template.utility.StringUtil;
  *             which the tabs will appear.
  *         <li><p><tt>secondaryTabs</tt> (object): An array of objects for the
  *             with the secondary tabs, like [{ href: "", text: "", class: ""}]
+ *         <li><p><tt>socialLinks</tt> (object): An array of objects for the
+ *             social links, like [{ href: "", text: "", class: ""}]
  *         <li><p><tt>searchKey</tt> (string): A Google custom search key. If not
  *             present, the search box will not show.
  *         <li><p><tt>footerSiteMap</tt> (object): Defines the list of links to
@@ -359,6 +361,7 @@ public final class Transform {
     static final String SETTING_LOGO_HREF = "href";
     static final String SETTING_TABS = "tabs";
     static final String SETTING_SECONDARY_TABS = "secondaryTabs";
+    static final String SETTING_SOCIAL_LINKS = "socialLinks";
     static final String SETTING_FOOTER_SITEMAP = "footerSiteMap";
     static final String SETTING_OLINKS = "olinks";
     static final String SETTING_ECLIPSE = "eclipse";
@@ -417,6 +420,7 @@ public final class Transform {
     private static final String VAR_CATEGORY = SETTING_CATEGORY;
     private static final String VAR_TABS = SETTING_TABS;
     private static final String VAR_SECONDARY_TABS = SETTING_SECONDARY_TABS;
+    private static final String VAR_SOCIAL_LINKS = SETTING_SOCIAL_LINKS;
     private static final String VAR_FOOTER_SITEMAP = SETTING_FOOTER_SITEMAP;
     private static final String VAR_OLINKS
             = SETTING_OLINKS;
@@ -595,6 +599,7 @@ public final class Transform {
     private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
     private Object secondaryTabs = new Object();
+    private Object socialLinks = new Object();
 
     private HashMap<String, String> logo;
 
@@ -760,6 +765,9 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_SECONDARY_TABS)) {
                     // @todo: How can I check this?
                     secondaryTabs = settingValue;
+                } else if (settingName.equals(SETTING_SOCIAL_LINKS)) {
+                    // @todo: How can I check this?
+                    socialLinks = settingValue;
                 } else if (settingName.equals(SETTING_FOOTER_SITEMAP)) {
                     // @todo: How can I check this?
                     footerSiteMap = settingValue;
@@ -1075,6 +1083,8 @@ public final class Transform {
                     VAR_TABS, tabs);
             fmConfig.setSharedVariable(
                     VAR_SECONDARY_TABS, secondaryTabs);
+            fmConfig.setSharedVariable(
+                    VAR_SOCIAL_LINKS, socialLinks);
             fmConfig.setSharedVariable(
                     VAR_FOOTER_SITEMAP, footerSiteMap);
             fmConfig.setSharedVariable(

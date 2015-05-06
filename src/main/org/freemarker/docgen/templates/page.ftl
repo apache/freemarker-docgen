@@ -1,7 +1,6 @@
 <#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
 <#-- Avoid inital empty line! -->
 <#import "util.ftl" as u>
-<#import "ui.ftl" as ui>
 <#import "footer.ftl" as footer>
 <#import "header.ftl" as header>
 <#import "navigation.ftl" as nav>

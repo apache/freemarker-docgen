@@ -19,7 +19,9 @@
           </#if>
         </div>
         <div class="col-right">
-          <@ui.social />
+          <#if socialLinks??>
+            <@ui.social links=socialLinks />
+          </#if>
           <#if showXXELogo>
             <a class="xxe" href="http://www.xmlmind.com/xmleditor/" rel="nofollow" title="Edited with XMLMind XML Editor">
               <span>Edited with XMLMind XML Editor</span>
