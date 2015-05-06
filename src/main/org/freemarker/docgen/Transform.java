@@ -114,7 +114,8 @@ import freemarker.template.utility.StringUtil;
  *            If it was already specified via {@link #setOffline(Boolean)}, then
  *            that has priority. If it wasn't specified via {@link #setOffline(Boolean)},
  *            then it's mandatory to set.
- *
+ *         <li><p><tt>deployUrl</tt> (string): Url the page is deployed to (used
+ *            for canonical urls)
  *         <li><p><tt>olinks</tt> (map):
  *            Maps <tt>olink</tt> <tt>targetdoc</tt> attribute values to
  *            actual URL-s.
@@ -346,6 +347,7 @@ public final class Transform {
 
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_OFFLINE = "offline";
+    static final String SETTING_DEPLOY_URL = "deployUrl";
     static final String SETTING_ONLINE_TRACKER_HTML = "onlineTrackerHTML";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
@@ -389,6 +391,8 @@ public final class Transform {
 
     private static final String VAR_OFFLINE
             = SETTING_OFFLINE;
+    private static final String VAR_DEPLOY_URL
+            = SETTING_DEPLOY_URL;
     private static final String VAR_ONLINE_TRACKER_HTML
             = SETTING_ONLINE_TRACKER_HTML;
     private static final String VAR_SHOW_EDITORAL_NOTES
@@ -541,6 +545,8 @@ public final class Transform {
     private File contentDir;
 
     private Boolean offline;
+
+    private String deployUrl;
 
     private String onlineTrackerHTML;
 
@@ -793,6 +799,8 @@ public final class Transform {
                     if (offline == null) {  // Ignore if the caller has already set this
                         offline = itIsABooleanSetting(cfgFile, settingName, settingValue);
                     }
+                } else if (settingName.equals(SETTING_DEPLOY_URL)) {
+                    deployUrl = itIsAStringSetting(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
                     String onlineTrackerHtmlPath = itIsAStringSetting(cfgFile, settingName, settingValue);
                     File f = new File(getSourceDirectory(), onlineTrackerHtmlPath);
@@ -1034,6 +1042,8 @@ public final class Transform {
             // Settings:
             fmConfig.setSharedVariable(
                     VAR_OFFLINE, offline);
+            fmConfig.setSharedVariable(
+                    VAR_DEPLOY_URL, deployUrl);                    
             fmConfig.setSharedVariable(
                     VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
             fmConfig.setSharedVariable(
