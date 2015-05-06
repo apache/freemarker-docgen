@@ -28,16 +28,18 @@
   <meta name="format-detection" content="telephone=no">
 
   <meta property="og:site_name" content="${topLevelTitle?html}">
-  <meta property="og:title" content="${pageTitle?html?replace('&#39;', '\'')}">
+  <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
   <meta property="og:locale" content="en_US">
   <#-- @todo: improve this logic -->
   <#assign nodeId = .node.@id>
   <#if nodeId == "autoid_1">
     <#assign nodeId = "index">
   </#if>
-  <#assign canonicalUrl = "http://freemarker.org/docs/${nodeId}.html"><#-- @todo: remove hard-coded domain -->
-  <meta property="og:url" content="${canonicalUrl}">
-  <link rel="canoical" href="${canonicalUrl}">
+  <#if deployUrl??>
+    <#assign canonicalUrl = "${deployUrl + nodeId}.html">
+    <meta property="og:url" content="${canonicalUrl}">
+    <link rel="canoical" href="${canonicalUrl}">
+  </#if>
 
   <!--[if gt IE 9]><!-->
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">

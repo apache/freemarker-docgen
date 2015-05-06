@@ -39,8 +39,13 @@
 
 .paging-arrow {
   flex: 1 0 auto;
+  word-break: normal;
 
   @paging-icon-spacing: 3px;
+
+  &::before {
+    .paging-icon();
+  }
 
   &.previous {
     @media (min-width: @screen-xs-min) {
@@ -48,7 +53,6 @@
     }
 
     &::before {
-      .paging-icon();
       .icon-arrow-circle-o-left();
 
       padding-right: @paging-icon-spacing;
@@ -58,8 +62,7 @@
 
   &.next {
     text-align: right;
-    &::after {
-      .paging-icon();
+    &::before {
       .icon-arrow-circle-o-right();
 
       padding-left: @paging-icon-spacing;
