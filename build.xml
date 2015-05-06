@@ -157,10 +157,9 @@
       <available file=".ivy" />
     </condition>
     <antcall target="_autoget-deps" />
-    <antcall target="gulp" />
   </target>
 
-  <target name="classes" depends="init"
+  <target name="classes" depends="init, gulp"
     description='Compile + resource copy'
   >
     <u:provideEmptyDir dir="build/classes" />
