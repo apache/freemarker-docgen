@@ -92,7 +92,7 @@ import freemarker.template.utility.StringUtil;
  *             which the tabs will appear.
  *         <li><p><tt>searchKey</tt> (string): A Google custom search key. If not
  *             present, the search box will not show.
- *         <li><p><tt>footerSiteMap</tt> (map): Defines the list of links to
+ *         <li><p><tt>footerSiteMap</tt> (object): Defines the list of links to
  *             display in the footer as columns
  *
  *         <li><p><tt>internalBookmarks</tt> (map): Specifies the first part
