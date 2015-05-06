@@ -53,7 +53,7 @@
 <body itemscope itemtype="http://schema.org/Article">
   <!--[if lte IE 9]>
   <div style="background-color: #C00; color: #fff; padding: 12px 24px; margin-bottom: 18px;">
-    Internet Explorer 8 and earlier isn't supported!
+    Internet Explorer 9 and earlier isn't supported!
     You need a modern browser to view this website.
   </div>
   <![endif]-->
