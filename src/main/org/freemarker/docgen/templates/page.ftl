@@ -1,7 +1,6 @@
 <#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
 <#-- Avoid inital empty line! -->
 <#import "util.ftl" as u>
-<#import "ui.ftl" as ui>
 <#import "footer.ftl" as footer>
 <#import "header.ftl" as header>
 <#import "navigation.ftl" as nav>
@@ -26,7 +25,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
-
   <meta property="og:site_name" content="${topLevelTitle?html}">
   <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
   <meta property="og:locale" content="en_US">
@@ -55,7 +53,7 @@
 <body itemscope itemtype="http://schema.org/Article">
   <!--[if lte IE 9]>
   <div style="background-color: #C00; color: #fff; padding: 12px 24px; margin-bottom: 18px;">
-    Internet Explorer 8 and earlier isn't supported!
+    Internet Explorer 9 and earlier isn't supported!
     You need a modern browser to view this website.
   </div>
   <![endif]-->

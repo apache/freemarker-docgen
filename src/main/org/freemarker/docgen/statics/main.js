@@ -1,8 +1,6 @@
 var LEVEL = 0;
 
 (function(toc, breadcrumb) {
-  var skipList = ['Preface', 'XML Processing Guide', 'Search'];
-
   createMenu(toc);
 
   window.addEventListener('hashchange', highlightNode);
@@ -35,11 +33,6 @@ var LEVEL = 0;
 
       li.addEventListener('click', menuClick);
       li.addEventListener('keydown', keyboardNavigation);
-
-      // skip certain nodes
-      if (skipList.indexOf(node.title) >= 0) {
-        li.style.display = 'none';
-      }
 
       // add menu link
       li.appendChild(menuLink(node));
