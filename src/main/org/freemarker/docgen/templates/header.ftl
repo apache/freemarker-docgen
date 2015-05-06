@@ -25,7 +25,12 @@
 <#macro categoryHeader>
   <div class="header-bottom-bg">
     <div class="site-width search-row"><#t>
-      <a href="index.html" class="category">Manual</a><#t>
+      <#if category??>
+        <a href="${category.href}" class="category">${category.text}</a><#t>
+      <#else>
+        <#-- empty div to maintain layout -->
+        <div class="category"></div>
+      </#if>
       <@searchForm /><#t>
     </div><#t>
     <div class="site-width breadcrumb-row"><#t>
@@ -37,14 +42,16 @@
 
 
 <#macro searchForm>
-  <form method="get" class="search-form<#if offline> offline</#if>" action="search.html"><#t>
-    <fieldset><#t>
-      <legend class="sr-only">Search form</legend><#t>
-      <label for="search-field" class="sr-only">Search query</label><#t>
-      <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off" autocomplete="off"><#t>
-      <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
-    </fieldset><#t>
-  </form><#t>
+  <#if searchKey??>
+    <form method="get" class="search-form<#if offline> offline</#if>" action="search.html"><#t>
+      <fieldset><#t>
+        <legend class="sr-only">Search form</legend><#t>
+        <label for="search-field" class="sr-only">Search query</label><#t>
+        <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off" autocomplete="off"><#t>
+        <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
+      </fieldset><#t>
+    </form><#t>
+  </#if>
 </#macro>
 
 
