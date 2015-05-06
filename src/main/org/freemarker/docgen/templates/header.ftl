@@ -15,7 +15,7 @@
         </a><#t>
       </#if>
       <@nav.tabs /><#t>
-      <@notices /><#t>
+      <@notices tabs=secondaryTabs /><#t>
     </div><#t>
   </div><#t>
   <@categoryHeader /><#t>
@@ -55,8 +55,20 @@
 </#macro>
 
 
-<#macro notices>
-  <p class="notices">
-    <a href="javascript:;">Love FreeMarker? <strong>Help it grow!</strong></a>
-  </p>
+<#macro notices tabs>
+  <ul class="secondary-tabs"><#t>
+    <#list tabs as tab>
+      <li><#t>
+        <#if (tab.href)?has_content>
+          <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tab.text?html}"><#t>
+            <span>${tab.text}</span><#t>
+          </a><#t>
+        <#else>
+          <div class="tab<#if tab.class??> ${tab.class}</#if>" title="${tab.text?html}"><#t>
+            <span>${tab.text}</span><#t>
+          </div><#t>
+        </#if>
+      </li><#t>
+    </#list>
+  </ul><#t>
 </#macro>

@@ -26,7 +26,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="format-detection" content="telephone=no">
-
   <meta property="og:site_name" content="${topLevelTitle?html}">
   <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
   <meta property="og:locale" content="en_US">

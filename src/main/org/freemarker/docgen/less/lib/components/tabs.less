@@ -4,7 +4,7 @@
   padding: 6px 0 0;
   text-align: center;
 
-  @media (min-width: @screen-sm-min) {
+  @media (min-width: @screen-xs-min) {
     margin-left: @gutter-width;
     flex: 0 0 auto;
     padding-top: 0;
@@ -20,7 +20,7 @@
       }
     }
 
-    &:after {
+    &::after {
       width: 1px;
       background-color: #96a5b8;
       height: 9px;
@@ -30,7 +30,7 @@
     }
 
     &:last-child {
-      &:after {
+      &::after {
         display: none;
       }
     }
