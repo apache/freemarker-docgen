@@ -598,8 +598,8 @@ public final class Transform {
 
     private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
-    private Object secondaryTabs = new Object();
-    private Object socialLinks = new Object();
+    private Object secondaryTabs;
+    private Object socialLinks;
 
     private HashMap<String, String> logo;
 

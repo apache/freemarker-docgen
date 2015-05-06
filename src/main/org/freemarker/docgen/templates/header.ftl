@@ -15,7 +15,9 @@
         </a><#t>
       </#if>
       <@nav.tabs /><#t>
-      <@notices tabs=secondaryTabs /><#t>
+      <#if secondaryTabs??>
+        <@notices tabs=secondaryTabs /><#t>
+      </#if>
     </div><#t>
   </div><#t>
   <@categoryHeader /><#t>
