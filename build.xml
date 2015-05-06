@@ -157,6 +157,7 @@
       <available file=".ivy" />
     </condition>
     <antcall target="_autoget-deps" />
+    <antcall target="gulp" />
   </target>
 
   <target name="classes" depends="init"
