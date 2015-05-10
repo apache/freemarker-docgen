@@ -39,10 +39,8 @@
     <link rel="canoical" href="${canonicalUrl}">
   </#if>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <!--[if gt IE 9]><!-->
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
-  <!--<![endif]-->
 
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
@@ -52,10 +50,7 @@
 
 <body itemscope itemtype="http://schema.org/Article">
   <!--[if lte IE 9]>
-  <div style="background-color: #C00; color: #fff; padding: 12px 24px; margin-bottom: 18px;">
-    Internet Explorer 9 and earlier isn't supported!
-    You need a modern browser to view this website.
-  </div>
+  <div style="background-color: #C00; color: #fff; padding: 12px 24px;">You need a modern browser to view this website.</div>
   <![endif]-->
   <@header.header logo=logo />
 
