@@ -73,7 +73,7 @@
             <@nav.breadcrumbJs />
           </script>
           <script src="toc.js"></script>
-          <script src="docgen-resources/main.min.js"></script>
+          <script src="docgen-resources/main.js"></script>
         </#if>
       </div>
 
@@ -151,7 +151,7 @@
   <ul<#if class?has_content> class="${class?trim}"</#if>>
     <#list tocElems as tocElem>
       <li><#t>
-        <a href="${CreateLinkFromID(tocElem.@id)?html}"><#t>
+        <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>
           <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
         </a><#lt>
         <#if (curDepth < maxDepth)>
