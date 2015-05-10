@@ -12,23 +12,25 @@
   <div class="site-footer">
     <#-- keep site-width inside so background extends -->
     <div class="site-width">
-      <div class="footer-top">
-        <div class="col-left sitemap">
-          <#if footerSiteMap??>
-            <@siteMap links=footerSiteMap />
-          </#if>
+      <#if footerSiteMap?? || socialLinks?? || showXXELogo>
+        <div class="footer-top">
+          <div class="col-left sitemap">
+            <#if footerSiteMap??>
+              <@siteMap links=footerSiteMap />
+            </#if>
+          </div>
+          <div class="col-right">
+            <#if socialLinks??>
+              <@ui.social links=socialLinks />
+            </#if>
+            <#if showXXELogo>
+              <a class="xxe" href="http://www.xmlmind.com/xmleditor/" rel="nofollow" title="Edited with XMLMind XML Editor">
+                <span>Edited with XMLMind XML Editor</span>
+              </a>
+            </#if>
+          </div>
         </div>
-        <div class="col-right">
-          <#if socialLinks??>
-            <@ui.social links=socialLinks />
-          </#if>
-          <#if showXXELogo>
-            <a class="xxe" href="http://www.xmlmind.com/xmleditor/" rel="nofollow" title="Edited with XMLMind XML Editor">
-              <span>Edited with XMLMind XML Editor</span>
-            </a>
-          </#if>
-        </div>
-      </div>
+      </#if>
       <div class="footer-bottom">
           <p>
             ${footerTitleHTML}
