@@ -115,7 +115,7 @@
     }
   }
 
-  .active {
+  .content-header {
     &::before {
       .icon();
       .icon-arrow-right();
@@ -132,11 +132,16 @@
       visibility: hidden;
 
       transform: rotate(45deg);
-      animation: header-pulse .3s 3 steps(2, end);
 
       @media (min-width: @screen-sm-min) {
         margin-left: -35px;
       }
+    }
+  }
+
+  .active {
+    &::before {
+      animation: header-pulse .3s 3 steps(2, end);
     }
   }
 }
