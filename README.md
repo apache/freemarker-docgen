@@ -9,7 +9,16 @@ use it for other projects as well, so it's not entirely specialized either.
 
 ## Usage
 
-Issue:
+Before building for the first time:
+* JDK 8 must be installed (tried with 1.8.0_20)
+* Apache Ant must be installed (tried with 1.8.1).
+* [Node.js](https://nodejs.org/) must be installed (tried with v0.10.32).
+* Create a `build.properties` file based on `build.properties.sample`
+* Issue `npm install` from the project directory to install Node.js
+  dependencies. This need to be repeated if you add new dependencies
+  to `gulpfile.js`.
+
+To build Docgen:
 
 ```sh
 ant all
@@ -62,20 +71,10 @@ dependencies hardly ever change, it's unnecessary.
 
 [fmProj]: https://github.com/freemarker/freemarker
 
-### Compiling LESS and Minifying JS
-
-```sh
-ant gulp
-```
-
-Notes:
-* To compile the docgen styles, you must have [Node.js](https://nodejs.org/) installed.
-* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`.)
-* Run `npm install` to install dependencies, then `ant gulp` to compile dependencies.
-
 ## Icon Font Attribution
 
-The icon font in this project was built using [IcoMoon](https://icomoon.io/) and contains selected icons from:
+The icon font in this project was built using [IcoMoon](https://icomoon.io/)
+and contains selected icons from:
 
 * [Entypo](http://www.entypo.com/) by [Daniel Bruce](http://www.danielbruce.se/)
 * [Font Awesome](http://fontawesome.io) by Dave Gandy.
