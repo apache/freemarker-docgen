@@ -38,7 +38,7 @@
     <meta property="og:url" content="${canonicalUrl}">
     <link rel="canoical" href="${canonicalUrl}">
   </#if>
-
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <!--[if gt IE 9]><!-->
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
