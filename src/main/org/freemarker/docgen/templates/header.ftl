@@ -27,15 +27,14 @@
 
 
 <#macro categoryHeader>
-
-  <div class="header-bottom-bg">
+  <div class="header-bottom-bg"><#t>
     <#if category?? || (searchKey?? && !offline)>
       <div class="site-width search-row"><#t>
         <#if category??>
           <a href="${category.href}" class="category">${category.text}</a><#t>
         <#else>
           <#-- empty div to maintain layout -->
-          <div class="category"></div>
+          <div class="category"></div><#t>
         </#if>
         <@searchForm /><#t>
       </div><#t>
@@ -43,8 +42,8 @@
     <div class="site-width breadcrumb-row"><#t>
       <@nav.breadcrumb /><#t>
       <@nav.bookmarks /><#t>
-    </div>
-  </div>
+    </div><#t>
+  </div><#t>
 </#macro>
 
 
