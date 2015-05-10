@@ -26,6 +26,11 @@
         li.classList.add('section');
       }
 
+      // @todo: hide this until we can figure out a solution for search
+      if (node.title === 'Search') {
+        li.style.display = 'none';
+      }
+
       li.addEventListener('click', menuClick);
       li.addEventListener('keydown', keyboardNavigation);
 
