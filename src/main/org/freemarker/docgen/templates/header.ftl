@@ -10,9 +10,7 @@
       <div class="site-width header-top"><#t>
         <#if logo??>
           <a class="logo" href="${logo.href?html}" role="banner"><#t>
-            &lt;FreeMarker&gt;<#t>
-            <#-- @todo: replace with new logo -->
-            <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
+            <img src="${logo.src?html}" alt="${logo.alt?html}">
           </a><#t>
         </#if>
         <@nav.tabs /><#t>
