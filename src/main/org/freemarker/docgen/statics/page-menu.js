@@ -17,7 +17,7 @@
 
       window.setTimeout(function() {
         unHighlightNode(nodeId);
-      }, 500);
+      }, 1000);
     }
   }
 
