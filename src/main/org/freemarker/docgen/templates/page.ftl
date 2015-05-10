@@ -86,7 +86,7 @@
 
 <#macro browserWarning>
   <!--[if lte IE 9]>
-  <div style="background-color: #C00; color: #fff; padding: 12px 24px;">You need a modern browser to view this website.</div>
+  <div style="background-color: #C00; color: #fff; padding: 12px 24px;">Please use a modern browser to view this website.</div>
   <![endif]--><#rt>
 </#macro>
 
