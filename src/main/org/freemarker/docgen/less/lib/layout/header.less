@@ -67,7 +67,12 @@
 }
 
 .breadcrumb-row {
+  padding-top: 9px; // increase padding when search row doesn't exist
   padding-bottom: 9px;
+
+  .search-row + & {
+    padding-top: 0;
+  }
 
   @media (min-width: @screen-xs-min) {
     display: flex;

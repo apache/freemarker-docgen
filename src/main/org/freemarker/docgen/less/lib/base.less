@@ -6,16 +6,20 @@ html {
   font-weight: normal;
   background-color: #fff;
   text-size-adjust: 100%;
+  height: 100%;
 }
 
 body {
+  min-height: 100%;
   margin: 0;
+  display: flex; // use display: flex so footer stays anchored to bottom for short pages
+  flex-direction: column;
 }
 
 a {
   color: @link-color;
   text-decoration: none;
-  touch-action: manipulation; 
+  touch-action: manipulation;
 
   &:hover {
     color: @link-hover;

@@ -1,11 +1,6 @@
-var LEVEL = 0;
-
 (function(toc, breadcrumb) {
-  createMenu(toc);
 
-  window.addEventListener('hashchange', highlightNode);
-  window.addEventListener('popstate', highlightNode);
-  document.addEventListener('DOMContentLoaded', highlightNode);
+  var LEVEL = 0;
 
   function createMenu(data) {
       var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
@@ -135,32 +130,6 @@ var LEVEL = 0;
     }
   }
 
-  function getNodeFromHash() {
-    if (window.location.hash) {
-      var id = window.location.hash.substring(1);
-
-      return document.getElementById(id);
-    } else {
-      return '';
-    }
-  }
-
-  // remove highlight class so animation can be repeated on same node again
-  function unHighlight() {
-    var node = getNodeFromHash();
-
-    if (node) {
-      node.classList.remove('active');
-    }
-  }
-
-  function highlightNode() {
-    var node = getNodeFromHash();
-
-    if (node) {
-      node.classList.add('active');
-      window.setTimeout(unHighlight, 1000);
-    }
-  }
+  createMenu(toc);
 
 })(toc, breadcrumb);

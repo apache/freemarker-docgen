@@ -4,42 +4,44 @@
 <#import "google.ftl" as google>
 
 
-<#macro header logo>
-  <div class="header-top-bg"><#t>
-    <div class="site-width header-top"><#t>
-      <#if logo??>
-        <a class="logo" href="${logo.href?html}" role="banner"><#t>
-          &lt;FreeMarker&gt;<#t>
-          <#-- @todo: replace with new logo -->
-          <#--<img src="${logo.src?html}" alt="${logo.alt?html}">-->
-        </a><#t>
-      </#if>
-      <@nav.tabs /><#t>
-      <#if secondaryTabs??>
-        <@notices tabs=secondaryTabs /><#t>
-      </#if>
+<#macro header>
+  <#if logo?? || secondaryTabs??>
+    <div class="header-top-bg"><#t>
+      <div class="site-width header-top"><#t>
+        <#if logo??>
+          <a class="logo" href="${logo.href?html}" role="banner"><#t>
+            <img src="${logo.src?html}" alt="${logo.alt?html}">
+          </a><#t>
+        </#if>
+        <@nav.tabs /><#t>
+        <#if secondaryTabs??>
+          <@notices tabs=secondaryTabs /><#t>
+        </#if>
+      </div><#t>
     </div><#t>
-  </div><#t>
+  </#if>
   <@categoryHeader /><#t>
 </#macro>
 
 
 <#macro categoryHeader>
-  <div class="header-bottom-bg">
-    <div class="site-width search-row"><#t>
-      <#if category??>
-        <a href="${category.href}" class="category">${category.text}</a><#t>
-      <#else>
-        <#-- empty div to maintain layout -->
-        <div class="category"></div>
-      </#if>
-      <@searchForm /><#t>
-    </div><#t>
+  <div class="header-bottom-bg"><#t>
+    <#if category?? || (searchKey?? && !offline)>
+      <div class="site-width search-row"><#t>
+        <#if category??>
+          <a href="${category.href}" class="category">${category.text}</a><#t>
+        <#else>
+          <#-- empty div to maintain layout -->
+          <div class="category"></div><#t>
+        </#if>
+        <@searchForm /><#t>
+      </div><#t>
+    </#if>
     <div class="site-width breadcrumb-row"><#t>
       <@nav.breadcrumb /><#t>
       <@nav.bookmarks /><#t>
-    </div>
-  </div>
+    </div><#t>
+  </div><#t>
 </#macro>
 
 

@@ -1,4 +1,11 @@
+.main-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .content-wrapper {
+  flex: 1 1 auto;
   display: flex;
   padding-top: 18px;
   padding-bottom: 18px;
@@ -111,21 +118,24 @@
   .active {
     &::before {
       .icon();
-      .icon-keyboard-return();
+      .icon-arrow-right();
       margin-left: -18px;
-      font-weight: normal;
-      line-height: 1;
-      font-size: 18px;
-      color: #C82222;
+      margin-top: -30px;
       width: 18px;
-      visibility: hidden;
-      float: left;
-      margin-top: 4px;
 
+      font-weight: normal;
+      font-size: 27px;
+      color: #C82222;
+
+      float: left;
+
+      visibility: hidden;
+
+      transform: rotate(45deg);
       animation: header-pulse .3s 3 steps(2, end);
 
       @media (min-width: @screen-sm-min) {
-        margin-left: -20px;
+        margin-left: -35px;
       }
     }
   }

@@ -6074,7 +6074,6 @@ O, the molecular formula for water)</a:documentation>
   <define name="db.navigation.components">
     <choice>
       <notAllowed/>
-      <ref name="db.search"/>
       <ref name="db.glossary"/>
       <ref name="db.bibliography"/>
       <ref name="db.index"/>
@@ -8088,21 +8087,6 @@ O, the molecular formula for water)</a:documentation>
         <optional>
           <ref name="db.bibliography"/>
         </optional>
-      </element>
-    </define>
-    <define name="db.search">
-      <element name="search">
-        <a:documentation>A search reuslts page</a:documentation>
-        <s:pattern name="Root must have version">
-          <s:rule context="/db:search">
-            <s:assert test="@version">The root element must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
-        <ref name="db.glossary.attlist"/>
-        <ref name="db.glossary.info"/>
-        <zeroOrMore>
-          <ref name="db.all.blocks"/>
-        </zeroOrMore>
       </element>
     </define>
   </div>

@@ -584,15 +584,14 @@
 
   <#local classAtt = "">
 
-  <${htmlHElem} class="header-${hierarElem.@docgen_rank}" <#if !disableAnchors && hierarElem.@id[0]??>id="${hierarElem.@id[0]}"</#if>
-      <#if htmlHLevel == 1>id="pageTopTitle" itemprop="name"</#if>>
-      ${titleInitial?html}<#recurse><#t>
-      <#-- <font size="-4" color="#D0D0D0">[TR=${hierarElem.@docgen_rank}]</font> --><#t>
+  <${htmlHElem} class="header-${hierarElem.@docgen_rank}" <#if !disableAnchors && hierarElem.@id[0]??>id="${hierarElem.@id[0]}"</#if><#t>
+      <#if htmlHLevel == 1> itemprop="name"</#if>><#t>
+      <#recurse><#t>      
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem?has_content>
       <span class="subtitle"><#recurse subtitleElem></span>
     </#if>
-  </${htmlHElem}>
+  </${htmlHElem}><#lt>
 </#macro>
 
 <#macro subtitle>

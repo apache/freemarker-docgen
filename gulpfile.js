@@ -8,6 +8,7 @@ var rename = require('gulp-rename');
 var minifyCss = require('gulp-minify-css');
 var prefix = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
 var OUT_DIR = path.join(BASE_DIR, 'statics');
@@ -33,8 +34,12 @@ gulp.task('styles', function() {
 
 gulp.task('js', function() {
   return gulp.src([
-      path.join(BASE_DIR, 'statics', 'main.js')
+      path.join(BASE_DIR, 'statics', 'use-strict.js'),
+      path.join(BASE_DIR, 'statics', 'make-toc.js'),
+      path.join(BASE_DIR, 'statics', 'page-menu.js')
     ])
+    .pipe(concat('main.js'))
+    .pipe(gulp.dest(OUT_DIR))
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(OUT_DIR));
