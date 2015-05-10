@@ -524,7 +524,6 @@ public final class Transform {
 
         idAttElems.add(E_GLOSSARY);
         idAttElems.add(E_GLOSSENTRY);
-        idAttElems.add(E_SEARCH);
 
         GUARANTEED_ID_ELEMENTS = Collections.unmodifiableSet(idAttElems);
     }
@@ -1444,8 +1443,7 @@ public final class Transform {
             // Add default titles:
             if (elemName.equals(E_PREFACE)
                     || elemName.equals(E_GLOSSARY)
-                    || elemName.equals(E_INDEX)
-                    || elemName.equals(E_SEARCH)) {
+                    || elemName.equals(E_INDEX)) {
                 ensureTitleExists(
                         elem,
                         Character.toUpperCase(elemName.charAt(0))
