@@ -52,7 +52,7 @@
   <!--[if lte IE 9]>
   <div style="background-color: #C00; color: #fff; padding: 12px 24px;">You need a modern browser to view this website.</div>
   <![endif]-->
-  <@header.header logo=logo />
+  <@header.header />
 
   <div class="site-width">
 

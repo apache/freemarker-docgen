@@ -4,7 +4,7 @@
 <#import "google.ftl" as google>
 
 
-<#macro header logo>
+<#macro header>
   <div class="header-top-bg"><#t>
     <div class="site-width header-top"><#t>
       <#if logo??>
