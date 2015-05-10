@@ -101,31 +101,31 @@
             </#list>
           </#if>
 
+
+          <#-- Render footnotes, if any: -->
+          <#assign footnotes = defaultNodeHandlers.footnotes>
+          <#if footnotes?size != 0>
+            <div id="footnotes">
+              Footnotes:
+              <ol>
+                <#list footnotes as footnote>
+                  <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+                </#list>
+              </ol>
+            </div>
+          </#if>
+
           <div class="bottom-pagers-wrapper">
             <@nav.pagers class="bottom" />
           </div>
         </div>
       </div>
-
-      <#-- Render footnotes, if any: -->
-      <#assign footnotes = defaultNodeHandlers.footnotes>
-      <#if footnotes?size != 0>
-        <div id="footnotes">
-          Footnotes:
-          <ol>
-            <#list footnotes as footnote>
-              <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
-            </#list>
-          </ol>
-        </div>
-      </#if>
     </div>
   </div>
 
   <@footer.footer topLevelTitle=topLevelTitle />
 </body>
 </html>
-
 
 <#macro toc att maxDepth minLength=1>
   <#local tocElems = .node["*[@${att}]"]>
