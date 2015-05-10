@@ -108,7 +108,7 @@
     <#if !disableJavaScript>
       <script><@nav.breadcrumbJs /></script>
       <script src="toc.js"></script>
-      <script src="docgen-resources/main.js"></script>
+      <script src="docgen-resources/main.min.js"></script>
     </#if>
   </div>
 </#macro>
