@@ -29,16 +29,16 @@
 
 
 <#macro head>
+  <#assign titleElement = u.getRequiredTitleElement(.node)>
+  <#assign title = u.titleToString(titleElement)>
+  <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
+  <#assign pageTitle = topLevelTitle />
+  <#if title != topLevelTitle>
+    <#assign pageTitle = title + " - " + topLevelTitle>
+  </#if>
   <#compress>
     <head prefix="og: http://ogp.me/ns#">
       <meta charset="utf-8">
-      <#assign titleElement = u.getRequiredTitleElement(.node)>
-      <#assign title = u.titleToString(titleElement)>
-      <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
-      <#assign pageTitle = topLevelTitle />
-      <#if title != topLevelTitle>
-        <#assign pageTitle = title + " - " + topLevelTitle>
-      </#if>
       <title>${pageTitle?html?replace("&#39;", "'")}</title>
 
       <@metaTags siteName=topLevelTitle title=title?html?replace('&#39;', '\'') />
