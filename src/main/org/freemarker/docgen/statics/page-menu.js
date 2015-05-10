@@ -1,4 +1,12 @@
 (function() {
+  function isAtTop(node) {
+    var parent = node.offsetParent;
+    var nodeOffsetTop = node.offsetTop + node.offsetParent.offsetTop - 5;
+    var windowOffsetTop = window.pageYOffset;
+
+    // @todo: figure out why less than isn't working when they are equal
+    return (nodeOffsetTop === windowOffsetTop || nodeOffsetTop < windowOffsetTop);
+  }
 
   // remove highlight class so animation can be repeated on same node again
   function unHighlightNode(nodeId) {
@@ -12,13 +20,16 @@
   function highlightNode(nodeId) {
     var node = document.getElementById(nodeId);
 
-    if (node) {
-      node.classList.add('active');
+    // wrap in a setTimeout so that window.scrollY is accurate when we poll it
+    window.setTimeout(function() {
+      if (node && !isAtTop(node)) {
+        node.classList.add('active');
 
-      window.setTimeout(function() {
-        unHighlightNode(nodeId);
-      }, 1000);
-    }
+        window.setTimeout(function() {
+          unHighlightNode(nodeId);
+        }, 1000);
+      }
+    }, 1);
   }
 
   function onPageMenuClick(e) {
