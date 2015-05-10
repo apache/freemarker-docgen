@@ -111,21 +111,28 @@
   .active {
     &::before {
       .icon();
-      .icon-keyboard-return();
+      .icon-arrow-right();
       margin-left: -18px;
       font-weight: normal;
-      line-height: 1;
       font-size: 18px;
       color: #C82222;
       width: 18px;
       visibility: hidden;
       float: left;
-      margin-top: 4px;
+      // margin-top: 4px;
 
       animation: header-pulse .3s 3 steps(2, end);
 
       @media (min-width: @screen-sm-min) {
         margin-left: -20px;
+      }
+    }
+  }
+
+  .header-section2 {
+    &.active {
+      &::before {
+        margin-top: 3px;
       }
     }
   }
