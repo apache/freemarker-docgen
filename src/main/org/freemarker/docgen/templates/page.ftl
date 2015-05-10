@@ -79,7 +79,9 @@
 
 
 <#macro css>
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono"><#lt>
+  <#if !offline>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono"><#lt>
+  </#if>
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css"><#lt>
 </#macro>
 
