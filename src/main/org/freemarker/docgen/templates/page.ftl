@@ -41,7 +41,6 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400|Droid+Sans+Mono">
   <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css">
-
   <#if !offline && onlineTrackerHTML??>
     ${onlineTrackerHTML}
   </#if>
@@ -54,7 +53,7 @@
   <![endif]-->
   <@header.header />
 
-  <div class="site-width">
+  <div class="main-content site-width">
 
     <#assign pageType = pageType!.node?node_name>
 
