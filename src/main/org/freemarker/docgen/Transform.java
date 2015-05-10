@@ -580,7 +580,7 @@ public final class Transform {
 
     private HashMap<String, String> category;
 
-    private Object footerSiteMap = new Object();
+    private Object footerSiteMap;
 
     private boolean disableJavaScript;
 
