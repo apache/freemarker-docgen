@@ -112,18 +112,17 @@
 </#macro>
 
 <#macro pageContent>
+  <#local pageType = pageType!.node?node_name>
   <div class="col-right"><#t>
     <div class="page-content"><#t>
-      <div class="page-title"><#t>
-        <@nav.pagers class="top" /><#t>
-        <div class="title-wrapper"><#t>
-          <#compress>
-            <#visit titleElement using nodeHandlers>
-          </#compress>
+      <#compress>
+        <div class="page-title"><#t>
+          <@nav.pagers class="top" /><#t>
+          <div class="title-wrapper"><#t>
+            <#visit titleElement using nodeHandlers><#t>
+          </div><#t>
         </div><#t>
-      </div><#t>
-
-      <#local pageType = pageType!.node?node_name>
+      </#compress>
       <#-- - Render either ToF (Table of Files) or Page ToC; -->
       <#--   both are called, but at least one of them will be empty: -->
       <#if pageType == "search">
@@ -131,11 +130,10 @@
       <#elseif pageType == "index" || pageType == "glossary">
         <#visit .node using nodeHandlers>
       <#elseif pageType == "docgen:detailed_toc">
-        <@toc att="docgen_detailed_toc_element" maxDepth=99 />
+        <@toc att="docgen_detailed_toc_element" maxDepth=99 /><#t>
       <#else>
-        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth />
-        <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 />
-
+        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth /><#t>
+        <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 /><#t>
         <#-- - Render the usual content, like <para>-s etc.: -->
         <#list .node.* as child>
           <#if child.@docgen_file_element?size == 0
@@ -145,9 +143,7 @@
           </#if>
         </#list>
       </#if>
-
       <@footnotes />
-
       <div class="bottom-pagers-wrapper"><#t>
         <@nav.pagers class="bottom" /><#t>
       </div><#t>
@@ -173,31 +169,34 @@
 
 
 <#macro toc att maxDepth minLength=1>
-  <#local tocElems = .node["*[@${att}]"]>
-  <#if (tocElems?size >= minLength)>
-      <@toc_inner tocElems=tocElems att=att maxDepth=maxDepth curDepth=1 />
-  </#if>
+  <#compress>
+    <#local tocElems = .node["*[@${att}]"]>
+    <#if (tocElems?size >= minLength)>
+        <@toc_inner tocElems=tocElems att=att maxDepth=maxDepth curDepth=1 /><#t>
+    </#if>
+  </#compress>
 </#macro>
 
 
 <#macro toc_inner tocElems att maxDepth curDepth=1>
+  <#compress>
+    <#if tocElems?size == 0><#return></#if>
 
-  <#if tocElems?size == 0><#return></#if>
+    <#if curDepth == 1>
+      <#local class = "page-menu">
+    </#if>
 
-  <#if curDepth == 1>
-    <#local class = "page-menu">
-  </#if>
-
-  <ul<#if class?has_content> class="${class?trim}"</#if>>
-    <#list tocElems as tocElem>
-      <li><#t>
-        <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>
-          <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
-        </a><#lt>
-        <#if (curDepth < maxDepth)>
-          <@toc_inner tocElem["*[@${att}]"], att, maxDepth, curDepth + 1 />
-        </#if>
-      </li><#t>
-    </#list>
-  </ul><#t>
+    <ul<#if class?has_content> class="${class?trim}"</#if>><#t>
+      <#list tocElems as tocElem>
+        <li><#t>
+          <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>
+            <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
+          </a><#t>
+          <#if (curDepth < maxDepth)>
+            <@toc_inner tocElem["*[@${att}]"], att, maxDepth, curDepth + 1 /><#t>
+          </#if>
+        </li><#t>
+      </#list>
+    </ul><#t>
+  </#compress>
 </#macro>
