@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "npm install gulp -g"
+    "preinstall": "npm install gulp eslint -g",
+    "lint": "eslint  --ext .js ./src/main/org/freemarker/docgen/js/"
   },
-  "devDependencies": {
+  "dependencies": {
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.2.0",
     "gulp-concat": "^2.5.2",

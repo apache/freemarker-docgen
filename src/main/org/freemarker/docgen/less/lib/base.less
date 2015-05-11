@@ -97,10 +97,10 @@ fieldset {
   border: 0;
 }
 
-input[type=search],
-::-webkit-search-cancel-button,
-::-webkit-search-results-button {
-  -webkit-appearance: none;
+// // Fix ios double tap bug
+// // http://blog.yorkxin.org/posts/2013/07/03/universal-hover-triggers-double-tap-bug-in-ios-safari/
+input[type=search]::-webkit-search-cancel-button {
+  display: none;
 }
 
 // tables
