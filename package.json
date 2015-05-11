@@ -5,7 +5,7 @@
   "scripts": {
     "preinstall": "npm install gulp -g"
   },
-  "devDependencies": {
+  "dependencies": {
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.2.0",
     "gulp-concat": "^2.5.2",
