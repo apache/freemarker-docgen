@@ -162,7 +162,10 @@
 
   <target name="init">
     <condition property="deps.available">
-      <available file=".ivy" />
+      <and>
+        <available file=".ivy" />
+        <available file="node_modules" />
+      </and>
     </condition>
     <antcall target="_autoget-deps" />
   </target>
@@ -311,19 +314,20 @@
     description="Deletes all dependencies"
   >
     <delete dir=".ivy" />
+    <delete dir="node_modules" />
   </target>
 
   <!-- See README.md about installing node.js and Gulp! -->
   <target name="node-deps">
-    <exec executable="npm" dir="${basedir}" failonerror="true">
-        <arg line="install" />
+    <exec executable="npm" dir="${basedir}" failonerror="true" osfamily="unix">
+      <arg line="install" />
     </exec>
-    <!-- <exec executable="cmd" dir="${basedir}" failonerror="true" osfamily="windows">
+    <exec executable="cmd" dir="${basedir}" failonerror="true" osfamily="windows">
         <arg line="/c npm install" />
-    </exec> -->
+    </exec>
   </target>
 
-  <target name="gulp" depends="node-deps">
+  <target name="gulp">
     <exec executable="node" failonerror="true" dir="${basedir}">
       <arg line="node_modules/gulp/bin/gulp.js"/>
     </exec>
