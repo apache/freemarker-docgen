@@ -62,6 +62,15 @@ This will shadow the `docgen` artifact that comes from the Ivy repo on
 [freemarker.org](http://freemarker.org). Then, in the `freemarker` project you
 have to issue `ant update-deps` so that it picks up your version.
 
+### Compiling LESS and JS
+
+To compile LESS and JS separately from the regular ant build, run:
+
+```sh
+ant gulp
+```
+
+
 ## Eclipse and other IDE-s
 
 You need to run this:
