@@ -18,6 +18,7 @@
   <!-- Will be overidden on the server: -->
   <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
 
+  <!-- Needed for travis-ci build -->
   <property name="ivy.install.version" value="2.4.0" />
   <condition property="ivy.home" value="${env.IVY_HOME}">
       <isset property="env.IVY_HOME" />
@@ -263,6 +264,7 @@
   <!-- Dependency management (keep it exactly identical for all projects) -->
   <!-- ================================================================== -->
 
+  <!-- Needed for travis-ci build -->
   <target name="download-ivy" unless="offline">
 
     <mkdir dir="${ivy.jar.dir}"/>

@@ -7,6 +7,14 @@ that [the FreeMarker Manual](http://freemarker.org/docs/) is written in. As
 such, it's not a general purpose DocBook 5 to HTML converter, however, we
 use it for other projects as well, so it's not entirely specialized either.
 
+## Requirements
+
+You must have the following libraries installed to build this project:
+
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [NodeJS 0.10 or higher](https://nodejs.org/)
+* [Apache Ant](http://ant.apache.org/bindownload.cgi)
+
 ## Usage
 
 Issue:
@@ -61,17 +69,6 @@ You could also use IvyDE instead, with configuration "IDE", but as the
 dependencies hardly ever change, it's unnecessary.
 
 [fmProj]: https://github.com/freemarker/freemarker
-
-### Compiling LESS and Minifying JS
-
-```sh
-ant gulp
-```
-
-Notes:
-* To compile the docgen styles, you must have [Node.js](https://nodejs.org/) installed.
-* Create a `build.properties` file and set `nodeJsCommand`. (See `build.properties.sample`.)
-* Run `npm install` to install dependencies, then `ant gulp` to compile dependencies.
 
 ## Icon Font Attribution
 
