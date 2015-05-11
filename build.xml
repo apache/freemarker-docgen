@@ -314,15 +314,14 @@
 
   <!-- See README.md about installing node.js and Gulp! -->
   <target name="node-deps">
-    <exec executable="cmd" dir="${basedir}"
-        failonerror="true" osfamily="windows">
+    <exec executable="cmd" dir="${basedir}" failonerror="true" osfamily="windows">
         <arg line="/c npm install" />
     </exec>
   </target>
 
   <target name="gulp" depends="node-deps">
-    <exec executable="node" failonerror="true">
-      <arg value="node_modules/gulp/bin/gulp.js"/>
+    <exec executable="node" failonerror="true" dir="${basedir}">
+      <arg line="node_modules/gulp/bin/gulp.js"/>
     </exec>
 
     <!--
