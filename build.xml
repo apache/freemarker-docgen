@@ -18,6 +18,14 @@
   <!-- Will be overidden on the server: -->
   <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
 
+  <property name="ivy.install.version" value="2.4.0" />
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+      <isset property="env.IVY_HOME" />
+    </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
   <property file="build.properties" />
 
   <!-- When boot.classpath is missing, this is the default: -->
@@ -251,6 +259,17 @@
   <!-- ================================================================== -->
   <!-- Dependency management (keep it exactly identical for all projects) -->
   <!-- ================================================================== -->
+
+  <target name="download-ivy" unless="offline">
+
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without --
+      -- any special installation -->
+    <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}"
+         usetimestamp="true"/>
+  </target>
+
 
   <target name="_autoget-deps" unless="deps.available">
     <antcall target="update-deps" />
