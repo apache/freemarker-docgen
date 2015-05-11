@@ -273,7 +273,7 @@
 
   <target name="_autoget-deps" unless="deps.available">
     <antcall target="update-deps" />
-    <antcall name="node-deps" />
+    <antcall target="node-deps" />
   </target>
 
   <target name="update-deps"
