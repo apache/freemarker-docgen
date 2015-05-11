@@ -34,9 +34,9 @@ gulp.task('styles', function() {
 
 gulp.task('js', function() {
   return gulp.src([
-      path.join(BASE_DIR, 'statics', 'use-strict.js'),
-      path.join(BASE_DIR, 'statics', 'make-toc.js'),
-      path.join(BASE_DIR, 'statics', 'page-menu.js')
+      path.join(BASE_DIR, 'js', 'use-strict.js'),
+      path.join(BASE_DIR, 'js', 'make-toc.js'),
+      path.join(BASE_DIR, 'js', 'page-menu.js')
     ])
     .pipe(concat('main.js'))
     .pipe(gulp.dest(OUT_DIR))
