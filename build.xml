@@ -313,10 +313,23 @@
   </target>
 
   <!-- See README.md about installing node.js and Gulp! -->
-  <target name="gulp">
+  <target name="node-deps">
+    <exec executable="cmd" dir="${basedir}"
+        failonerror="true" osfamily="windows">
+        <arg line="/c npm install" />
+    </exec>
+  </target>
+
+  <target name="gulp" depends="node-deps">
+    <exec executable="node" failonerror="true">
+      <arg value="node_modules/gulp/bin/gulp.js"/>
+    </exec>
+
+    <!--
     <exec executable="${nodeJsCommand}" failonerror="true" dir="${basedir}">
       <arg value="node_modules/gulp/bin/gulp.js"/>
     </exec>
+  -->
   </target>
 
   <target name="publish-override" depends="artifacts"
