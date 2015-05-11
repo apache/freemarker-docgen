@@ -315,6 +315,9 @@
 
   <!-- See README.md about installing node.js and Gulp! -->
   <target name="node-deps">
+    <exec executable="node" dir="${basedir}" failonerror="true" osfamily="linux">
+        <arg line="npm install" />
+    </exec>
     <exec executable="cmd" dir="${basedir}" failonerror="true" osfamily="windows">
         <arg line="/c npm install" />
     </exec>
