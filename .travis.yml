@@ -3,7 +3,9 @@ before_install: ant download-ivy
 install: ant all
 
 before_script: ant test
-script: ant -f test.xml
+script:
+  - ant -f test.xml
+  - npm run-script lint
 
 jdk:
   - oraclejdk8

@@ -1,6 +1,5 @@
 (function() {
   function isAtTop(node) {
-    var parent = node.offsetParent;
     var nodeOffsetTop = node.offsetTop + node.offsetParent.offsetTop - 5;
     var windowOffsetTop = window.pageYOffset;
 

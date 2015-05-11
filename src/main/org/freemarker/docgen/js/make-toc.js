@@ -2,13 +2,60 @@
 
   var LEVEL = 0;
 
-  function createMenu(data) {
-      var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
 
-      var finishedToc = menuChildren(data.children, 0, true);
-      finishedToc.classList.add('table-of-contents');
 
-      menuPlaceholder.appendChild(finishedToc);
+  function menuLink(nodeData) {
+    var a = document.createElement('a');
+
+    a.innerHTML = nodeData.title;
+    a.href = nodeData.url;
+    a.className = 'depth-' + LEVEL + '-link';
+
+    return a;
+  }
+
+  function keyboardNavigation(e) {
+    e.stopPropagation();
+
+    var node = e.target.parentNode;
+
+    // right arrow, wants to open node
+    if (e.which === 39) {
+      node.classList.remove('closed');
+      node.classList.add('open');
+    }
+    // left arrow, wants to close node
+    else if (e.which === 37) {
+      node.classList.add('closed');
+      node.classList.remove('open');
+    }
+  }
+
+  function checkIfLast(nodeData) {
+    if (!nodeData.children.length) {
+      return true;
+    } else {
+
+      // don't print out children if they are only anchors
+      for (var x = 0; x < nodeData.children.length; x++) {
+        if (nodeData.children[x].isFile) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }
+
+  function menuClick(e) {
+    e.stopPropagation();
+
+    var node = e.target;
+
+    if (node.tagName.toUpperCase() === 'LI') {
+      node.classList.toggle('closed');
+      node.classList.toggle('open');
+    }
   }
 
   function menuChildren(children, depth, onPath) {
@@ -81,58 +128,13 @@
     return ul;
   }
 
-  function checkIfLast(nodeData) {
-    if (!nodeData.children.length) {
-      return true;
-    } else {
+  function createMenu(data) {
+    var menuPlaceholder = document.getElementById('table-of-contents-wrapper');
 
-      // don't print out children if they are only anchors
-      for (var x = 0; x < nodeData.children.length; x++) {
-        if (nodeData.children[x].isFile) {
-          return false;
-        }
-      }
+    var finishedToc = menuChildren(data.children, 0, true);
+    finishedToc.classList.add('table-of-contents');
 
-      return true;
-    }
-  }
-
-  function menuLink(nodeData) {
-    var a = document.createElement('a');
-
-    a.innerHTML = nodeData.title;
-    a.href = nodeData.url;
-    a.className = 'depth-' + LEVEL + '-link';
-
-    return a;
-  }
-
-  function menuClick(e) {
-    e.stopPropagation();
-
-    var node = e.target;
-
-    if (node.tagName.toUpperCase() === 'LI') {
-      node.classList.toggle('closed');
-      node.classList.toggle('open');
-    }
-  }
-
-  function keyboardNavigation(e) {
-    e.stopPropagation();
-
-    var node = e.target.parentNode;
-
-    // right arrow, wants to open node
-    if (e.which === 39) {
-      node.classList.remove('closed');
-      node.classList.add('open');
-    }
-    // left arrow, wants to close node
-    else if (e.which === 37) {
-      node.classList.add('closed');
-      node.classList.remove('open');
-    }
+    menuPlaceholder.appendChild(finishedToc);
   }
 
   createMenu(toc);
