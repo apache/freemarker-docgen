@@ -5,7 +5,7 @@
 
 
 <#macro header>
-  <#if logo?? || secondaryTabs??>
+  <#if logo?? || tabs?? || secondaryTabs??>
     <div class="header-top-bg"><#t>
       <div class="site-width header-top"><#t>
         <#if logo??>
