@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"} strip_text = true>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
 
 <#import "util.ftl" as u>
 <#import "footer.ftl" as footer>
@@ -114,7 +114,7 @@
 </#macro>
 
 <#macro pageContent>
-  <#local pageType = pageType!.node?node_name>
+  <#local pageType = pageType!.node?nodeName>
   <div class="col-right"><#t>
     <div class="page-content"><#t>
       <#compress>
@@ -129,9 +129,9 @@
       <#--   both are called, but at least one of them will be empty: -->
       <#if .node.@id == "search">
         <@google.searchResults />
-      <#elseif pageType == "index" || pageType == "glossary">
+      <#elseIf pageType == "index" || pageType == "glossary">
         <#visit .node using nodeHandlers>
-      <#elseif pageType == "docgen:detailed_toc">
+      <#elseIf pageType == "docgen:detailed_toc">
         <@toc att="docgen_detailed_toc_element" maxDepth=99 /><#t>
       <#else>
         <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth /><#t>
@@ -139,9 +139,9 @@
         <#-- - Render the usual content, like <para>-s etc.: -->
         <#list .node.* as child>
           <#if child.@docgen_file_element?size == 0
-              && child?node_name != "title"
-              && child?node_name != "subtitle"
-              && child?node_name != "info">
+              && child?nodeName != "title"
+              && child?nodeName != "subtitle"
+              && child?nodeName != "info">
             <#visit child using nodeHandlers>
           </#if>
         </#list>
@@ -189,7 +189,7 @@
       <#local class = "page-menu">
     </#if>
 
-    <ul<#if class?has_content> class="${class?trim}"</#if>><#t>
+    <ul<#if class?hasContent> class="${class?trim}"</#if>><#t>
       <#list tocElems as tocElem>
         <li><#t>
           <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>

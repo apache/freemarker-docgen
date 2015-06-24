@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"} strip_text = true>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
 
 <#import "navigation.ftl" as nav>
 <#import "google.ftl" as google>
@@ -61,7 +61,7 @@
   <ul class="secondary-tabs"><#t>
     <#list tabs as tab>
       <li><#t>
-        <#if (tab.href)?has_content>
+        <#if (tab.href)?hasContent>
           <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tab.text?html}"><#t>
             <span>${tab.text}</span><#t>
           </a><#t>

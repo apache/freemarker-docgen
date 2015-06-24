@@ -1,4 +1,4 @@
-<#ftl strip_text = true />
+<#ftl stripText = true />
 
 <#macro social links>
   <ul class="social-icons"><#t>

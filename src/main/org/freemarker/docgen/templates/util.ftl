@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 
 <#function getOptionalTitleAsString node>
   <#return titleToString(getOptionalTitleElement(node))>
@@ -8,9 +8,9 @@
   <#if preferTitleAbbrev>
     <#local result = node.info.titleabbrev>
   </#if>
-  <#if !result?has_content><#local result = node.title></#if>
-  <#if !result?has_content><#local result = node.info.title></#if>
-  <#if !result?has_content>
+  <#if !result?hasContent><#local result = node.title></#if>
+  <#if !result?hasContent><#local result = node.info.title></#if>
+  <#if !result?hasContent>
      <#return ''>
   </#if>
   <#return result>
@@ -18,9 +18,9 @@
 
 <#function getRequiredTitleElement node preferTitleAbbrev=false>
   <#local result = getOptionalTitleElement(node, preferTitleAbbrev)>
-  <#if !result?has_content>
+  <#if !result?hasContent>
     <#stop "Required \"title\" child element missing for element \""
-        + node?node_name + "\".">
+        + node?nodeName + "\".">
   </#if>
   <#return result>
 </#function>
@@ -31,8 +31,8 @@
 
 <#function getOptionalSubtitleElement node>
   <#local result = node.subtitle>
-  <#if !result?has_content><#local result = node.info.subtitle></#if>
-  <#if !result?has_content>
+  <#if !result?hasContent><#local result = node.info.subtitle></#if>
+  <#if !result?hasContent>
     <#return ''>
   </#if>
   <#return result>
@@ -43,30 +43,30 @@
 </#function>
 
 <#function titleToString titleNode>
-  <#if !titleNode?has_content>
+  <#if !titleNode?hasContent>
     <#-- Used for optional title -->
     <#return ''>
   </#if>
-  <#if !titleNode?is_node>
+  <#if !titleNode?isNode>
     <#-- Just a string... -->
     <#return titleNode>
   </#if>
 
   <#local res = "">
   <#list titleNode?children as child>
-    <#if child?node_type == "text">
+    <#if child?nodeType == "text">
       <#local res += child>
-    <#elseif child?node_type == "element">
-      <#local name = child?node_name>
+    <#elseIf child?nodeType == "element">
+      <#local name = child?nodeName>
       <#if name == "literal"
           || name == "classname" || name == "methodname" || name == "package"
           || name == "replaceable"
           || name == "emphasis"
           || name == "phrase">
         <#local res += titleToString(child)>
-      <#elseif name == "quote">
+      <#elseIf name == "quote">
         <#local res = "\x201C" + titleToString(child) + "\x201D">
-      <#elseif name != "subtitle">
+      <#elseIf name != "subtitle">
         <#stop 'The "${name}" in titles is not supported by Docgen.'>
       </#if>
     </#if>
@@ -78,22 +78,22 @@
 <#-- "docStructElem" is a part, chapter, section, etc., NOT a title element -->
 <#function getTitlePrefix docStructElem, extraSpacing=false, longForm=false>
   <#local prefix = docStructElem.@docgen_title_prefix[0]!>
-  <#if !prefix?has_content>
+  <#if !prefix?hasContent>
     <#return "">
   </#if>
 
-  <#local type = docStructElem?node_name>
+  <#local type = docStructElem?nodeName>
 
   <#local spacer = ": ">
 
 
   <#if type == "chapter">
     <#return longForm?string("Chapter ", "") + prefix + spacer>
-  <#elseif type == "appendix">
+  <#elseIf type == "appendix">
     <#return longForm?string("Appendix ", "") + prefix + spacer>
-  <#elseif type == "part">
+  <#elseIf type == "part">
     <#return longForm?string("Part ", "") + prefix + spacer>
-  <#elseif type == "article">
+  <#elseIf type == "article">
     <#return longForm?string("Article ", "") + prefix + spacer>
   <#else>
     <#return prefix + spacer>

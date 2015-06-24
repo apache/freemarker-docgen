@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 <#import "util.ftl" as u>
 <#escape x as x?html>
 <?xml version="1.0" encoding="utf-8"?>

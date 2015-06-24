@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 <#escape x as x?html>
 
 <#import "util.ftl" as u>
@@ -26,7 +26,7 @@
     <div class="navigation">
       <#-- keep site-width inside navigation so that the background extends -->
       <div class="site-width">
-        <#noescape>${captured}</#noescape><#t>
+        <#noEscape>${captured}</#noEscape><#t>
       </div>
     </div>
   </#if>
@@ -38,7 +38,7 @@
   </#if>
   <#local path = []>
   <#local curNode = .node>
-  <#list 1..99 as _>
+  <#list 1.. as _>
     <#local path = [curNode] + path>
     <#if curNode.@docgen_root_element?size != 0>
       <#break>
@@ -69,7 +69,7 @@
   var breadcrumb = [<#t>
   <#local path = []>
   <#local curNode = .node>
-  <#list 1..99 as _>
+  <#list 1.. as _>
     <#local path = [curNode] + path>
     <#if curNode.@docgen_root_element?size != 0>
       <#break>
@@ -78,7 +78,7 @@
   </#list>
   <#if (path?size > 1)>
     <#list path as step>
-      "<#noescape>${(step.title[0]!step.info.title)?js_string}</#noescape>"<#t>
+      "<#noEscape>${(step.title[0]!step.info.title)?jsString}</#noEscape>"<#t>
       <#sep>,<#t>
     </#list>
   </#if>
@@ -114,7 +114,7 @@
 
 
 <#macro tabs>
-    <#local tabs = .data_model.tabs>
+    <#local tabs = .dataModel.tabs>
     <#if tabs?size != 0>
         <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
@@ -146,7 +146,7 @@
 
 <#macro pagerButton text element class>
   <#compress>
-    <#if element?has_content>
+    <#if element?hasContent>
       <#local href = CreateLinkFromNode(element)>
       <a class="paging-arrow ${class}" href="${href}"><span>${text}</span></a><#t>
     <#else>

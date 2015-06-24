@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"}>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 
 <#import "util.ftl" as u>
 
@@ -15,7 +15,7 @@
 <#macro @element>
   <#stop "This DocBook element is not supported by the Docgen transformer, "
       + "or wasn't expected where it occured: "
-      + .node?node_name>
+      + .node?nodeName>
 </#macro>
 
 <#macro Anchor node=.node>
@@ -36,7 +36,7 @@
 
 <#macro emphasis>
     <#local role=.node.@role[0]!"none">
-    <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content>
+    <#if role = "term" || role = "bold" || .node?ancestors("programlisting")?hasContent>
       <strong><#recurse></strong><#t>
     <#else>
       <em><#recurse></em><#t>
@@ -48,7 +48,7 @@
 <#macro glossdef>
    <dd><#recurse>
    <#local seealsos=.node.glossseealso>
-   <#if seealsos?has_content>
+   <#if seealsos?hasContent>
     <p>See Also
      <#list seealsos as also>
        <#local otherTermID=also.@otherterm>
@@ -80,7 +80,7 @@
 
 <#macro graphic>
   <#local role=.node.@role[0]!?string>
-  <#if role?starts_with("alt:")>
+  <#if role?startsWith("alt:")>
     <#local alt = role[4.. .node.@role?length-1]?trim>
   <#else>
     <#local alt = "figure">
@@ -105,11 +105,11 @@
         <#local mark=.node.@mark[0]!>
         <#if mark = "bullet">
             <ul type="disc"><#t>
-        <#elseif mark = "box">
+        <#elseIf mark = "box">
             <ul type="square"><#t>
-        <#elseif mark = "ring">
+        <#elseIf mark = "ring">
             <ul type="circle"><#t>
-        <#elseif mark = "">
+        <#elseIf mark = "">
             <ul><#t>
         <#else>
             <ul type="${mark?html}"><#t>
@@ -121,7 +121,7 @@
 </#macro>
 
 <#macro link>
-   <#if .node.@linkend?has_content>
+   <#if .node.@linkend?hasContent>
       <a href="${CreateLinkFromID(.node.@linkend)?html}"><#recurse></a><#t>
    <#else>
       <a href="${.node["@xlink:href"]?html}"><#recurse></a><#t>
@@ -141,7 +141,7 @@
 
 <#macro _inlineMonospaced>
     <#local moreStyle="" color="#A03D10">
-    <#if .node?ancestors("link")?has_content>
+    <#if .node?ancestors("link")?hasContent>
         <#-- If we are within a link, we don't change color, just use the regular link color -->
         <code><#recurse></code><#t>
     <#else>
@@ -149,7 +149,7 @@
             <#local moreStyle = "; background-color:${fontBgColor}">
         </#if>
         <#-- @todo: convert 'moreStyle' to class names -->
-        <code class="inline-code"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#t>
+        <code class="inline-code"<#if moreStyle?hasContent> style="${moreStyle}"</#if>><#t>
         <#local saved_inlineMonospacedColorisation = inlineMonospacedColorisation>
         <#assign inlineMonospacedColorisation = true>
         <#recurse><#t>
@@ -230,23 +230,23 @@
     <#local cssClass = "">
   </#if>
   <#if compactPara!>
-    <#if cssClass?has_content>
-      <span<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
+    <#if cssClass?hasContent>
+      <span<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
     </#if>
     <@Anchor/><#t>
     <#recurse>
-    <#if cssClass?has_content>
+    <#if cssClass?hasContent>
       </span><#t>
     </#if>
   <#else>
     <#assign inHtmlP = true>
-    <p<#if cssClass?has_content> class="${cssClass}"</#if>><#t>
+    <p<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
     <#local content><@Anchor/><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
     <#if !content?matches(r".*<p>\s*$", "s")>
         ${content}</p><#t>
     <#else>
-        ${content?substring(0, content?last_index_of("<p>"))}<#t>
+        ${content?substring(0, content?lastIndexOf("<p>"))}<#t>
     </#if>
     <#assign inHtmlP = false>
   </#if>
@@ -314,7 +314,7 @@
   <#if role != "">
     <#if role = "homepage">
       http://freemarker.org<#t>
-    <#elseif role = "markedInvisibleText">
+    <#elseIf role = "markedInvisibleText">
       <#if fontBgColor! != "">
         <#local moreStyle = "; background-color:${fontBgColor}">
       </#if>
@@ -328,7 +328,7 @@
 <#macro programlisting>
   <@Anchor/>
   <#local role=.node.@role[0]!?string>
-  <#local dotidx=role?index_of(".")>
+  <#local dotidx=role?indexOf(".")>
   <#if dotidx != -1>
     <#local role = role[0..dotidx-1]>
   </#if>
@@ -359,7 +359,7 @@
     <div class="code-wrapper"><#t>
     <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
-      ${content?chop_linebreak}</pre></div><#t>
+      ${content?chopLinebreak}</pre></div><#t>
   </@CantBeNestedIntoP>
 </#macro>
 
@@ -424,7 +424,7 @@
       <#local moreStyle = "; background-color:${fontBgColor}">
     </#if>
     <#-- @todo: check if class name is necessary. probably able to cascade under .inline-code -->
-    <em class="code-color"<#if moreStyle?has_content> style="${moreStyle}"</#if>><#recurse></em><#t>
+    <em class="code-color"<#if moreStyle?hasContent> style="${moreStyle}"</#if>><#recurse></em><#t>
   <#else>
     <em><#recurse></em><#t>
   </#if>
@@ -452,7 +452,7 @@
   <#local lastLetter = "">
   <p>
     <#list indexEntries as key>
-      <#local letter = key[0]?upper_case>
+      <#local letter = key[0]?upperCase>
       <#if lastLetter != letter>
         <#if lastLetter != "">&nbsp;| </#if><a href="#${index_safeID(letter)?html}">${letter?html}</a><#t>
         <#local lastLetter = letter>
@@ -463,7 +463,7 @@
   <#-- Index list -->
   <#local lastLetter = "">
   <#list indexEntries as key>
-    <#local letter = key[0]?upper_case>
+    <#local letter = key[0]?upperCase>
     <#if letter != lastLetter>
       <#if lastLetter != "">
         </dl></div><#lt>
@@ -476,13 +476,13 @@
     </#if>
     <#local entryNodes = primaryIndexTermLookup[key]>
     <dt>
-      ${key?html}<#if entryNodes?has_content>,&nbsp;&nbsp;</#if><#rt>
+      ${key?html}<#if entryNodes?hasContent>,&nbsp;&nbsp;</#if><#rt>
       <#list entryNodes as entryNode>
         <a href="${CreateLinkFromNode(entryNode)}"><#t><@index_entryText entryNode/></a><#t>
         <#sep>,</#sep><#lt>
       </#list>
     </dt>
-    <#if secondaryIndexTermLookup[key]?has_content>
+    <#if secondaryIndexTermLookup[key]?hasContent>
       <#local secondaryTerms = secondaryIndexTermLookup[key]>
       <dd><dl>
       <#list secondaryTerms?keys?sort as secondary>
@@ -497,7 +497,7 @@
       </#list>
       </dl></dd>
     </#if>
-    <#if key?is_last>
+    <#if key?isLast>
       </dl></div><#lt>
     </#if>
   </#list>
@@ -505,13 +505,13 @@
 
 <#macro index_entryText node>
   <#list 1..100 as i>
-    <#if node?node_type != "element">
+    <#if node?nodeType != "element">
       entry<#t>
       <#return>
     </#if>
-    <#if node.title?has_content>
+    <#if node.title?hasContent>
       <#local title=node.title>
-      <#if !node.@id[0]!?starts_with("autoid_")>
+      <#if !node.@id[0]!?startsWith("autoid_")>
         ${title?trim?html}<#t>
         <#return>
       </#if>
@@ -526,7 +526,7 @@
 </#function>
 
 <#macro glossary>
-  <#local ges = .node.glossentry?sort_by("glossterm")>
+  <#local ges = .node.glossentry?sortBy("glossterm")>
 
   <#-- Print alphabetical index links: -->
   <#local lgtl = "">
@@ -534,7 +534,7 @@
     <#list ges as ge>
       <#local fullgt = ge.glossterm>
       <#if fullgt?size != 0>
-        <#local gtl = fullgt.@@text[0]?upper_case>
+        <#local gtl = fullgt.@@text[0]?upperCase>
         <#if gtl != lgtl>
           <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id?html}">${gtl?html}</a><#t>
           <#local lgtl = gtl>
@@ -555,11 +555,11 @@
 
 <#macro title>
   <#local hierarElem = .node?parent>
-  <#if hierarElem?node_name == "info">
+  <#if hierarElem?nodeName == "info">
     <#local hierarElem = hierarElem?parent>
   </#if>
 
-  <#local type = hierarElem?node_name>
+  <#local type = hierarElem?nodeName>
   <#local titleInitial = u.getTitlePrefix(hierarElem, false, true)>
 
   <#-- Calculate htmlHLevel: ToC-deeph compared to the enclosing file-element -->
@@ -588,7 +588,7 @@
       <#if htmlHLevel == 1> itemprop="name"</#if>><#t>
       <#recurse><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
-    <#if subtitleElem?has_content>
+    <#if subtitleElem?hasContent>
       <span class="subtitle"><#recurse subtitleElem></span>
     </#if>
   </${htmlHElem}><#lt>
@@ -608,7 +608,7 @@
   <#local targetLink = CreateLinkFromID(xrefID)>
 
   <#local label = targetNode.@xreflabel[0]!>
-  <#if label?has_content>
+  <#if label?hasContent>
     <a href="${targetLink?html}">${label?html}</a><#t>
   <#else>
     <#local labelHTMLs = buildTitleHTMLChain(targetNode)>
@@ -621,7 +621,7 @@
       <#local started = false>
       <#list labelHTMLs as labelHTML>
         <#if started || !(
-              labelHTML?has_next
+              labelHTML?hasNext
               && ctxLabelHTMLs[labelHTML?index]??
               && labelHTML == ctxLabelHTMLs[labelHTML?index]
             )
@@ -640,11 +640,11 @@
      <#if targetNode.@docgen_root_element?size != 0><#break></#if>
 
      <#local title = u.getOptionalTitleElement(targetNode)>
-     <#if title?has_content>
+     <#if title?hasContent>
        <#local titleHTML><#recurse title></#local>
        <#local result = [titleHTML] + result>
        <#local allowFallback = true>
-     <#elseif !allowFallback>
+     <#elseIf !allowFallback>
        <#break>
      </#if>
 
@@ -672,19 +672,19 @@
 
 <#-- Re-prints the original tag as is, but restricts the allowed attributes -->
 <#macro _HTMLTableElement supportedAtts empty=false>
-  <#if !supportedAtts??><#stop 'XXX ' + .node?node_name></#if>
-  <${.node?node_name}<#t>
+  <#if !supportedAtts??><#stop 'XXX ' + .node?nodeName></#if>
+  <${.node?nodeName}<#t>
     <#list .node.@@ as att>
-      <#if supportedAtts[att?node_name]??>
-        ${' '}${att?node_name}="${att?html}"<#t>
+      <#if supportedAtts[att?nodeName]??>
+        ${' '}${att?nodeName}="${att?html}"<#t>
       <#else>
-        <#stop 'Unimplemented attribute for "${.node?node_name}": ' + att?node_name>
+        <#stop 'Unimplemented attribute for "${.node?nodeName}": ' + att?nodeName>
       </#if>
     </#list>
   ><#t>
   <#if !empty>
     <#recurse><#t>
-    </${.node?node_name}><#t>
+    </${.node?nodeName}><#t>
   </#if>
   ${"\n"}<#t>
 </#macro>
@@ -712,18 +712,18 @@
 
 <#macro mediaobject>
   <#list .node.* as imageobject>
-    <#if imageobject?node_name == "imageobject">
+    <#if imageobject?nodeName == "imageobject">
       <#list imageobject.* as imagedata>
-        <#if imagedata?node_name == "imagedata">
+        <#if imagedata?nodeName == "imagedata">
           <p class="center-img"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
         <#else>
           <#stop "Unexpected element when \"imagedata\" was expected: "
-              + imagedata?node_name>
+              + imagedata?nodeName>
         </#if>
       </#list>
     <#else>
       <#stop "Unexpected element when \"imageobject\" was expected: "
-          + imageobject?node_name>
+          + imageobject?nodeName>
     </#if>
   </#list>
 </#macro>

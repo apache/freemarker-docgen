@@ -1,4 +1,4 @@
-<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"} strip_text = true>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
 
 <#import "ui.ftl" as ui>
 <#import "util.ftl" as u>
@@ -8,7 +8,7 @@
     <#local book = .node?root.*>
     <#local footerTitleHTML = u.getRequiredTitleAsString(book)>
     <#local bookSubtitle = u.getOptionalSubtitleAsString(book)>
-    <#if bookSubtitle?has_content>
+    <#if bookSubtitle?hasContent>
       <#local footerTitleHTML += " – " + bookSubtitle?html>
     </#if>
 
@@ -37,7 +37,7 @@
         <div class="footer-bottom"><#t>
             <p><#t>
               ${footerTitleHTML}<#t>
-              <#if book.info.productname?has_content>
+              <#if book.info.productname?hasContent>
                 <span class="generated-for-product">Generated for: ${book.info.productname}</span><#t>
               </#if>
               <span class="last-updated"><@lastUpdated /></span><#t>
@@ -52,7 +52,7 @@
 
 <#macro lastUpdated>
   Last updated:
-  <time itemprop="dateModified" datetime="${transformStartTime?datetime?iso_utc}" title="${transformStartTime?datetime?string.full}"><#t>
+  <time itemprop="dateModified" datetime="${transformStartTime?datetime?isoUtc}" title="${transformStartTime?datetime?string.full}"><#t>
     ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
   </time><#t>
 </#macro>
