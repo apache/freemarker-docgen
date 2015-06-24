@@ -21,7 +21,7 @@
         <@pageContent />
       </div>
     </div>
-    <@footer.footer topLevelTitle=topLevelTitle />
+    <@footer.footer />
   </body><#lt>
 </@page>
 
@@ -29,7 +29,7 @@
 <#macro head>
   <#assign titleElement = u.getRequiredTitleElement(.node)>
   <#assign title = u.titleToString(titleElement)>
-  <#assign topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
+  <#local topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
   <#assign pageTitle = topLevelTitle />
   <#if title != topLevelTitle>
     <#assign pageTitle = title + " - " + topLevelTitle>
@@ -140,7 +140,8 @@
         <#list .node.* as child>
           <#if child.@docgen_file_element?size == 0
               && child?node_name != "title"
-              && child?node_name != "subtitle">
+              && child?node_name != "subtitle"
+              && child?node_name != "info">
             <#visit child using nodeHandlers>
           </#if>
         </#list>

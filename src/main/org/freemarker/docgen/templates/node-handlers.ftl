@@ -727,3 +727,6 @@
     </#if>
   </#list>
 </#macro>
+
+<#macro anyNonVisual><#recurse></#macro>
+<#assign info=anyNonVisual titleabbrev=anyNonVisual productname=anyNonVisual productnumber=anyNonVisual>

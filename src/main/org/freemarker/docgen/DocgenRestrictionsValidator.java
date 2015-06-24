@@ -1,5 +1,7 @@
 package org.freemarker.docgen;
 
+import static org.freemarker.docgen.DocBook5Constants.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -12,8 +14,6 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import static org.freemarker.docgen.DocBook5Constants.*;
 
 /**
  * Adds Docgen-specific restrictions to an already existing DocBook 5 validator.
@@ -49,6 +49,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add("imageobject");
         supportedElements.add(E_INDEX);
         supportedElements.add(E_INDEXTERM);
+        supportedElements.add(E_INFO);
         supportedElements.add(E_INFORMALTABLE);
         supportedElements.add(E_ITEMIZEDLIST);
         supportedElements.add(E_LINK);
@@ -65,6 +66,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add("phrase");
         supportedElements.add(E_PREFACE);
         supportedElements.add(E_PRIMARY);
+        supportedElements.add(E_PRODUCTNAME);
         supportedElements.add(E_PROGRAMLISTING);
         supportedElements.add(E_QUANDAENTRY);
         supportedElements.add("qandaset");
@@ -83,6 +85,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add(E_THEAD);
         supportedElements.add(E_TR);
         supportedElements.add(E_TITLE);
+        supportedElements.add(E_TITLEABBREV);
         supportedElements.add(E_WARNING);
         supportedElements.add("xref");
 

@@ -56,7 +56,11 @@
       </#list>
     </ul><#t>
   <#else>
-    <span class="breadcrumb">For FreeMarker v${.version}</span> <#-- empty element so flexbox layout still works -->
+    <ul class="breadcrumb"><#t>
+      <li class="step-0"><#t>
+        <span itemprop="title">Table of Contents</span><#t>
+      </li><#t>
+    </ul><#t>
   </#if>
 </#macro>
 
@@ -74,7 +78,7 @@
   </#list>
   <#if (path?size > 1)>
     <#list path as step>
-      "<#noescape>${step.title?js_string}</#noescape>"<#t>
+      "<#noescape>${(step.title[0]!step.info.title)?js_string}</#noescape>"<#t>
       <#if step_has_next>,</#if><#t>
     </#list>
   </#if>
@@ -114,22 +118,20 @@
     <#if tabs?size != 0>
         <ul class="tabs"><#t>
             <#list tabs?keys as tabTitle>
-                <#if tabs[tabTitle]?has_content>
+                <#if tabs[tabTitle] != ''>
                     <#-- @todo: need hook for dynamically setting external links -->
                     <li><#t>
                       <a<#if tabTitle == "Java API"> class="external"</#if> href="${tabs[tabTitle]}">${tabTitle}</a><#t>
                     </li><#t>
                 <#else>
-                    <#-- @todo: we should still specify a link for the current tab -->
                     <li class="current"><#t>
-                      <a href="index.html">${tabTitle}</a><#t>
+                      <a href="${CreateLinkFromNode(.node?root.*)}">${tabTitle}</a><#t>
                     </li><#t>
                 </#if>
             </#list>
         </ul><#t>
     </#if>
 </#macro>
-
 
 <#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->

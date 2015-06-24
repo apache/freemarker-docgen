@@ -4,8 +4,11 @@
   <#return titleToString(getOptionalTitleElement(node))>
 </#function>
 
-<#function getOptionalTitleElement node>
-  <#local result = node.title>
+<#function getOptionalTitleElement node preferTitleAbbrev=false>
+  <#if preferTitleAbbrev>
+    <#local result = node.info.titleabbrev>
+  </#if>
+  <#if !result?has_content><#local result = node.title></#if>
   <#if !result?has_content><#local result = node.info.title></#if>
   <#if !result?has_content>
      <#return ''>
@@ -13,8 +16,8 @@
   <#return result>
 </#function>
 
-<#function getRequiredTitleElement node>
-  <#local result = getOptionalTitleElement(node)>
+<#function getRequiredTitleElement node preferTitleAbbrev=false>
+  <#local result = getOptionalTitleElement(node, preferTitleAbbrev)>
   <#if !result?has_content>
     <#stop "Required \"title\" child element missing for element \""
         + node?node_name + "\".">

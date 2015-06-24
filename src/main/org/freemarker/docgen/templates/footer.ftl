@@ -1,10 +1,13 @@
+<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"} strip_text = true>
+
 <#import "ui.ftl" as ui>
+<#import "util.ftl" as u>
 
-
-<#macro footer topLevelTitle>
+<#macro footer>
   <#compress>
-    <#local footerTitleHTML = topLevelTitle?html>
-    <#local bookSubtitle = u.getOptionalSubtitleAsString(.node?root.book)>
+    <#local book = .node?root.*>
+    <#local footerTitleHTML = u.getRequiredTitleAsString(book)>
+    <#local bookSubtitle = u.getOptionalSubtitleAsString(book)>
     <#if bookSubtitle?has_content>
       <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
     </#if>
@@ -34,6 +37,9 @@
         <div class="footer-bottom"><#t>
             <p><#t>
               ${footerTitleHTML}<#t>
+              <#if book.info.productname?has_content>
+                <span class="generated-for-product">Generated for: ${book.info.productname}</span><#t>
+              </#if>
               <span class="last-updated"><@lastUpdated /></span><#t>
             </p><#t>
             <@copyright /><#t>

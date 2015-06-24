@@ -1,4 +1,4 @@
-<#ftl strip_text = true />
+<#ftl ns_prefixes={"D":"http://docbook.org/ns/docbook"} strip_text = true>
 
 <#import "navigation.ftl" as nav>
 <#import "google.ftl" as google>
@@ -20,23 +20,21 @@
       </div><#t>
     </div><#t>
   </#if>
-  <@categoryHeader /><#t>
+  <@navigationHeader /><#t>
 </#macro>
 
 
-<#macro categoryHeader>
+<#macro navigationHeader>
   <div class="header-bottom-bg"><#t>
-    <#if category?? || (searchKey?? && !offline)>
-      <div class="site-width search-row"><#t>
-        <#if category??>
-          <a href="${category.href}" class="category">${category.text}</a><#t>
-        <#else>
-          <#-- empty div to maintain layout -->
-          <div class="category"></div><#t>
-        </#if>
-        <@searchForm /><#t>
-      </div><#t>
-    </#if>
+    <div class="site-width search-row"><#t>
+      <#local book = .node?root.*>
+      <a href="${CreateLinkFromNode(book)}" class="navigationHeader"><#t>
+        <#recurse u.getRequiredTitleElement(book, true) using nodeHandlers><#t>
+      </a><#t>
+      <#-- empty div to maintain layout -->
+      <div class="navigationHeader"></div><#t>
+      <@searchForm /><#t>
+    </div><#t>
     <div class="site-width breadcrumb-row"><#t>
       <@nav.breadcrumb /><#t>
       <@nav.bookmarks /><#t>
@@ -46,7 +44,7 @@
 
 
 <#macro searchForm>
-  <#if searchKey??>
+  <#if searchKey?? && !offline>
     <form method="get" class="search-form<#if offline> offline</#if>" action="search.html"><#t>
       <fieldset><#t>
         <legend class="sr-only">Search form</legend><#t>

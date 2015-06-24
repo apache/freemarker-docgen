@@ -17,6 +17,11 @@ final class DocBook5Constants {
     public static final String E_ARTICLE = "article";
     public static final String A_CONFORMANCE = "conformance";
     public static final String AV_CONFORMANCE_DOCGEN = "docgen";
+    public static final String E_INFO = "info";
+    public static final String E_TITLE = "title";
+    public static final String E_TITLEABBREV = "titleabbrev";
+    public static final String E_SUBTITLE = "subtitle";
+    public static final String E_PRODUCTNAME = "productname";
     public static final String E_SECTION = "section";
     public static final String E_SIMPLESECT = "simplesect";
     public static final String E_PARA = "para";
@@ -43,9 +48,7 @@ final class DocBook5Constants {
     public static final String E_PREFACE = "preface";
     public static final String E_QUANDAENTRY = "qandaentry";
     public static final String E_ANCHOR = "anchor";
-    public static final String E_TITLE = "title";
-    public static final String E_SUBTITLE = "subtitle";
-    public static final String E_INFO = "info";
+    // TODO delete this
     public static final String E_SEARCH = "search";
 
     public static final String A_XML_ID = "xml:id";

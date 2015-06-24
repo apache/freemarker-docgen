@@ -98,7 +98,6 @@ import freemarker.template.utility.StringUtil;
  *             present, the search box will not show.
  *         <li><p><tt>footerSiteMap</tt> (object): Defines the list of links to
  *             display in the footer as columns
- *         <li><p><tt>category</tt> (Map): Category of site { href: "", text: "" }
  *         <li><p><tt>internalBookmarks</tt> (map): Specifies the first part
  *             of the book-mark link list that appears in the navigation bar.
  *             Associates labels with element ID-s (<tt>xml:id</tt> attribute
@@ -372,7 +371,6 @@ public final class Transform {
     static final String SETTING_DISABLE_JAVASCRIPT = "disableJavaScript";
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
-    static final String SETTING_CATEGORY = "category";
     static final String SETTING_CATEGORY_TEXT = "text";
     static final String SETTING_CATEGORY_HREF = "href";
     static final String SETTING_CONTENT_DIRECTORY = "contentDirectory";
@@ -417,7 +415,6 @@ public final class Transform {
     private static final String VAR_EXTERNAL_BOOKMARDS
             = SETTING_EXTERNAL_BOOKMARKS;
     private static final String VAR_LOGO = SETTING_LOGO;
-    private static final String VAR_CATEGORY = SETTING_CATEGORY;
     private static final String VAR_TABS = SETTING_TABS;
     private static final String VAR_SECONDARY_TABS = SETTING_SECONDARY_TABS;
     private static final String VAR_SOCIAL_LINKS = SETTING_SOCIAL_LINKS;
@@ -577,8 +574,6 @@ public final class Transform {
     private boolean showXXELogo;
 
     private String searchKey;
-
-    private HashMap<String, String> category;
 
     private Object footerSiteMap;
 
@@ -847,24 +842,6 @@ public final class Transform {
                     String s = itIsAStringSetting(
                             cfgFile, settingName, settingValue);
                     locale = StringUtil.deduceLocale(s);
-                } else if (settingName.equals(SETTING_CATEGORY)) {
-                    Map<String, Object> m = itIsAMapSetting(
-                            cfgFile, settingName, settingValue);
-                    category = new HashMap<>();
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String k = ent.getKey();
-                        String v = itIsAStringValueInAMapSetting(cfgFile, settingName, ent.getValue());
-                        if (!(k.equals(SETTING_CATEGORY_HREF) || k.equals(SETTING_CATEGORY_TEXT))) {
-                            throw newCfgFileException(cfgFile, SETTING_CATEGORY, "Unknown category option: " + k);
-                        }
-                        category.put(k, v);
-                    }
-                    if (!category.containsKey(SETTING_CATEGORY_HREF)) {
-                        throw newCfgFileException(cfgFile, SETTING_CATEGORY, "Missing category option: " + SETTING_CATEGORY_HREF);
-                    }
-                    if (!category.containsKey(SETTING_CATEGORY_TEXT)) {
-                        throw newCfgFileException(cfgFile, SETTING_CATEGORY, "Missing category option: " + SETTING_CATEGORY_TEXT);
-                    }
                 } else if (settingName.equals(SETTING_TIME_ZONE)) {
                     String s = itIsAStringSetting(
                             cfgFile, settingName, settingValue);
@@ -1076,8 +1053,6 @@ public final class Transform {
                     VAR_NUMBERED_SECTIONS, numberedSectons);
             fmConfig.setSharedVariable(
                     VAR_LOGO, logo);
-            fmConfig.setSharedVariable(
-                    VAR_CATEGORY, category);
             fmConfig.setSharedVariable(
                     VAR_TABS, tabs);
             fmConfig.setSharedVariable(
