@@ -48,7 +48,7 @@
   <#if (path?size > 1)>
     <ul class="breadcrumb"><#t>
       <#list path as step>
-        <li class="step-${step_index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
+        <li class="step-${step?index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
           <a class="label" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
             <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
           </a><#t>
@@ -79,7 +79,7 @@
   <#if (path?size > 1)>
     <#list path as step>
       "<#noescape>${(step.title[0]!step.info.title)?js_string}</#noescape>"<#t>
-      <#if step_has_next>,</#if><#t>
+      <#sep>,<#t>
     </#list>
   </#if>
   ];<#t>

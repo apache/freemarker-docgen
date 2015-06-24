@@ -54,7 +54,7 @@
        <#local otherTermID=also.@otherterm>
        <#local otherNode=NodeFromID(otherTermID)>
        <#local term=otherNode.glossterm>
-       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#if also_has_next>,</#if>
+       <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a><#sep>,</#sep>
      </#list>
     </p>
    </#if>
@@ -379,7 +379,7 @@
         <#recurse qandaentry.question>
       </a>
       <#assign disableAnchors = prevdisableAnchors>
-    <#assign qaIndex = qaIndex+1>
+    <#assign qaIndex++>
     </li>
   </#list>
   </ol>
@@ -405,7 +405,7 @@
   <dt class="question" id="${questionId!''}">
     ${qaIndex}.&nbsp; <#recurse>
   </dt>
-  <#assign qaIndex = qaIndex+1>
+  <#assign qaIndex++>
   <#assign compactPara = prevCompactPara>
 </#macro>
 
@@ -479,7 +479,7 @@
       ${key?html}<#if entryNodes?has_content>,&nbsp;&nbsp;</#if><#rt>
       <#list entryNodes as entryNode>
         <a href="${CreateLinkFromNode(entryNode)}"><#t><@index_entryText entryNode/></a><#t>
-        <#if entryNode_has_next>,</#if><#lt>
+        <#sep>,</#sep><#lt>
       </#list>
     </dt>
     <#if secondaryIndexTermLookup[key]?has_content>
@@ -491,13 +491,13 @@
         <#list secondaryTerms[secondary] as secondaryNode>
           <a href="${CreateLinkFromNode(secondaryNode)}"><#t>
             <@index_entryText secondaryNode/><#t>
-          </a><#if secondaryNode_has_next>, </#if><#t>
+          </a><#sep>, </#sep><#t>
         </#list>
         </dt><#lt>
       </#list>
       </dl></dd>
     </#if>
-    <#if !key_has_next>
+    <#if key?is_last>
       </dl></div><#lt>
     </#if>
   </#list>
@@ -570,7 +570,7 @@
       <#break>
     </#if>
     <#if cur.@docgen_rank?size != 0>
-      <#local htmlHLevel = htmlHLevel + 1>
+      <#local htmlHLevel++>
     </#if>
     <#local cur = cur?parent>
   </#list>
@@ -621,12 +621,12 @@
       <#local started = false>
       <#list labelHTMLs as labelHTML>
         <#if started || !(
-              labelHTML_has_next
-              && ctxLabelHTMLs[labelHTML_index]??
-              && labelHTML == ctxLabelHTMLs[labelHTML_index]
+              labelHTML?has_next
+              && ctxLabelHTMLs[labelHTML?index]??
+              && labelHTML == ctxLabelHTMLs[labelHTML?index]
             )
         >
-          ${labelHTML}<#if labelHTML_has_next>/</#if><#t>
+          ${labelHTML}<#sep>/</#sep><#t>
           <#local started = true>
         </#if>
       </#list>
@@ -658,7 +658,7 @@
 <#macro footnote>
   ${' '}[<a href="#autoid_footnote_${footnotes?size + 1}">${footnotes?size + 1}</a>]${' '}<#t>
   <#local capturedContent><#recurse></#local><#t>
-  <#assign footnotes = footnotes + [capturedContent]>
+  <#assign footnotes += [capturedContent]>
 </#macro>
 
 <#macro informaltable>

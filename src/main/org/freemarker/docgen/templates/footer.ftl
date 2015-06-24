@@ -9,7 +9,7 @@
     <#local footerTitleHTML = u.getRequiredTitleAsString(book)>
     <#local bookSubtitle = u.getOptionalSubtitleAsString(book)>
     <#if bookSubtitle?has_content>
-      <#local footerTitleHTML = footerTitleHTML + " – " + bookSubtitle?html>
+      <#local footerTitleHTML += " – " + bookSubtitle?html>
     </#if>
 
     <div class="site-footer"><#t>

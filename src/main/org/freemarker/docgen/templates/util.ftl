@@ -55,7 +55,7 @@
   <#local res = "">
   <#list titleNode?children as child>
     <#if child?node_type == "text">
-      <#local res = res + child>
+      <#local res += child>
     <#elseif child?node_type == "element">
       <#local name = child?node_name>
       <#if name == "literal"
@@ -63,7 +63,7 @@
           || name == "replaceable"
           || name == "emphasis"
           || name == "phrase">
-        <#local res = res + titleToString(child)>
+        <#local res += titleToString(child)>
       <#elseif name == "quote">
         <#local res = "\x201C" + titleToString(child) + "\x201D">
       <#elseif name != "subtitle">

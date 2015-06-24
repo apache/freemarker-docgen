@@ -163,7 +163,7 @@
       Footnotes:
       <ol>
         <#list footnotes as footnote>
-          <li><a name="autoid_footnote_${footnote_index + 1}"></a>${footnote}</li>
+          <li><a name="autoid_footnote_${footnote?counter}"></a>${footnote}</li>
         </#list>
       </ol>
     </div>
