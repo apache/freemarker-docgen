@@ -973,7 +973,7 @@ public final class Transform {
             throw new BugException(e);
         }
 
-        fmConfig = new Configuration(Configuration.VERSION_2_3_21);
+        fmConfig = new Configuration(Configuration.VERSION_2_3_23);
 
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
