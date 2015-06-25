@@ -1,6 +1,30 @@
 package org.freemarker.docgen;
 
-import static org.freemarker.docgen.DocBook5Constants.*;
+import static org.freemarker.docgen.DocBook5Constants.A_FILEREF;
+import static org.freemarker.docgen.DocBook5Constants.DOCUMENT_STRUCTURE_ELEMENTS;
+import static org.freemarker.docgen.DocBook5Constants.E_APPENDIX;
+import static org.freemarker.docgen.DocBook5Constants.E_ARTICLE;
+import static org.freemarker.docgen.DocBook5Constants.E_BOOK;
+import static org.freemarker.docgen.DocBook5Constants.E_CHAPTER;
+import static org.freemarker.docgen.DocBook5Constants.E_FOOTNOTE;
+import static org.freemarker.docgen.DocBook5Constants.E_GLOSSARY;
+import static org.freemarker.docgen.DocBook5Constants.E_GLOSSENTRY;
+import static org.freemarker.docgen.DocBook5Constants.E_IMAGEDATA;
+import static org.freemarker.docgen.DocBook5Constants.E_INDEX;
+import static org.freemarker.docgen.DocBook5Constants.E_INDEXTERM;
+import static org.freemarker.docgen.DocBook5Constants.E_INFO;
+import static org.freemarker.docgen.DocBook5Constants.E_INFORMALTABLE;
+import static org.freemarker.docgen.DocBook5Constants.E_PART;
+import static org.freemarker.docgen.DocBook5Constants.E_PREFACE;
+import static org.freemarker.docgen.DocBook5Constants.E_PRIMARY;
+import static org.freemarker.docgen.DocBook5Constants.E_SECONDARY;
+import static org.freemarker.docgen.DocBook5Constants.E_SECTION;
+import static org.freemarker.docgen.DocBook5Constants.E_SIMPLESECT;
+import static org.freemarker.docgen.DocBook5Constants.E_SUBTITLE;
+import static org.freemarker.docgen.DocBook5Constants.E_TABLE;
+import static org.freemarker.docgen.DocBook5Constants.E_TITLE;
+import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOPLEVEL_ELEMENTS;
+import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -933,7 +957,13 @@ public final class Transform {
 
             if (offline == null) {
                 throw new DocgenException(
-                        "The \"offline\" setting wasn't specified; it must be set to true or false");
+                        "The \"" + SETTING_OFFLINE
+                        + "\" setting wasn't specified; it must be set to true or false");
+            }
+            if (logo == null) {
+                throw new DocgenException(
+                        "The \"" + SETTING_LOGO
+                        + "\" setting wasn't specified; it must set currently, as the layout reserves space for it.");
             }
         }
 

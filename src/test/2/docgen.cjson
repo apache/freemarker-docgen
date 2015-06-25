@@ -5,6 +5,12 @@ validation: {
   maximumProgramlistingWidth: 48
 }
 
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
+}
+
 timeZone: "GMT+01"
 generateEclipseTOC
 showEditoralNotes

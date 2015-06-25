@@ -2,6 +2,12 @@ validation: {
   outputFilesCanUseAutoID 
 }
 
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
+}
+
 lowestFileElementRank: book
 
 numberedSections

@@ -11,6 +11,12 @@ internalBookmarks: {
   "Bőregér": test_target
 }
 
+logo: {
+  href: "http://example.com"
+  src: logo.png,
+  alt: "My Logo"
+}
+
 externalBookmarks: {
   "API": "api/index.html"
   "Home": "../index.html"

@@ -79,10 +79,10 @@ footerSiteMap: {
     ]
 }
 
-
-category: {
-  href: "index.html",
-  text: "Manual"
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
 }
 
 socialLinks: [

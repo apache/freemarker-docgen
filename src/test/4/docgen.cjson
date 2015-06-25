@@ -19,6 +19,12 @@ internalBookmarks: {
   "Bõregér": test_target
 }
 
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
+}
+
 maxTOFDisplayDepth: 2
 lowestPageTOCElementRank: simplesect
 numberedSections

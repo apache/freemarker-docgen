@@ -25,6 +25,12 @@ validation: {
   // programlistingsRequireLanguage
 }
 
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
+}
+
 eclipse: {
   link_to: "freemarker-toc.xml#ManualLink"
 }

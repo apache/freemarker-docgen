@@ -2,3 +2,9 @@ contentDirectory: "../6"
 
 lowestFileElementRank: chapter
 lowestPageTOCElementRank: chapter
+
+logo: {
+  href: "http://example.com"
+  src: logo.png
+  alt: "My Logo"
+}
