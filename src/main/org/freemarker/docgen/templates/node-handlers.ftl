@@ -585,11 +585,15 @@
   <#local classAtt = "">
 
   <${htmlHElem} class="content-header header-${hierarElem.@docgen_rank}" <#if !disableAnchors && hierarElem.@id[0]??>id="${hierarElem.@id[0]}"</#if><#t>
-      <#if htmlHLevel == 1> itemprop="name"</#if>><#t>
-      <#recurse><#t>
+    <#if htmlHLevel == 1> itemprop="name"</#if>><#t>
+    <#recurse><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem?hasContent>
       <span class="subtitle"><#recurse subtitleElem></span>
+    </#if>
+    <#local prodNameElem = .node?parent.productname>
+    <#if prodNameElem?hasContent>
+      <span class="subtitle productname">For <#recurse prodNameElem></span>
     </#if>
   </${htmlHElem}><#lt>
 </#macro>
