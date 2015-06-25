@@ -364,6 +364,8 @@ public final class Transform {
     static final String FILE_BOOK = "book.xml";
     static final String FILE_ARTICLE = "article.xml";
     static final String FILE_SETTINGS = "docgen.cjson";
+    /** Used for the Table of Contents file when a different node was marked to be the index.html. */
+    static final String FILE_TOC_HTML = "toc.html";
     static final String FILE_DETAILED_TOC_HTML = "detailed-toc.html";
     static final String FILE_INDEX_HTML = "index.html";
     static final String FILE_TOC_JSON_TEMPLATE = "toc-json.ftl";
@@ -526,6 +528,8 @@ public final class Transform {
      * {@link #preprocessDOM_addRanks(Document)}.
      */
     private static final String A_DOCGEN_RANK = "docgen_rank";
+    
+	private static final String AV_INDEX_ROLE = "index.html";
 
     /**
      * This is how automatically added id attribute values start.
@@ -1671,6 +1675,8 @@ public final class Transform {
     private void preprocessDOM_buildTOC(Document doc) throws DocgenException {
         preprocessDOM_buildTOC_inner(doc, 0, null);
         if (tocNodes.size() > 0) {
+            preprocessDOM_buildTOC_checkEnsureHasIndexHhml(tocNodes);
+            
             preprocessDOM_buildTOC_checkTOCTopology(tocNodes.get(0));
 
             if (!tocNodes.get(0).isFileElement()) {
@@ -1849,8 +1855,10 @@ public final class Transform {
                         elem.setAttribute(A_DOCGEN_FILE_ELEMENT, "true");
 
                         if (isTheDocumentElement) {
-                            curTOCNode.setFileName(FILE_INDEX_HTML);
+                            curTOCNode.setFileName(FILE_TOC_HTML);
                             elem.setAttribute(A_DOCGEN_ROOT_ELEMENT, "true");
+                        } else if (AV_INDEX_ROLE.equals(elem.getAttribute(DocBook5Constants.A_ROLE))) {
+                            curTOCNode.setFileName(FILE_INDEX_HTML);
                         } else {
                             String id = XMLUtil.getAttribute(elem, "id");
                             if (id == null) {
@@ -1869,7 +1877,7 @@ public final class Transform {
                                 + "\")");
                             }
                             String fileName = id + ".html";
-                            if (fileName.equals(FILE_DETAILED_TOC_HTML)
+                            if (fileName.equals(FILE_TOC_HTML) || fileName.equals(FILE_DETAILED_TOC_HTML)
                                     || fileName.equals(FILE_INDEX_HTML)) {
                                 throw new DocgenException(
                                         XMLUtil.theSomethingElement(elem, true)
@@ -1917,7 +1925,29 @@ public final class Transform {
         return curTOCNode;
     }
 
-    private boolean hasPrefaceLikeParent(Element elem) {
+    /**
+     * Ensures that 
+     * @param tocNodes
+     * @throws DocgenException
+     */
+    private void preprocessDOM_buildTOC_checkEnsureHasIndexHhml(List<TOCNode> tocNodes) throws DocgenException {
+		for (TOCNode tocNode : tocNodes) {
+			if (tocNode.isFileElement() && tocNode.getFileName().equals(FILE_INDEX_HTML)) {
+				return;
+			}
+		}
+		for (TOCNode tocNode : tocNodes) {
+			if (tocNode.isFileElement() && tocNode.getFileName().equals(FILE_TOC_HTML)) {
+				tocNode.setFileName(FILE_INDEX_HTML);
+				return;
+			}
+		}
+		throw new DocgenException(
+				"No " + FILE_INDEX_HTML + " output file would be generated. Add " + DocBook5Constants.A_ROLE + "=\""
+				+ AV_INDEX_ROLE + "\" to one of the elements for which a separate file is generated.");
+	}
+
+	private boolean hasPrefaceLikeParent(Element elem) {
         while (true) {
             Node parent = elem.getParentNode();
             if (parent != null && parent instanceof Element) {
