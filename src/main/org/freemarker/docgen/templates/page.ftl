@@ -127,7 +127,7 @@
       </#compress>
       <#-- - Render either ToF (Table of Files) or Page ToC; -->
       <#--   both are called, but at least one of them will be empty: -->
-      <#if .node.@id == "search">
+      <#if pageType == "docgen:search_results">
         <@google.searchResults />
       <#elseIf pageType == "index" || pageType == "glossary">
         <#visit .node using nodeHandlers>

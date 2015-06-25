@@ -361,19 +361,20 @@ public final class Transform {
     // -------------------------------------------------------------------------
     // Constants:
 
-    static final String FILE_BOOK = "book.xml";
+	static final String FILE_BOOK = "book.xml";
     static final String FILE_ARTICLE = "article.xml";
     static final String FILE_SETTINGS = "docgen.cjson";
     /** Used for the Table of Contents file when a different node was marked to be the index.html. */
     static final String FILE_TOC_HTML = "toc.html";
     static final String FILE_DETAILED_TOC_HTML = "detailed-toc.html";
     static final String FILE_INDEX_HTML = "index.html";
+    static final String FILE_SEARCH_RESULTS_HTML = "search-results.html";
     static final String FILE_TOC_JSON_TEMPLATE = "toc-json.ftl";
     static final String FILE_TOC_JSON_OUTPUT = "toc.js";
     static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftl";
     static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
-
+    
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_OFFLINE = "offline";
     static final String SETTING_DEPLOY_URL = "deployUrl";
@@ -471,6 +472,7 @@ public final class Transform {
     private static final String VAR_JSON_TOC_ROOT = "tocRoot";
 
     private static final String PAGE_TYPE_DETAILED_TOC = "docgen:detailed_toc";
+    private static final String PAGE_TYPE_SEARCH_RESULTS = "docgen:search_results";
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -567,6 +569,11 @@ public final class Transform {
         PREFACE_LIKE_ELEMENTS = Collections.unmodifiableSet(sinlgeFileElems);
     }
 
+	private static final String XMLNS_DOCGEN = "http://freemarker.org/docgen";
+    private static final String E_SEARCHRESULTS = "searchresults";
+	private static final String SEARCH_RESULTS_PAGE_TITLE = "Search results";
+	private static final String SEARCH_RESULTS_ELEMENT_ID = "searchresults";
+    
     // -------------------------------------------------------------------------
     // Settings:
 
@@ -1170,6 +1177,17 @@ public final class Transform {
                 } catch (TemplateException e) {
                     throw new BugException(e);
                 }
+            }
+        }
+        
+		if (!offline && searchKey != null) {
+			try {
+				generateSearchResultsHTMLFile(doc);
+	            htmlFileCounter++;
+            } catch (freemarker.core.StopException e) {
+                throw new DocgenException(e.getMessage());
+            } catch (TemplateException e) {
+                throw new BugException(e);
             }
         }
 
@@ -1878,7 +1896,7 @@ public final class Transform {
                             }
                             String fileName = id + ".html";
                             if (fileName.equals(FILE_TOC_HTML) || fileName.equals(FILE_DETAILED_TOC_HTML)
-                                    || fileName.equals(FILE_INDEX_HTML)) {
+                                    || fileName.equals(FILE_INDEX_HTML) || fileName.equals(FILE_SEARCH_RESULTS_HTML)) {
                                 throw new DocgenException(
                                         XMLUtil.theSomethingElement(elem, true)
                                         + " has an xml:id that is deduced to "
@@ -2099,10 +2117,10 @@ public final class Transform {
 
         boolean generateDetailedTOC = false;
         if (isTheDocumentElement) {
-            // Find out if an detailed ToC will be useful:
+            // Find out if a detailed ToC will be useful:
             int mainTOFEntryCount = countTOFEntries(
                     currentFileTOCNode, maxMainTOFDisplayDepth);
-            if (mainTOFEntryCount != 0  // mean, not a single-page output
+            if (mainTOFEntryCount != 0  // means, not a single-page output
                     && mainTOFEntryCount < tocNodes.size() * 0.75) {
                 generateDetailedTOC = true;
                 dataModel.put(
@@ -2131,23 +2149,43 @@ public final class Transform {
         }
     }
 
-    private int countTOFEntries(TOCNode parent,
-            int displayDepth) {
-        int sum = 0;
-        TOCNode child = parent.getFirstChild();
-        while (child != null) {
-            if (child.isFileElement()) {
-                sum++;
-                if (displayDepth > 1) {
-                    sum += countTOFEntries(child, displayDepth - 1);
-                }
-            }
-            child = child.getNext();
-        }
-        return sum;
-    }
+    private void generateSearchResultsHTMLFile(Document doc) throws TemplateException, IOException, DocgenException {
+        SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+        
+        dataModel.put(VAR_PAGE_TYPE, PAGE_TYPE_SEARCH_RESULTS);
+        dataModel.put(VAR_TOC_DISPLAY_DEPTH, maxMainTOFDisplayDepth);
 
-    private void generateHTMLFile_inner(SimpleHash dataModel, String fileName)
+        // Create docgen:searchresults element that's no really in the XML file:
+        Element searchresultsElem = doc.createElementNS(XMLNS_DOCGEN, E_SEARCHRESULTS);
+        {
+        	// Docgen templates may expect page-elements to have an id:
+            if (elementsById.containsKey(SEARCH_RESULTS_ELEMENT_ID)) {
+            	throw new DocgenException("Reserved element id \"" + SEARCH_RESULTS_ELEMENT_ID + "\" was already taken");
+            }
+            searchresultsElem.setAttribute("id", SEARCH_RESULTS_ELEMENT_ID);
+
+            searchresultsElem.setAttribute(A_DOCGEN_RANK, E_SECTION);
+            
+        	// Docgen templates may expect page-elements to have a title:
+	        Element titleElem = doc.createElementNS(XMLNS_DOCBOOK5, E_TITLE);
+	        titleElem.setTextContent(SEARCH_RESULTS_PAGE_TITLE);
+	        searchresultsElem.appendChild(titleElem);
+        }
+        
+        // We must add it to the document so that .node?root and such will work.
+        doc.getDocumentElement().appendChild(searchresultsElem);
+        try {
+	        TOCNode searchresultsTOCNode = new TOCNode(searchresultsElem, 0);
+	        searchresultsTOCNode.setFileName(FILE_SEARCH_RESULTS_HTML);
+	        currentFileTOCNode = searchresultsTOCNode;
+	
+	        generateHTMLFile_inner(dataModel, currentFileTOCNode.getFileName());
+        } finally {
+        	doc.getDocumentElement().removeChild(searchresultsElem);
+        }
+	}
+
+	private void generateHTMLFile_inner(SimpleHash dataModel, String fileName)
             throws TemplateException, IOException {
         Template template = fmConfig.getTemplate("page.ftl");
         File outputFile = new File(destDir, fileName);
@@ -2164,7 +2202,23 @@ public final class Transform {
         }
     }
 
-    /**
+    private int countTOFEntries(TOCNode parent,
+	        int displayDepth) {
+	    int sum = 0;
+	    TOCNode child = parent.getFirstChild();
+	    while (child != null) {
+	        if (child.isFileElement()) {
+	            sum++;
+	            if (displayDepth > 1) {
+	                sum += countTOFEntries(child, displayDepth - 1);
+	            }
+	        }
+	        child = child.getNext();
+	    }
+	    return sum;
+	}
+
+	/**
      * Checks if a document-structure-element starts with top-level content.
      * Top-level contain is visible content that is outside the nested
      * document-structure-element-s that have enough rank to get into the

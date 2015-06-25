@@ -48,8 +48,6 @@ final class DocBook5Constants {
     public static final String E_PREFACE = "preface";
     public static final String E_QUANDAENTRY = "qandaentry";
     public static final String E_ANCHOR = "anchor";
-    // TODO delete this
-    public static final String E_SEARCH = "search";
 
     public static final String A_XML_ID = "xml:id";
     public static final String A_XREFLABEL = "xreflabel";
@@ -95,7 +93,6 @@ final class DocBook5Constants {
         docStructElems.add(E_PREFACE);
         docStructElems.add(E_SECTION);
         docStructElems.add(E_SIMPLESECT);
-        docStructElems.add(E_SEARCH);
 
         DOCUMENT_STRUCTURE_ELEMENTS = Collections.unmodifiableSet(
                 docStructElems);

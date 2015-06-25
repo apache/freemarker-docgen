@@ -45,7 +45,7 @@
 
 <#macro searchForm>
   <#if searchKey?? && !offline>
-    <form method="get" class="search-form<#if offline> offline</#if>" action="search.html"><#t>
+    <form method="get" class="search-form<#if offline> offline</#if>" action="search-results.html"><#t>
       <fieldset><#t>
         <legend class="sr-only">Search form</legend><#t>
         <label for="search-field" class="sr-only">Search query</label><#t>
