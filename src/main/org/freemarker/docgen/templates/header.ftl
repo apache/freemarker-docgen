@@ -20,7 +20,9 @@
       </div><#t>
     </div><#t>
   </#if>
-  <@navigationHeader /><#t>
+  <#if !simpleNavigationMode>
+    <@navigationHeader /><#t>
+  </#if>
 </#macro>
 
 

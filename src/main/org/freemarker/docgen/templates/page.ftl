@@ -119,7 +119,9 @@
     <div class="page-content"><#t>
       <#compress>
         <div class="page-title"><#t>
-          <@nav.pagers class="top" /><#t>
+          <#if !simpleNavigationMode>
+            <@nav.pagers class="top" /><#t>
+          </#if>
           <div class="title-wrapper"><#t>
             <#visit titleElement using nodeHandlers><#t>
           </div><#t>
@@ -147,9 +149,11 @@
         </#list>
       </#if>
       <@footnotes />
-      <div class="bottom-pagers-wrapper"><#t>
-        <@nav.pagers class="bottom" /><#t>
-      </div><#t>
+      <#if !simpleNavigationMode>
+        <div class="bottom-pagers-wrapper"><#t>
+          <@nav.pagers class="bottom" /><#t>
+        </div><#t>
+      </#if>
     </div><#t>
   </div><#t>
 </#macro>

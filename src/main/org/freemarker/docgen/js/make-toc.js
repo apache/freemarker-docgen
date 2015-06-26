@@ -4,11 +4,14 @@
 
 
 
-  function menuLink(nodeData) {
-    var a = document.createElement('a');
+  function menuItemInnerHTML(nodeData) {
+    var isLink = nodeData.url != null; 
+    var a = document.createElement(isLink ? 'a' : 'span');
 
     a.innerHTML = nodeData.title;
-    a.href = nodeData.url;
+    if (isLink) {
+      a.href = nodeData.url;
+    }
     a.className = 'depth-' + LEVEL + '-link';
 
     return a;
@@ -82,7 +85,7 @@
       li.addEventListener('keydown', keyboardNavigation);
 
       // add menu link
-      li.appendChild(menuLink(node));
+      li.appendChild(menuItemInnerHTML(node));
 
       if (node.title === breadcrumb[depth + 1] && onPath) {
 

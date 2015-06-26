@@ -377,6 +377,7 @@ public final class Transform {
     
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_OFFLINE = "offline";
+    static final String SETTING_SIMPLE_NAVIGATION_MODE = "simpleNavigationMode";
     static final String SETTING_DEPLOY_URL = "deployUrl";
     static final String SETTING_ONLINE_TRACKER_HTML = "onlineTrackerHTML";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
@@ -422,6 +423,8 @@ public final class Transform {
 
     private static final String VAR_OFFLINE
             = SETTING_OFFLINE;
+    private static final String VAR_SIMPLE_NAVIGATION_MODE
+    		= SETTING_SIMPLE_NAVIGATION_MODE;
     private static final String VAR_DEPLOY_URL
             = SETTING_DEPLOY_URL;
     private static final String VAR_ONLINE_TRACKER_HTML
@@ -600,10 +603,12 @@ public final class Transform {
 
     private int maxMainTOFDisplayDepth;  // 0 indicates "not set";
 
-    private boolean numberedSectons;
+    private boolean numberedSections;
 
     private boolean generateEclipseTOC;
 
+    private boolean simpleNavigationMode;
+    
     private boolean showEditoralNotes;
 
     private boolean showXXELogo;
@@ -845,6 +850,8 @@ public final class Transform {
                     if (offline == null) {  // Ignore if the caller has already set this
                         offline = itIsABooleanSetting(cfgFile, settingName, settingValue);
                     }
+                } else if (settingName.equals(SETTING_SIMPLE_NAVIGATION_MODE)) {
+                	simpleNavigationMode = itIsABooleanSetting(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_DEPLOY_URL)) {
                     deployUrl = itIsAStringSetting(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
@@ -954,7 +961,7 @@ public final class Transform {
                                 "Value must be at least 1.");
                     }
                 } else if (settingName.equals(SETTING_NUMBERED_SECTIONS)) {
-                    numberedSectons = itIsABooleanSetting(
+                    numberedSections = itIsABooleanSetting(
                             cfgFile, settingName, settingValue);
                 } else {
                     throw newCfgFileException(cfgFile, "Unknown setting: \""
@@ -1077,6 +1084,8 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     VAR_OFFLINE, offline);
             fmConfig.setSharedVariable(
+                    VAR_SIMPLE_NAVIGATION_MODE, simpleNavigationMode);
+            fmConfig.setSharedVariable(
                     VAR_DEPLOY_URL, deployUrl);
             fmConfig.setSharedVariable(
                     VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
@@ -1091,7 +1100,7 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     VAR_OLINKS, olinks);
             fmConfig.setSharedVariable(
-                    VAR_NUMBERED_SECTIONS, numberedSectons);
+                    VAR_NUMBERED_SECTIONS, numberedSections);
             fmConfig.setSharedVariable(
                     VAR_LOGO, logo);
             fmConfig.setSharedVariable(
@@ -1510,7 +1519,7 @@ public final class Transform {
                     prefix = null;
                 } else if (hasPrefaceLikeParent(elem)) {
                     prefix = null;
-                } else if (numberedSectons
+                } else if (numberedSections
                         && elemName.equals(E_SECTION)) {
                     prefix = String.valueOf(
                             parentSectState.arabicNumber++);
@@ -1702,6 +1711,11 @@ public final class Transform {
                         "The root ToC node must be a file-element.");
             }
             preprocessDOM_buildTOC_checkFileTopology(tocNodes.get(0));
+            
+            // Must be done last, when the other TOC attributes are already set on the elements.
+            for (TOCNode tocNode : tocNodes) {
+                tocNode.setShowsToCOnly(!hasTopLevelContent(tocNode.getElement()));
+            }
         }
     }
 
@@ -2113,7 +2127,7 @@ public final class Transform {
                         ? maxTOFDisplayDepth : maxMainTOFDisplayDepth);
         dataModel.put(
                 VAR_STARTS_WITH_TOP_LEVEL_CONTENT,
-                startsWithTopLevelContent(currentFileTOCNode.getElement()));
+                hasTopLevelContent(currentFileTOCNode.getElement()));
 
         boolean generateDetailedTOC = false;
         if (isTheDocumentElement) {
@@ -2219,12 +2233,12 @@ public final class Transform {
 	}
 
 	/**
-     * Checks if a document-structure-element starts with top-level content.
-     * Top-level contain is visible content that is outside the nested
+     * Checks if a document-structure-element has top-level content.
+     * Top-level content is visible content that is outside the nested
      * document-structure-element-s that have enough rank to get into the
      * Page Contents table.
      */
-    private boolean startsWithTopLevelContent(Element element) {
+    private boolean hasTopLevelContent(Element element) {
         for (Element elem : XMLUtil.childrenElementsOf(element)) {
             if (elem.getNamespaceURI().equals(XMLNS_DOCBOOK5)) {
                 if (elem.hasAttribute(A_DOCGEN_FILE_ELEMENT)
@@ -2412,7 +2426,15 @@ public final class Transform {
         this.offline = offline;
     }
 
-    public boolean getShowEditoralNotes() {
+    public boolean getSimpleNavigationMode() {
+		return simpleNavigationMode;
+	}
+
+	public void setSimpleNavigationMode(boolean simpleNavigationMode) {
+		this.simpleNavigationMode = simpleNavigationMode;
+	}
+
+	public boolean getShowEditoralNotes() {
         return showEditoralNotes;
     }
 
@@ -2480,6 +2502,7 @@ public final class Transform {
         private TOCNode firstChild;
         private TOCNode lastChild;
         private String fileName;
+        private boolean showsToCOnly;
 
         public TOCNode(Element element, int traversalIndex) {
             this.element = element;
@@ -2542,7 +2565,15 @@ public final class Transform {
             return fileName != null;
         }
 
-        public String theSomethingElement() {
+		public boolean getShowsToCOnly() {
+			return showsToCOnly;
+		}
+
+		public void setShowsToCOnly(boolean showsToCOnly) {
+			this.showsToCOnly = showsToCOnly;
+		}
+
+		public String theSomethingElement() {
             return XMLUtil.theSomethingElement(element);
         }
 
