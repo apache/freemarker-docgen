@@ -95,7 +95,7 @@
 
 <#macro page>
   <!doctype html><#lt>
-  <html lang="en"><#lt>
+  <html lang="en" class="page-type-${getPageType()?replace(':', '-')?replace('_', '-')}"><#lt>
     <#nested>
   </html><#lt>
 </#macro>
@@ -114,7 +114,7 @@
 </#macro>
 
 <#macro pageContent>
-  <#local pageType = pageType!.node?nodeName>
+  <#local pageType = getPageType()>
   <div class="col-right"><#t>
     <div class="page-content"><#t>
       <#compress>
@@ -203,3 +203,7 @@
     </ul><#t>
   </#compress>
 </#macro>
+
+<#function getPageType>
+  <#return pageType!.node?nodeName>
+</#function>

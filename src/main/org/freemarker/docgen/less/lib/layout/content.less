@@ -68,6 +68,13 @@
     @border-spacing: 12px;
     padding-bottom: @border-spacing;
     margin-bottom: @border-spacing;
+    
+    /* The Google results already adds some borders and is mostly empty at the top */
+    .page-type-docgen-search-results & {
+      border: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
 
     @media (min-width: @screen-sm-min) {
       display: flex;
