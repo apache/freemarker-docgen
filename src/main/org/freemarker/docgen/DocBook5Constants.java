@@ -12,6 +12,7 @@ final class DocBook5Constants {
     }
 
     public static final String XMLNS_DOCBOOK5 = "http://docbook.org/ns/docbook";
+    public static final String XMLNS_XLINK = "http://www.w3.org/1999/xlink";
 
     public static final String E_BOOK = "book";
     public static final String E_ARTICLE = "article";
@@ -71,7 +72,9 @@ final class DocBook5Constants {
     public static final String E_TH = "th";
 
     public static final String E_OLINK = "olink";
+    public static final String A_XLINK_HREF = "href";
     public static final String E_LINK = "link";
+    public static final String A_TARGETDOC = "targetdoc";
 
     public static final String E_NOTE = "note";
     public static final String E_WARNING = "warning";

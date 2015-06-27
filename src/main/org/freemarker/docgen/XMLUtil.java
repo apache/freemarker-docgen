@@ -175,6 +175,11 @@ final class XMLUtil {
         return res.length() == 0 && !elem.hasAttribute(att) ? null : res;
     }
 
+    public static String getAttributeNS(Element elem, String namespace, String att) {
+        String res = elem.getAttributeNS(namespace, att);
+        return res.length() == 0 && !elem.hasAttributeNS(namespace, att) ? null : res;
+    }
+    
     public static Iterable<Element> childrenElementsOf(final Node parent) {
         return new Iterable<Element>() {
             

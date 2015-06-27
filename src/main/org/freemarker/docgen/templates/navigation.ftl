@@ -78,7 +78,7 @@
   </#list>
   <#if (path?size > 1)>
     <#list path as step>
-      "<#noEscape>${(step.title[0]!step.info.title)?jsString}</#noEscape>"<#t>
+      "<#noEscape>${u.titleToString(step.title[0]!step.info.title)?jsString}</#noEscape>"<#t>
       <#sep>,<#t>
     </#list>
   </#if>
@@ -125,7 +125,7 @@
                     </li><#t>
                 <#else>
                     <li class="current"><#t>
-                      <a href="${CreateLinkFromNode(.node?root.*)}">${tabTitle}</a><#t>
+                      <a href="index.html">${tabTitle}</a><#t>
                     </li><#t>
                 </#if>
             </#list>

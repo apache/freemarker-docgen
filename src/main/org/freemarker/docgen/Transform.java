@@ -1,6 +1,8 @@
 package org.freemarker.docgen;
 
 import static org.freemarker.docgen.DocBook5Constants.A_FILEREF;
+import static org.freemarker.docgen.DocBook5Constants.A_TARGETDOC;
+import static org.freemarker.docgen.DocBook5Constants.A_XLINK_HREF;
 import static org.freemarker.docgen.DocBook5Constants.DOCUMENT_STRUCTURE_ELEMENTS;
 import static org.freemarker.docgen.DocBook5Constants.E_APPENDIX;
 import static org.freemarker.docgen.DocBook5Constants.E_ARTICLE;
@@ -14,6 +16,8 @@ import static org.freemarker.docgen.DocBook5Constants.E_INDEX;
 import static org.freemarker.docgen.DocBook5Constants.E_INDEXTERM;
 import static org.freemarker.docgen.DocBook5Constants.E_INFO;
 import static org.freemarker.docgen.DocBook5Constants.E_INFORMALTABLE;
+import static org.freemarker.docgen.DocBook5Constants.E_LINK;
+import static org.freemarker.docgen.DocBook5Constants.E_OLINK;
 import static org.freemarker.docgen.DocBook5Constants.E_PART;
 import static org.freemarker.docgen.DocBook5Constants.E_PREFACE;
 import static org.freemarker.docgen.DocBook5Constants.E_PRIMARY;
@@ -25,6 +29,7 @@ import static org.freemarker.docgen.DocBook5Constants.E_TABLE;
 import static org.freemarker.docgen.DocBook5Constants.E_TITLE;
 import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOPLEVEL_ELEMENTS;
 import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
+import static org.freemarker.docgen.DocBook5Constants.XMLNS_XLINK;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +44,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -533,6 +539,9 @@ public final class Transform {
      * {@link #preprocessDOM_addRanks(Document)}.
      */
     private static final String A_DOCGEN_RANK = "docgen_rank";
+
+    /** An element for which it's not possible to create a link. */
+    private static final String A_DOCGEN_NOT_ADDRESSABLE = "docgen_not_addressable";
     
 	private static final String AV_INDEX_ROLE = "index.html";
 
@@ -1172,7 +1181,7 @@ public final class Transform {
         logger.info("Generating HTML files...");
         int htmlFileCounter = 0;
         for (TOCNode tocNode : tocNodes) {
-            if (tocNode.isFileElement() && !(simpleNavigationMode && tocNode.getShowsToCOnly())) {
+            if (tocNode.getOutputFileName() != null) {
                 try {
                     currentFileTOCNode = tocNode;
                     try {
@@ -1715,9 +1724,16 @@ public final class Transform {
             }
             preprocessDOM_buildTOC_checkFileTopology(tocNodes.get(0));
             
-            // Must be done last, when the other TOC attributes are already set on the elements.
-            for (TOCNode tocNode : tocNodes) {
-                tocNode.setShowsToCOnly(!hasTopLevelContent(tocNode.getElement()));
+            if (simpleNavigationMode) {
+                // Must do it at the end: We need the docgen_... XML attributes here, and we must be past the 
+                // TOC topology checks.
+                for (TOCNode tocNode : tocNodes) {
+                    if (tocNode.isFileElement()
+                            && (tocNode.getParent() == null || !hasTopLevelContent(tocNode.getElement()))) {
+                        tocNode.setOutputFileName(null);
+                        tocNode.getElement().setAttribute(A_DOCGEN_NOT_ADDRESSABLE, "true");
+                    }
+                }
             }
         }
     }
@@ -1888,12 +1904,15 @@ public final class Transform {
                             || rank.compareTo(lowestFileElemenRank) >= 0)
                             && !hasPrefaceLikeParent(elem)) {
                         elem.setAttribute(A_DOCGEN_FILE_ELEMENT, "true");
+                        curTOCNode.setFileElement(true);
 
                         if (isTheDocumentElement) {
-                            curTOCNode.setFileName(FILE_TOC_HTML);
+                            curTOCNode.setOutputFileName(FILE_TOC_HTML);
                             elem.setAttribute(A_DOCGEN_ROOT_ELEMENT, "true");
+                        } else if (getExternalLinkTOCNodeURLOrNull(elem) != null) {
+                            curTOCNode.setOutputFileName(null);
                         } else if (AV_INDEX_ROLE.equals(elem.getAttribute(DocBook5Constants.A_ROLE))) {
-                            curTOCNode.setFileName(FILE_INDEX_HTML);
+                            curTOCNode.setOutputFileName(FILE_INDEX_HTML);
                         } else {
                             String id = XMLUtil.getAttribute(elem, "id");
                             if (id == null) {
@@ -1921,7 +1940,7 @@ public final class Transform {
                                         + fileName + "\". (Hint: Change the "
                                         + "xml:id.)");
                             }
-                            curTOCNode.setFileName(fileName);
+                            curTOCNode.setOutputFileName(fileName);
                         }
                     } else { // of: if file element
                         elem.setAttribute(A_DOCGEN_PAGE_TOC_ELEMENT, "true");
@@ -1960,20 +1979,65 @@ public final class Transform {
         return curTOCNode;
     }
 
-    /**
+    private String getExternalLinkTOCNodeURLOrNull(Element elem) throws DocgenException {
+        if (elem.getParentNode() instanceof Document) {
+            // The document element is never an external link ToC node.
+            return null;
+        }
+        
+		Element title = getTitle(elem);
+		if (title == null) {
+		    // An element without title can't be an external link ToC node
+		    return null;
+		}
+		
+		Iterator<Element> it = XMLUtil.childrenElementsOf(title).iterator();
+		if (it.hasNext()) {
+		    Element firstChild = it.next();
+		    if (!it.hasNext()) { // It's the only child
+		        String firstChildName = firstChild.getLocalName();
+                if (firstChildName.equals(E_LINK)) {
+                    String href = XMLUtil.getAttributeNS(firstChild, XMLNS_XLINK, A_XLINK_HREF);
+                    if (href == null) {
+                        throw new DocgenException(XMLUtil.theSomethingElement(firstChild, true)
+                                + " inside a title has no xlink:" + A_XLINK_HREF + " attribute, thus it can't be "
+                                + "used as ToC link.");
+                    }
+                    return href;
+                } else if (firstChildName.equals(E_OLINK)) {
+                    String targetdoc = XMLUtil.getAttributeNS(firstChild, null, A_TARGETDOC);
+                    if (targetdoc == null) {
+                        throw new DocgenException(XMLUtil.theSomethingElement(firstChild, true)
+                                + " has no xlink:" + A_TARGETDOC + " attribute");
+                    }
+                    String url = olinks.get(targetdoc);
+                    if (url == null) {
+                        throw new DocgenException(XMLUtil.theSomethingElement(firstChild, true)
+                                + " refers to undefined olink name " + StringUtil.jQuote(targetdoc)
+                                + "; check configuration.");
+                    }
+                    return url;
+                }
+		    }
+		}
+		return null;
+	}
+
+	/**
      * Ensures that 
      * @param tocNodes
      * @throws DocgenException
      */
     private void preprocessDOM_buildTOC_checkEnsureHasIndexHhml(List<TOCNode> tocNodes) throws DocgenException {
 		for (TOCNode tocNode : tocNodes) {
-			if (tocNode.isFileElement() && tocNode.getFileName().equals(FILE_INDEX_HTML)) {
+			if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_INDEX_HTML)) {
 				return;
 			}
 		}
+		// If we had no index.html, the ToC HTML will be renamed to it:
 		for (TOCNode tocNode : tocNodes) {
-			if (tocNode.isFileElement() && tocNode.getFileName().equals(FILE_TOC_HTML)) {
-				tocNode.setFileName(FILE_INDEX_HTML);
+			if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_TOC_HTML)) {
+				tocNode.setOutputFileName(FILE_INDEX_HTML);
 				return;
 			}
 		}
@@ -2149,13 +2213,13 @@ public final class Transform {
             }
         }
 
-        generateHTMLFile_inner(dataModel, currentFileTOCNode.getFileName());
+        generateHTMLFile_inner(dataModel, currentFileTOCNode.getOutputFileName());
 
         if (generateDetailedTOC) {
             dataModel.put(VAR_PAGE_TYPE, PAGE_TYPE_DETAILED_TOC);
             dataModel.put(
                     VAR_ALTERNATIVE_TOC_LINK,
-                    currentFileTOCNode.getFileName());
+                    currentFileTOCNode.getOutputFileName());
             dataModel.put(
                     VAR_ALTERNATIVE_TOC_LABEL,
                     "show simplified");
@@ -2193,10 +2257,11 @@ public final class Transform {
         doc.getDocumentElement().appendChild(searchresultsElem);
         try {
 	        TOCNode searchresultsTOCNode = new TOCNode(searchresultsElem, 0);
-	        searchresultsTOCNode.setFileName(FILE_SEARCH_RESULTS_HTML);
+	        searchresultsTOCNode.setFileElement(true);
+	        searchresultsTOCNode.setOutputFileName(FILE_SEARCH_RESULTS_HTML);
 	        currentFileTOCNode = searchresultsTOCNode;
 	
-	        generateHTMLFile_inner(dataModel, currentFileTOCNode.getFileName());
+	        generateHTMLFile_inner(dataModel, currentFileTOCNode.getOutputFileName());
         } finally {
         	doc.getDocumentElement().removeChild(searchresultsElem);
         }
@@ -2264,6 +2329,15 @@ public final class Transform {
 
     private String createElementLinkURL(final Element elem)
             throws DocgenException {
+        if (elem.hasAttribute(A_DOCGEN_NOT_ADDRESSABLE)) {
+            return null;
+        }
+        
+        String extLink = getExternalLinkTOCNodeURLOrNull(elem);
+        if (extLink != null) {
+            return extLink;
+        }
+        
         // Find the closest id:
         String id = null;
         Node node = elem;
@@ -2291,13 +2365,13 @@ public final class Transform {
             if (fileTOCNode == null) {
                 curElem = (Element) curElem.getParentNode();
             } else {
-                fileName = fileTOCNode.getFileName();
+                fileName = fileTOCNode.getOutputFileName();
             }
         } while (fileName == null);
 
         String link;
         if (currentFileTOCNode != null
-                && fileName.equals(currentFileTOCNode.getFileName())) {
+                && fileName.equals(currentFileTOCNode.getOutputFileName())) {
             link = "";
         } else {
             link = fileName;
@@ -2345,7 +2419,8 @@ public final class Transform {
             }
 
             try {
-                return new SimpleScalar(createElementLinkURL(elem));
+                String url = createElementLinkURL(elem);
+                return url != null ? new SimpleScalar(url) : null;
             } catch (DocgenException e) {
                 throw new TemplateModelException(
                         "CreateLinkFromID failed to create link.", e);
@@ -2381,7 +2456,8 @@ public final class Transform {
             }
 
             try {
-                return new SimpleScalar(createElementLinkURL((Element) node));
+                String url = createElementLinkURL((Element) node);
+                return url != null ? new SimpleScalar(url) : null;
             } catch (DocgenException e) {
                 throw new TemplateModelException(
                         "CreateLinkFromNode falied to create link.", e);
@@ -2504,8 +2580,8 @@ public final class Transform {
         private TOCNode previous;
         private TOCNode firstChild;
         private TOCNode lastChild;
-        private String fileName;
-        private boolean showsToCOnly;
+        private boolean fileElement;
+        private String outputFileName;
 
         public TOCNode(Element element, int traversalIndex) {
             this.element = element;
@@ -2552,29 +2628,33 @@ public final class Transform {
             return parent;
         }
 
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
+        public void setOutputFileName(String outputFileName) {
+            if (!fileElement) {
+                throw new BugException("Can't set outputFileName before setting fileElement to true");
+            }
+            this.outputFileName = outputFileName;
         }
 
-        public String getFileName() {
-            return fileName;
+        /**
+         * {@code null} if no file will be generated for this node, despite its "rank". This is the case for nodes that
+         * are external links, or when {@link Transform#simpleNavigationMode} is {@code true} and the file would only
+         * contain a ToC.
+         */
+        public String getOutputFileName() {
+            return outputFileName;
         }
 
         public Element getElement() {
             return element;
         }
 
-        public boolean isFileElement() {
-            return fileName != null;
+        public void setFileElement(boolean fileElement) {
+            this.fileElement = fileElement;
         }
-
-		public boolean getShowsToCOnly() {
-			return showsToCOnly;
-		}
-
-		public void setShowsToCOnly(boolean showsToCOnly) {
-			this.showsToCOnly = showsToCOnly;
-		}
+        
+        public boolean isFileElement() {
+            return fileElement;
+        }
 
 		public String theSomethingElement() {
             return XMLUtil.theSomethingElement(element);
@@ -2589,7 +2669,7 @@ public final class Transform {
             return traversalIndex > 0
                     ? tocNodes.get(traversalIndex - 1) : null;
         }
-
+        
     }
 
     enum DocumentStructureRank {

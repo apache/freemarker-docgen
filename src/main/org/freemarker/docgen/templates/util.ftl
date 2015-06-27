@@ -58,11 +58,8 @@
       <#local res += child>
     <#elseIf child?nodeType == "element">
       <#local name = child?nodeName>
-      <#if name == "literal"
-          || name == "classname" || name == "methodname" || name == "package"
-          || name == "replaceable"
-          || name == "emphasis"
-          || name == "phrase">
+      <#if ["literal", "classname", "methodname", "package", "replaceable", "emphasis", "phrase",
+            "olink", "link"]?seqContains(name)>
         <#local res += titleToString(child)>
       <#elseIf name == "quote">
         <#local res = "\x201C" + titleToString(child) + "\x201D">
