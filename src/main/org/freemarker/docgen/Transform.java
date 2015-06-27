@@ -981,7 +981,7 @@ public final class Transform {
             if (logo == null) {
                 throw new DocgenException(
                         "The \"" + SETTING_LOGO
-                        + "\" setting wasn't specified; it must set currently, as the layout reserves space for it.");
+                        + "\" setting wasn't specified; it must be set currently, as the layout reserves space for it.");
             }
         }
 
@@ -1172,7 +1172,7 @@ public final class Transform {
         logger.info("Generating HTML files...");
         int htmlFileCounter = 0;
         for (TOCNode tocNode : tocNodes) {
-            if (tocNode.isFileElement()) {
+            if (tocNode.isFileElement() && !(simpleNavigationMode && tocNode.getShowsToCOnly())) {
                 try {
                     currentFileTOCNode = tocNode;
                     try {
@@ -1225,11 +1225,14 @@ public final class Transform {
 
         // - Copy the custom statics:
         logger.info("Copying custom static files...");
-        int bookSpecStaticFileCounter = FileUtil.copyDir(
-                contentDir, destDir, true);
+        int bookSpecStaticFileCounter = FileUtil.copyDir(contentDir, destDir, true);
 
         // - Eclipse ToC:
         if (generateEclipseTOC) {
+        	if (simpleNavigationMode) {
+        		throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
+        	}
+        	
             logger.info("Generating Eclipse ToC...");
             Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
             try (Writer wr = new BufferedWriter(
