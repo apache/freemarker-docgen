@@ -36,11 +36,10 @@
         </#if>
         <div class="footer-bottom"><#t>
             <p><#t>
-              ${footerTitleHTML}<#t>
               <#if book.info.productname?hasContent>
                 <span class="generated-for-product">Generated for: ${book.info.productname}</span><#t>
               </#if>
-              <span class="last-updated"><@lastUpdated /></span><#t>
+              <span class="last-updated"><@lastGenerated /></span><#t>
             </p><#t>
             <@copyright /><#t>
         </div><#t>
@@ -50,8 +49,8 @@
 </#macro>
 
 
-<#macro lastUpdated>
-  Last updated:
+<#macro lastGenerated>
+  Last generated:
   <time itemprop="dateModified" datetime="${transformStartTime?datetime?isoUtc}" title="${transformStartTime?datetime?string.full}"><#t>
     ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
   </time><#t>
