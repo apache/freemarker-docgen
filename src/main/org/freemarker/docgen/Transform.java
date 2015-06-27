@@ -1013,7 +1013,7 @@ public final class Transform {
         tocNodes = new ArrayList<TOCNode>();
         indexEntries = new ArrayList<String>();
 
-        // Setup FreeMarker:
+        // Setup Freemarker:
 
         try {
             Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
