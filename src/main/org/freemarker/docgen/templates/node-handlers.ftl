@@ -7,7 +7,11 @@
 
 
 <#-- State variables: -->
-<#assign inHtmlP = false, compactPara = false, disableAnchors = false, inlineMonospacedColorisation=false>
+<#assign
+    inHtmlP = false, compactPara = false,
+    disableAnchors = false, postponedAnchor = [],
+    inlineMonospacedColorisation=false
+>
 <#assign footnotes = []>
 
 <#macro @text>${.node?html}</#macro>
@@ -18,9 +22,17 @@
       + .node?nodeName>
 </#macro>
 
+<#-- Attention: Must not produce any white-space! -->
 <#macro Anchor node=.node>
-  <#if !disableAnchors && node.@id[0]??>
-    <a name="${node.@id}"></a><#t>
+  <#if !disableAnchors>
+    <#if postponedAnchor?hasContent>
+      <#local pa = postponedAnchor>
+      <#assign postponedAnchor=[]>
+      <@Anchor pa /><#t>
+    </#if>
+    <#if node.@id[0]??>
+      <a name="${node.@id}"></a><#t>
+    </#if>
   </#if>
 </#macro>
 
@@ -131,9 +143,15 @@
 <#macro listitem>
    <#local mark=.node?parent.@mark[0]!>
    <#if mark != "">
-       <li style="list-style-type: ${mark?html}"><@Anchor/><#t>
+       <li style="list-style-type: ${mark?html}"><#t>
    <#else>
-       <li><@Anchor/><#t>
+       <li><#t>
+   </#if>
+   <#if .node.para?hasContent>
+      <#-- Because with <li><a ...></a><p>...</p></li> we had a visual empty line before the p. -->
+      <#assign postponedAnchor = .node>
+   <#else>
+      <@Anchor/>
    </#if>
    <#recurse>
    </li><#t>
@@ -233,7 +251,7 @@
     <#if cssClass?hasContent>
       <span<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
     </#if>
-    <@Anchor/><#t>
+    <@Anchor /><#t>
     <#recurse>
     <#if cssClass?hasContent>
       </span><#t>
@@ -241,12 +259,12 @@
   <#else>
     <#assign inHtmlP = true>
     <p<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
-    <#local content><@Anchor/><#recurse></#local><#t>
+    <#local content><@Anchor /><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
     <#if !content?matches(r".*<p>\s*$", "s")>
         ${content}</p><#t>
     <#else>
-        ${content?substring(0, content?lastIndexOf("<p>"))}<#t>
+        ${content[0 ..< content?lastIndexOf("<p>")]}<#t>
     </#if>
     <#assign inHtmlP = false>
   </#if>
@@ -326,7 +344,6 @@
 </#macro>
 
 <#macro programlisting>
-  <@Anchor/>
   <#local role=.node.@role[0]!?string>
   <#local dotidx=role?indexOf(".")>
   <#if dotidx != -1>
@@ -357,7 +374,7 @@
 
   <@CantBeNestedIntoP>
     <div class="code-wrapper"><#t>
-    <pre class="code-block ${codeType}"><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+    <pre class="code-block ${codeType}"><@Anchor/><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
       ${content?chopLinebreak}</pre></div><#t>
   </@CantBeNestedIntoP>
