@@ -1735,6 +1735,18 @@ public final class Transform {
                     }
                 }
             }
+            
+            if (!validationOps.getOutputFilesCanUseAutoID()) {
+                for (TOCNode tocNode : tocNodes) {
+                    String outputFileName = tocNode.getOutputFileName();
+                    if (outputFileName != null && outputFileName.startsWith(AUTO_ID_PREFIX)) {
+                        throw new DocgenException(XMLUtil.theSomethingElement(tocNode.getElement(), true)
+                                + " has automatically generated ID that is not allowed as the ID "
+                                + "is used for generating a file name. (Related setting: \"" + SETTING_VALIDATION
+                                + "\" per \"" + SETTING_VALIDATION_OUTPUT_FILES_CAN_USE_AUTOID + "\")");
+                    }
+                }
+            }
         }
     }
 
@@ -1917,18 +1929,6 @@ public final class Transform {
                             String id = XMLUtil.getAttribute(elem, "id");
                             if (id == null) {
                                 throw new BugException("Missing id attribute");
-                            }
-                            if (!validationOps.getOutputFilesCanUseAutoID()
-                                    && id.startsWith(AUTO_ID_PREFIX)) {
-                                throw new DocgenException(
-                                XMLUtil.theSomethingElement(elem, true)
-                                + " has automatically generated ID "
-                                + "that is not allowed as the ID "
-                                + "is used for generating a file "
-                                + "name. (Related setting: \""
-                                + SETTING_VALIDATION + "\" per \""
-                                + SETTING_VALIDATION_OUTPUT_FILES_CAN_USE_AUTOID
-                                + "\")");
                             }
                             String fileName = id + ".html";
                             if (fileName.equals(FILE_TOC_HTML) || fileName.equals(FILE_DETAILED_TOC_HTML)
