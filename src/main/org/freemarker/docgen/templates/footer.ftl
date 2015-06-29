@@ -1,6 +1,6 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
+<#escape x as x?html>
 
-<#import "ui.ftl" as ui>
 <#import "util.ftl" as u>
 
 <#macro footer>
@@ -19,12 +19,12 @@
           <div class="footer-top"><#t>
             <div class="col-left sitemap"><#t>
               <#if footerSiteMap??>
-                <@siteMap links=footerSiteMap /><#t>
+                <@siteMap columns=footerSiteMap /><#t>
               </#if>
             </div><#t>
             <div class="col-right"><#t>
               <#if socialLinks??>
-                <@ui.social links=socialLinks />
+                <@social links=socialLinks />
               </#if>
               <#if showXXELogo>
                 <a class="xxe" href="http://www.xmlmind.com/xmleditor/" rel="nofollow" title="Edited with XMLMind XML Editor"><#t>
@@ -66,15 +66,30 @@
 </#macro>
 
 
-<#macro siteMap links>
-  <#list links?keys as column>
+<#macro social links>
+  <ul class="social-icons"><#t>
+    <#list links?keys as linkTitle>
+      <#local link = links[linkTitle]>
+      <li><#t>
+        <a class="${link.class}" href="${link.href}">${linkTitle}</a><#t>
+      </li><#t>
+    </#list>
+  </ul><#t>
+</#macro>
+
+
+<#macro siteMap columns>
+  <#list columns?keys as columnTitle>
     <div class="column"><#t>
-      <h3 class="column-header">${column}</h3><#t>
+      <h3 class="column-header">${columnTitle}</h3><#t>
       <ul><#t>
-        <#list links[column] as link>
-          <li><a href="${link.href}">${link.text}</a></li><#t>
+        <#local links = columns[columnTitle]>
+        <#list links?keys as linkTitle>
+          <li><a href="${links[linkTitle]}">${linkTitle}</a></li><#t>
         </#list>
       </ul><#t>
     </div><#t>
   </#list>
 </#macro>
+
+</#escape>

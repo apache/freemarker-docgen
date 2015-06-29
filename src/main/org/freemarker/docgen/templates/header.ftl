@@ -1,4 +1,5 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
+<#escape x as x?html>
 
 <#import "navigation.ftl" as nav>
 <#import "google.ftl" as google>
@@ -9,13 +10,13 @@
     <div class="header-top-bg"><#t>
       <div class="site-width header-top"><#t>
         <#if logo??>
-          <a class="logo" href="${logo.href?html}" role="banner"><#t>
-            <img src="${logo.src?html}" alt="${logo.alt?html}">
+          <a class="logo" href="${logo.href}" role="banner"><#t>
+            <img src="${logo.src}" alt="${logo.alt}">
           </a><#t>
         </#if>
         <@nav.tabs /><#t>
         <#if secondaryTabs??>
-          <@notices tabs=secondaryTabs /><#t>
+          <@secondaryTabs tabs=secondaryTabs /><#t>
         </#if>
       </div><#t>
     </div><#t>
@@ -59,20 +60,24 @@
 </#macro>
 
 
-<#macro notices tabs>
+<#macro secondaryTabs tabs>
+  <#local secondaryTabs = .dataModel.secondaryTabs>
   <ul class="secondary-tabs"><#t>
-    <#list tabs as tab>
+    <#list secondaryTabs?keys as tabTitle>
+      <#local tab = secondaryTabs[tabTitle]>
       <li><#t>
-        <#if (tab.href)?hasContent>
-          <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tab.text?html}"><#t>
-            <span>${tab.text}</span><#t>
+        <#if tab.href??>
+          <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tabTitle}"><#t>
+            <span>${tabTitle}</span><#t>
           </a><#t>
         <#else>
-          <div class="tab<#if tab.class??> ${tab.class}</#if>" title="${tab.text?html}"><#t>
-            <span>${tab.text}</span><#t>
+          <div class="tab<#if tab.class??> ${tab.class}</#if>" title="${tabTitle}"><#t>
+            <span>${tabTitle}</span><#t>
           </div><#t>
         </#if>
       </li><#t>
     </#list>
   </ul><#t>
 </#macro>
+
+</#escape>

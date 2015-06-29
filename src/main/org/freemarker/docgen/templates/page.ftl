@@ -142,10 +142,7 @@
         <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 title="Page Contents" /><#t>
         <#-- - Render the usual content, like <para>-s etc.: -->
         <#list .node.* as child>
-          <#if child.@docgen_file_element?size == 0
-              && child?nodeName != "title"
-              && child?nodeName != "subtitle"
-              && child?nodeName != "info">
+          <#if child.@docgen_file_element?size == 0 && !["title", "subtitle", "info"]?seqContains(child?nodeName)>
             <#visit child using nodeHandlers>
           </#if>
         </#list>
