@@ -70,7 +70,6 @@ To compile LESS and JS separately from the regular ant build, run:
 ant gulp
 ```
 
-
 ## Eclipse and other IDE-s
 
 You need to run this:
@@ -95,4 +94,4 @@ and contains selected icons from:
 
 * [Entypo](http://www.entypo.com/) by [Daniel Bruce](http://www.danielbruce.se/)
 * [Font Awesome](http://fontawesome.io) by Dave Gandy.
-* [Google's Material Design Icons](https://github.com/google/material-design-icons)
+* [Material Design Icons](https://github.com/google/material-design-icons) by Google
