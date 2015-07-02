@@ -136,14 +136,13 @@
       <#elseIf pageType == "docgen:detailed_toc">
         <@toc att="docgen_detailed_toc_element" maxDepth=99 /><#t>
       <#else>
-        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth /><#t>
-        <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 /><#t>
+        <@toc att="docgen_file_element" maxDepth=maxTOFDisplayDepth
+            title=(.node?parent?nodeType == "document")?then('Table of Contents', 'Section Contents')
+        /><#t>
+        <@toc att="docgen_page_toc_element" maxDepth=99 minLength=2 title="Page Contents" /><#t>
         <#-- - Render the usual content, like <para>-s etc.: -->
         <#list .node.* as child>
-          <#if child.@docgen_file_element?size == 0
-              && child?nodeName != "title"
-              && child?nodeName != "subtitle"
-              && child?nodeName != "info">
+          <#if child.@docgen_file_element?size == 0 && !["title", "subtitle", "info"]?seqContains(child?nodeName)>
             <#visit child using nodeHandlers>
           </#if>
         </#list>
@@ -175,11 +174,16 @@
 </#macro>
 
 
-<#macro toc att maxDepth minLength=1>
+<#macro toc att maxDepth minLength=1 title=''>
   <#compress>
     <#local tocElems = .node["*[@${att}]"]>
     <#if (tocElems?size >= minLength)>
+      <div class="page-menu">
+        <#if title != ''>
+          <div class="page-menu-title">${title?html}</div>
+        </#if>
         <@toc_inner tocElems=tocElems att=att maxDepth=maxDepth curDepth=1 /><#t>
+      </div>
     </#if>
   </#compress>
 </#macro>
@@ -189,11 +193,7 @@
   <#compress>
     <#if tocElems?size == 0><#return></#if>
 
-    <#if curDepth == 1>
-      <#local class = "page-menu">
-    </#if>
-
-    <ul<#if class?hasContent> class="${class?trim}"</#if>><#t>
+    <ul><#t>
       <#list tocElems as tocElem>
         <li><#t>
           <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>
