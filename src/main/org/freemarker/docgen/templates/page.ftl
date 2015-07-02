@@ -42,7 +42,7 @@
       <@metaTags siteName=topLevelTitle title=title?html?replace('&#39;', '\'') />
       <@canonicalUrl />
 
-      <link rel="icon" href="favicon.ico" type="image/x-icon">
+      <link rel="icon" href="favicon.png" type="image/png"><#-- @todo: pull this in dynamically -->
       <@css />
 
       <#if !offline && onlineTrackerHTML??>
