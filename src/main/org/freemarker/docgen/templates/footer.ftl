@@ -58,11 +58,11 @@
 
 
 <#macro copyright>
-  <#-- @todo: this should be generic and not hardcoded -->
-  <p class="copyright"><#t>
-    © <span itemprop="copyrightYear">1999</span>–${transformStartTime?string('yyyy')}<#lt>
-    <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">The FreeMarker Project</a>. All rights reserved.<#t>
-  </p><#t>
+  <p class="copyright">
+    © <span itemprop="copyrightYear">${copyrightStartYear?string('0')}</span><#rt>
+    <#lt><#if transformStartTime?string('yyyy')?number != copyrightStartYear>–${transformStartTime?string('yyyy')}</#if>
+    <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a>. All rights reserved.<#t>
+  </p>
 </#macro>
 
 

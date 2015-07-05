@@ -390,6 +390,8 @@ public final class Transform {
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
     static final String SETTING_LOGO = "logo";
+    static final String SETTING_COPYRIGHT_HOLDER = "copyrightHolder";
+    static final String SETTING_COPYRIGHT_START_YEAR = "copyrightStartYear";
     static final String SETTING_LOGO_SRC = "src";
     static final String SETTING_LOGO_ALT = "alt";
     static final String SETTING_LOGO_HREF = "href";
@@ -452,6 +454,8 @@ public final class Transform {
     private static final String VAR_EXTERNAL_BOOKMARDS
             = SETTING_EXTERNAL_BOOKMARKS;
     private static final String VAR_LOGO = SETTING_LOGO;
+    private static final String VAR_COPYRIGHT_HOLDER = SETTING_COPYRIGHT_HOLDER;
+    private static final String VAR_COPYRIGHT_START_YEAR = SETTING_COPYRIGHT_START_YEAR;
     private static final String VAR_TABS = SETTING_TABS;
     private static final String VAR_SECONDARY_TABS = SETTING_SECONDARY_TABS;
     private static final String VAR_SOCIAL_LINKS = SETTING_SOCIAL_LINKS;
@@ -648,6 +652,9 @@ public final class Transform {
     private Map<String, Map<String, String>> socialLinks;
 
     private HashMap<String, String> logo;
+    
+    private String copyrightHolder;
+    private Integer copyrightStartYear;
 
     private DocgenValidationOptions validationOps
             = new DocgenValidationOptions();
@@ -799,6 +806,10 @@ public final class Transform {
                     if (!logo.containsKey(SETTING_LOGO_HREF)) {
                         throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_HREF);
                     }
+                } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER)) {
+                    copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
+                } else if (settingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
+                    copyrightStartYear = castSettingToInt(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_TABS)) {
                     Map<String, Object> m = castSettingToMap(
                             cfgFile, settingName, settingValue);
@@ -1011,6 +1022,14 @@ public final class Transform {
                         "The \"" + SETTING_LOGO
                         + "\" setting wasn't specified; it must be set currently, as the layout reserves space for it.");
             }
+            if (copyrightHolder == null) {
+                throw new DocgenException(
+                        "The \"" + SETTING_COPYRIGHT_HOLDER + "\" setting wasn't specified.");
+            }
+            if (copyrightStartYear == null) {
+                throw new DocgenException(
+                        "The \"" + SETTING_COPYRIGHT_START_YEAR + "\" setting wasn't specified.");
+            }
         }
 
         // Ensure proper rank relations:
@@ -1155,6 +1174,10 @@ public final class Transform {
                     VAR_NUMBERED_SECTIONS, numberedSections);
             fmConfig.setSharedVariable(
                     VAR_LOGO, logo);
+            fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_HOLDER, copyrightHolder);
+            fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_START_YEAR, copyrightStartYear);
             fmConfig.setSharedVariable(
                     VAR_TABS, tabs);
             fmConfig.setSharedVariable(
