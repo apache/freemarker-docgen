@@ -90,18 +90,6 @@
   <dt><@Anchor .node?parent/><#recurse></dt>
 </#macro>
 
-<#macro graphic>
-  <#local role=.node.@role[0]!?string>
-  <#if role?startsWith("alt:")>
-    <#local alt = role[4.. .node.@role?length-1]?trim>
-  <#else>
-    <#local alt = "figure">
-  </#if>
-  <img src="${.node.@fileref}" alt="${alt?html}"><#t>
-</#macro>
-
-<#assign imagedata=graphic>
-
 <#macro indexterm>
   <@Anchor/>
 </#macro>
@@ -736,7 +724,12 @@
     <#if imageobject?nodeName == "imageobject">
       <#list imageobject.* as imagedata>
         <#if imagedata?nodeName == "imagedata">
-          <p class="center-img"><@Anchor /><img src="${imagedata.@fileref?html}" alt="figure"></p>
+          <p class="center-img"><@Anchor /><#t>
+            <#local src = imagedata.@fileref>
+            <img src="${src}" alt="Figure"<#rt>
+              <#if src?endsWith(".svg")> onerror="this.src=&quot;${src?keepBeforeLast('.') + '.png'}&quot;; this.onerror=null;"</#if><#t>
+            ><#t>
+          </p>
         <#else>
           <#stop "Unexpected element when \"imagedata\" was expected: "
               + imagedata?nodeName>

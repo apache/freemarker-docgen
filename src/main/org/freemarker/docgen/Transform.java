@@ -1668,13 +1668,20 @@ public final class Transform {
                 if (!loRef.startsWith("http://")
                         && !loRef.startsWith("https://")
                         && !ref.startsWith("/")) {
-                    if (!new File(contentDir,
-                                ref.replace('/', File.separatorChar))
-                            .isFile()) {
+                    if (!new File(contentDir, ref.replace('/', File.separatorChar)).isFile()) {
                         throw new DocgenException(
-                                XMLUtil.theSomethingElement(elem) + " contains "
-                                + "a broken file reference: \""
+                                XMLUtil.theSomethingElement(elem) + " refers "
+                                + "to a missing file: \""
                                 + ref.replace("\"", "&quot;") + "\"");
+                    }
+                }
+                if (loRef.endsWith(".svg")) {
+                    String pngRef = ref.substring(0, ref.length() - 4) + ".png"; 
+                    if (!new File(contentDir, pngRef.replace('/', File.separatorChar)).isFile()) {
+                        throw new DocgenException(
+                                XMLUtil.theSomethingElement(elem)
+                                + " refers to an SVG file for which the fallback PNG file is missing: \""
+                                + pngRef.replace("\"", "&quot;") + "\"");
                     }
                 }
             }
