@@ -1,4 +1,5 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
+<#escape x as x?html>
 
 <#import "util.ftl" as u>
 <#import "footer.ftl" as footer>
@@ -10,6 +11,7 @@
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 
 <@page>
+  <#assign titleElement = u.getRequiredTitleElement(.node)>
   <@head />
 
   <body itemscope itemtype="http://schema.org/Article"><#lt>
@@ -27,43 +29,40 @@
 
 
 <#macro head>
-  <#assign titleElement = u.getRequiredTitleElement(.node)>
-  <#assign title = u.titleToString(titleElement)>
-  <#local topLevelTitle = u.getRequiredTitleAsString(.node?root.*)>
-  <#assign pageTitle = topLevelTitle />
-  <#if title != topLevelTitle>
-    <#assign pageTitle = title + " - " + topLevelTitle>
-  </#if>
+  <#local siteTitle = u.getRequiredTitleAsString(.node?root.*)>
+  <#local sectionTitle = seoMetaTitleOverride!u.titleToString(titleElement)>
+  <#local fullTitle = seoMetaFullTitleOverride!
+      (sectionTitle != siteTitle)?then(sectionTitle + " - " + siteTitle, sectionTitle)>
   <#compress>
     <head prefix="og: http://ogp.me/ns#">
       <meta charset="utf-8">
-      <title>${pageTitle?html?replace("&#39;", "'")}</title>
+      <title>${fullTitle}</title>
 
-      <@metaTags siteName=topLevelTitle title=title?html?replace('&#39;', '\'') />
-      <@canonicalUrl />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta name="format-detection" content="telephone=no">
+
+      <meta property="og:site_name" content="${siteTitle}">
+      <meta property="og:title" content="${sectionTitle}">
+      <#if seoMetaDescription??>
+        <meta name="Description" content="${seoMetaDescription}">
+        <meta name="og:description" content="${seoMetaDescription}">
+      </#if>
+      <meta property="og:locale" content="${.locale}">
+
+      <@canonicalUrlMeta />
 
       <link rel="icon" href="favicon.png" type="image/png"><#-- @todo: pull this in dynamically -->
       <@css />
 
       <#if !offline && onlineTrackerHTML??>
-        ${onlineTrackerHTML}
+        <#noEscape>${onlineTrackerHTML}</#noEscape>
       </#if>
     </head>
   </#compress>
 </#macro>
 
-
-<#macro metaTags siteName title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="format-detection" content="telephone=no">
-  <meta property="og:site_name" content="${siteName?html}">
-  <meta property="og:title" content="${title?html?replace('&#39;', '\'')}">
-  <meta property="og:locale" content="en_US">
-</#macro>
-
-
-<#macro canonicalUrl>
+<#macro canonicalUrlMeta>
   <#-- @todo: improve this logic -->
   <#assign nodeId = .node.@id>
   <#if nodeId == "autoid_1">
@@ -112,6 +111,7 @@
     </#if>
   </div>
 </#macro>
+
 
 <#macro pageContent>
   <#local pageType = getPageType()>
@@ -180,7 +180,7 @@
     <#if (tocElems?size >= minLength)>
       <div class="page-menu">
         <#if title != ''>
-          <div class="page-menu-title">${title?html}</div>
+          <div class="page-menu-title">${title}</div>
         </#if>
         <@toc_inner tocElems=tocElems att=att maxDepth=maxDepth curDepth=1 /><#t>
       </div>
@@ -196,7 +196,7 @@
     <ul><#t>
       <#list tocElems as tocElem>
         <li><#t>
-          <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)?html}" data-menu-target="${tocElem.@id}"><#t>
+          <a class="page-menu-link" href="${CreateLinkFromID(tocElem.@id)}" data-menu-target="${tocElem.@id}"><#t>
             <#recurse u.getRequiredTitleElement(tocElem) using nodeHandlers><#t>
           </a><#t>
           <#if (curDepth < maxDepth)>
@@ -211,3 +211,5 @@
 <#function getPageType>
   <#return pageType!.node?nodeName>
 </#function>
+
+</#escape>
