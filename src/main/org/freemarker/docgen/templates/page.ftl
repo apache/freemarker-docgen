@@ -64,7 +64,7 @@
 
 
 <#macro canonicalUrlMeta>
-  <#if deployUrl??>
+  <#if deployUrl?? && getPageType() != 'docgen:search_results'>
     <#local urlPath = CreateLinkFromID(.node.@id)>
     <#local canonicalUrl = deployUrl?ensureEndsWith("/") + urlPath?removeBeginning("/")>
     <meta property="og:url" content="${canonicalUrl}">
