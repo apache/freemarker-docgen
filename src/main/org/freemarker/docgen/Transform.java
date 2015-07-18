@@ -387,11 +387,12 @@ public final class Transform {
     static final String SETTING_SIMPLE_NAVIGATION_MODE = "simpleNavigationMode";
     static final String SETTING_DEPLOY_URL = "deployUrl";
     static final String SETTING_ONLINE_TRACKER_HTML = "onlineTrackerHTML";
+    static final String SETTING_REMOVE_NODES_WHEN_ONLINE = "removeNodesWhenOnline";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
-    static final String SETTING_LOGO = "logo";
     static final String SETTING_COPYRIGHT_HOLDER = "copyrightHolder";
     static final String SETTING_COPYRIGHT_START_YEAR = "copyrightStartYear";
+    static final String SETTING_LOGO = "logo";
     static final String SETTING_LOGO_SRC = "src";
     static final String SETTING_LOGO_ALT = "alt";
     static final String SETTING_LOGO_HREF = "href";
@@ -608,6 +609,8 @@ public final class Transform {
     private String deployUrl;
 
     private String onlineTrackerHTML;
+    
+    private Set<String> removeNodesWhenOnline;
 
     /** Element types for which a new output file is created  */
     private DocumentStructureRank lowestFileElemenRank
@@ -902,9 +905,12 @@ public final class Transform {
                                 "File not found: " + f.toPath());
                     }
                     onlineTrackerHTML = FileUtil.loadString(f, UTF_8);
+                } else if (settingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
+                    removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
+                            castSettingToStringList(cfgFile, settingName, settingValue)));
                 } else if (settingName.equals(SETTING_ECLIPSE)) {
                     Map<String, Object> m = castSettingToMap(
-                            cfgFile, SETTING_ECLIPSE, settingValue);
+                            cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
                         if (name.equals(SETTING_ECLIPSE_LINK_TO)) {
@@ -1404,7 +1410,7 @@ public final class Transform {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> castSettingToList(
+    private List<String> castSettingToStringList(
             File cfgFile, String settingName, Object settingValue)
             throws DocgenException {
         if (!(settingValue instanceof List)) {
@@ -1414,7 +1420,18 @@ public final class Transform {
                     + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
                     + ".");
         }
-        return (Map<String, Object>) settingValue;
+        List<?> settingValueAsList = (List<?>) settingValue;
+        for (int i = 0; i < settingValueAsList.size(); i++) {
+            Object listItem = settingValueAsList.get(i);
+            if (!(listItem instanceof String)) {
+                throw newCfgFileException(
+                        cfgFile, settingName,
+                        "Should be a list of String-s (like [\"value1\", \"value2\", ... \"valueN\"]), but at index "
+                        + i +" (0-based) there's a " + CJSONInterpreter.cjsonTypeOf(listItem)
+                        + ".");
+            }
+        }
+        return (List<String>) settingValue;
     }
     
     private String castSettingToString(File cfgFile,
@@ -1556,6 +1573,7 @@ public final class Transform {
     private void preprocessDOM(Document doc)
             throws SAXException, DocgenException {
         NodeModel.simplify(doc);
+        preprocessDOM_applyRemoveNodesWhenOnlineSetting(doc);
         preprocessDOM_addRanks(doc);
         preprocessDOM_misc(doc);
         preprocessDOM_buildTOC(doc);
@@ -1759,6 +1777,40 @@ public final class Transform {
         }
     }
 
+    private void preprocessDOM_applyRemoveNodesWhenOnlineSetting(Document doc) throws DocgenException {
+        if (offline) return;
+        
+        HashSet<String> idsToRemoveLeft = new HashSet<String>(removeNodesWhenOnline);
+        preprocessDOM_applyRemoveNodesWhenOnlineSetting_inner(
+                doc.getDocumentElement(), idsToRemoveLeft);
+        if (!idsToRemoveLeft.isEmpty()) {
+            throw new DocgenException(
+                    "These xml:id-s, specified in the \"" + SETTING_REMOVE_NODES_WHEN_ONLINE
+                    + "\" configuration setting, wasn't found in the document: " + idsToRemoveLeft);
+        }
+    }
+
+    private void preprocessDOM_applyRemoveNodesWhenOnlineSetting_inner(Element elem, Set<String> idsToRemoveLeft) {
+        Node child = elem.getFirstChild();
+        while (child != null && !idsToRemoveLeft.isEmpty()) {
+            Element childElemToBeRemoved = null;
+            if (child instanceof Element) {
+                Element childElem = (Element) child;
+                String id = XMLUtil.getAttribute(childElem, "xml:id");
+                if (id != null && idsToRemoveLeft.remove(id)) {
+                    childElemToBeRemoved = childElem;
+                }
+                if (!idsToRemoveLeft.isEmpty()) {
+                    preprocessDOM_applyRemoveNodesWhenOnlineSetting_inner(childElem, idsToRemoveLeft);
+                }
+            }
+            child = child.getNextSibling();
+            if (childElemToBeRemoved != null) {
+                elem.removeChild(childElemToBeRemoved);
+            }
+        }
+    }
+    
     /**
      * Annotates the document structure nodes with so called ranks.
      * About ranks see: {@link #setting_lowestFileElementRank}.
