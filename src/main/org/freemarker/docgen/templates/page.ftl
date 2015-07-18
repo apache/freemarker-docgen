@@ -62,15 +62,11 @@
   </#compress>
 </#macro>
 
-<#macro canonicalUrlMeta>
-  <#-- @todo: improve this logic -->
-  <#assign nodeId = .node.@id>
-  <#if nodeId == "autoid_1">
-    <#assign nodeId = "index">
-  </#if>
 
+<#macro canonicalUrlMeta>
   <#if deployUrl??>
-    <#local canonicalUrl = "${deployUrl + nodeId}.html">
+    <#local urlPath = CreateLinkFromID(.node.@id)>
+    <#local canonicalUrl = deployUrl?ensureEndsWith("/") + urlPath?removeBeginning("/")>
     <meta property="og:url" content="${canonicalUrl}">
     <link rel="canoical" href="${canonicalUrl}">
   </#if>
