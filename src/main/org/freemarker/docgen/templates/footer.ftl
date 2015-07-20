@@ -90,7 +90,6 @@
           <#else>
           <li><a href="${links[linkTitle]}">${linkTitle}</a></li><#t>
           </#if>
-
         </#list>
       </ul><#t>
     </div><#t>

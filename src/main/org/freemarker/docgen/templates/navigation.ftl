@@ -46,19 +46,19 @@
     <#local curNode = curNode?parent>
   </#list>
   <#if (path?size > 1)>
-    <ul class="breadcrumb"><#t>
+    <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
       <#list path as step>
-        <li class="step-${step?index}" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><#t>
-          <a class="label" itemprop="url" href="${CreateLinkFromNode(step)}"><#t>
-            <span itemprop="title"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
+        <li class="step-${step?index}" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
+          <a class="label" itemprop="item" href="${CreateLinkFromNode(step)}"><#t>
+            <span itemprop="name"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
           </a><#t>
         </li><#t>
       </#list>
     </ul><#t>
   <#else>
-    <ul class="breadcrumb"><#t>
-      <li class="step-0"><#t>
-        <span itemprop="title">Table of Contents</span><#t>
+    <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
+      <li class="step-0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
+        <span itemprop="name">Table of Contents</span><#t>
       </li><#t>
     </ul><#t>
   </#if>

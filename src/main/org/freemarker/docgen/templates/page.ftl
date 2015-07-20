@@ -10,10 +10,14 @@
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <@page>
   <#assign titleElement = u.getRequiredTitleElement(.node)>
+  <#assign siteTitle = u.getRequiredTitleAsString(.node?root.*)>
   <@head />
 
   <body itemscope itemtype="https://schema.org/Code"><#lt>
     <meta itemprop="version" content="${.version}">
+    <meta itemprop="url" content="${deployUrl}">
+    <meta itemprop="name" content="${siteTitle}">
+
     <@browserWarning />
     <@header.header />
     <div class="main-content site-width">
