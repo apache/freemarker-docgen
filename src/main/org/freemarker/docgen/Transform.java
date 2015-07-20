@@ -112,7 +112,7 @@ import freemarker.template.utility.StringUtil;
  *   <li><p><tt>docgen.cjson</tt> file (optional):
  *       contains Docgen settings. It uses an extended JSON syntax; see more
  *       <a href="#cjsonLanguage">later</a>.
- *       
+ *
  *       <p>Some notes about the settings in general:
  *       <ul>
  *         <li>Values that are of type "map" keep the order of entries as they were specified,
@@ -123,7 +123,7 @@ import freemarker.template.utility.StringUtil;
  *         (see that later).</li>
  *         <li>All settings are optional, except where noted otherwise</li>
  *       </ul>
- *        
+ *
  *       <p>The supported settings are:
  *       <ul>
  *         <li>
@@ -183,7 +183,7 @@ import freemarker.template.utility.StringUtil;
  *            from the DocBook document if {@code offline} is {@code false}. This is just like
  *            if have deleted these elements (with their nested content) from the XML file.
  *            (This meant to be used to remove sections that are redundant when the book is the
- *            part of a bigger site.)  
+ *            part of a bigger site.)
  *         <li><p><tt>seoMeta</tt> (map):
  *            Let you customize the metadata used by search engines for the selected pages. The page is selected with
  *            the map's key, which is either an {@code xml:id} or {@code "file:"} + output file name. The value of
@@ -422,7 +422,7 @@ public final class Transform {
     // -------------------------------------------------------------------------
     // Constants:
 
-	static final String FILE_BOOK = "book.xml";
+		static final String FILE_BOOK = "book.xml";
     static final String FILE_ARTICLE = "article.xml";
     static final String FILE_SETTINGS = "docgen.cjson";
     /** Used for the Table of Contents file when a different node was marked to be the index.html. */
@@ -435,7 +435,10 @@ public final class Transform {
     static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftl";
     static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
-    
+
+		static final String FILE_SITEMAP_XML_TEMPLATE = "sitemap.ftl";
+		static final String FILE_SITEMAP_XML_OUTPUT = "sitemap.xml";
+
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_OFFLINE = "offline";
     static final String SETTING_SIMPLE_NAVIGATION_MODE = "simpleNavigationMode";
@@ -483,7 +486,7 @@ public final class Transform {
     static final String SETTING_VALIDATION_MAXIMUM_PROGRAMLISTING_WIDTH
             = "maximumProgramlistingWidth";
     static final String SETTING_ECLIPSE_LINK_TO = "link_to";
-    
+
     static final String SETTING_SEO_META_KEY_TITLE = "title";
     static final String SETTING_SEO_META_KEY_FULL_TITLE = "fullTitle";
     static final String SETTING_SEO_META_KEY_DESCRIPTION = "description";
@@ -503,7 +506,7 @@ public final class Transform {
         COMMON_LINK_KEYS.add(COMMON_LINK_KEY_CLASS);
         COMMON_LINK_KEYS.add(COMMON_LINK_KEY_HREF);
     }
-    
+
     private static final String VAR_OFFLINE
             = SETTING_OFFLINE;
     private static final String VAR_SIMPLE_NAVIGATION_MODE
@@ -567,7 +570,7 @@ public final class Transform {
 
     private static final String OLINK_SCHEMA_START = "olink:";
     private static final String ID_SCHEMA_START = "id:";
-    
+
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     // Docgen-specific XML attributes (added during DOM-tree postediting):
@@ -627,7 +630,7 @@ public final class Transform {
 
     /** An element for which it's not possible to create a link. */
     private static final String A_DOCGEN_NOT_ADDRESSABLE = "docgen_not_addressable";
-    
+
 	private static final String AV_INDEX_ROLE = "index.html";
 
     /**
@@ -670,7 +673,7 @@ public final class Transform {
     private static final String E_SEARCHRESULTS = "searchresults";
 	private static final String SEARCH_RESULTS_PAGE_TITLE = "Search results";
 	private static final String SEARCH_RESULTS_ELEMENT_ID = "searchresults";
-    
+
     // -------------------------------------------------------------------------
     // Settings:
 
@@ -685,7 +688,7 @@ public final class Transform {
     private String deployUrl;
 
     private String onlineTrackerHTML;
-    
+
     private Set<String> removeNodesWhenOnline;
 
     /** Element types for which a new output file is created  */
@@ -704,7 +707,7 @@ public final class Transform {
     private boolean generateEclipseTOC;
 
     private boolean simpleNavigationMode;
-    
+
     private boolean showEditoralNotes;
 
     private boolean showXXELogo;
@@ -731,10 +734,10 @@ public final class Transform {
     private Map<String, Map<String, String>> socialLinks;
 
     private HashMap<String, String> logo;
-    
+
     private String copyrightHolder;
     private Integer copyrightStartYear;
-    
+
     private Map<String, Map<String, String>> seoMeta;
 
     private DocgenValidationOptions validationOps
@@ -1202,7 +1205,7 @@ public final class Transform {
 
         // - Post-edit and examine the DOM:
         preprocessDOM(doc);
-        
+
         // Resolve Docgen URL schemes in setting values:
         if (tabs != null) {
             for (Entry<String, String> tabEnt : tabs.entrySet()) {
@@ -1349,6 +1352,27 @@ public final class Transform {
             }
         }
 
+				// - Generate Sitemap XML:
+				{
+						logger.info("Generating Sitemap XML...");
+						Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
+						try (Writer wr = new BufferedWriter(
+										new OutputStreamWriter(
+														new FileOutputStream(
+																		new File(destDir, FILE_SITEMAP_XML_OUTPUT)),
+														UTF_8))) {
+								try {
+										SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+												dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+										template.process(dataModel, wr, null, NodeModel.wrap(doc));
+								} catch (TemplateException e) {
+										throw new BugException("Failed to generate Sitemap XML"
+														+ "(see cause exception).", e);
+								}
+						}
+				}
+
+
         // - Generate the HTML-s:
         logger.info("Generating HTML files...");
         int htmlFileCounter = 0;
@@ -1369,7 +1393,7 @@ public final class Transform {
                 }
             }
         }
-        
+
 		if (!offline && searchKey != null) {
 			try {
 				generateSearchResultsHTMLFile(doc);
@@ -1413,7 +1437,7 @@ public final class Transform {
         	if (simpleNavigationMode) {
         		throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
         	}
-        	
+
             logger.info("Generating Eclipse ToC...");
             Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
             try (Writer wr = new BufferedWriter(
@@ -1533,7 +1557,7 @@ public final class Transform {
         }
         return (List<String>) settingValue;
     }
-    
+
     private String castSettingToString(File cfgFile,
             String settingName, Object settingValue) throws DocgenException {
         if (!(settingValue instanceof String)) {
@@ -1621,10 +1645,10 @@ public final class Transform {
                     + "Map-s, but some of them is a "
                     + CJSONInterpreter.cjsonTypeOf(mapEntryValue) + ".");
         }
-        
+
         if (requiredKeys == null) requiredKeys = Collections.emptySet();
         if (optionalKeys == null) optionalKeys = Collections.emptySet();
-        
+
         Map<?, ?> mapEntryValueAsMap = (Map<?, ?>) mapEntryValue;
         for (Entry<?, ?> valueEnt : mapEntryValueAsMap.entrySet()) {
             Object key = valueEnt.getKey();
@@ -1673,7 +1697,7 @@ public final class Transform {
         }
         return (Map<String, String>) mapEntryValue;
     }
-    
+
     private void copyCommonStatic(String path) throws IOException {
         FileUtil.copyResourceIntoFile(
                 Transform.class, "statics", path,
@@ -1809,7 +1833,7 @@ public final class Transform {
                     }
                 }
                 if (loRef.endsWith(".svg")) {
-                    String pngRef = ref.substring(0, ref.length() - 4) + ".png"; 
+                    String pngRef = ref.substring(0, ref.length() - 4) + ".png";
                     if (!new File(contentDir, pngRef.replace('/', File.separatorChar)).isFile()) {
                         throw new DocgenException(
                                 XMLUtil.theSomethingElement(elem)
@@ -1894,7 +1918,7 @@ public final class Transform {
 
     private void preprocessDOM_applyRemoveNodesWhenOnlineSetting(Document doc) throws DocgenException {
         if (offline || removeNodesWhenOnline == null || removeNodesWhenOnline.isEmpty()) return;
-        
+
         HashSet<String> idsToRemoveLeft = new HashSet<String>(removeNodesWhenOnline);
         preprocessDOM_applyRemoveNodesWhenOnlineSetting_inner(
                 doc.getDocumentElement(), idsToRemoveLeft);
@@ -1925,7 +1949,7 @@ public final class Transform {
             }
         }
     }
-    
+
     /**
      * Annotates the document structure nodes with so called ranks.
      * About ranks see: {@link #setting_lowestFileElementRank}.
@@ -2045,7 +2069,7 @@ public final class Transform {
         preprocessDOM_buildTOC_inner(doc, 0, null);
         if (tocNodes.size() > 0) {
             preprocessDOM_buildTOC_checkEnsureHasIndexHhml(tocNodes);
-            
+
             preprocessDOM_buildTOC_checkTOCTopology(tocNodes.get(0));
 
             if (!tocNodes.get(0).isFileElement()) {
@@ -2053,9 +2077,9 @@ public final class Transform {
                         "The root ToC node must be a file-element.");
             }
             preprocessDOM_buildTOC_checkFileTopology(tocNodes.get(0));
-            
+
             if (simpleNavigationMode) {
-                // Must do it at the end: We need the docgen_... XML attributes here, and we must be past the 
+                // Must do it at the end: We need the docgen_... XML attributes here, and we must be past the
                 // TOC topology checks.
                 for (TOCNode tocNode : tocNodes) {
                     if (tocNode.isFileElement()
@@ -2065,7 +2089,7 @@ public final class Transform {
                     }
                 }
             }
-            
+
             if (!validationOps.getOutputFilesCanUseAutoID()) {
                 for (TOCNode tocNode : tocNodes) {
                     String outputFileName = tocNode.getOutputFileName();
@@ -2314,13 +2338,13 @@ public final class Transform {
             // The document element is never an external link ToC node.
             return null;
         }
-        
+
 		Element title = getTitle(elem);
 		if (title == null) {
 		    // An element without title can't be an external link ToC node
 		    return null;
 		}
-		
+
 		Iterator<Element> it = XMLUtil.childrenElementsOf(title).iterator();
 		if (it.hasNext()) {
 		    Element firstChild = it.next();
@@ -2354,7 +2378,7 @@ public final class Transform {
 	}
 
 	/**
-     * Ensures that 
+     * Ensures that
      * @param tocNodes
      * @throws DocgenException
      */
@@ -2546,7 +2570,7 @@ public final class Transform {
                         seoMetaMap.get(SETTING_SEO_META_KEY_DESCRIPTION));
             }
         }
-        
+
         boolean generateDetailedTOC = false;
         if (isTheDocumentElement) {
             // Find out if a detailed ToC will be useful:
@@ -2583,7 +2607,7 @@ public final class Transform {
 
     private void generateSearchResultsHTMLFile(Document doc) throws TemplateException, IOException, DocgenException {
         SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-        
+
         dataModel.put(VAR_PAGE_TYPE, PAGE_TYPE_SEARCH_RESULTS);
         dataModel.put(VAR_TOC_DISPLAY_DEPTH, maxMainTOFDisplayDepth);
 
@@ -2597,13 +2621,13 @@ public final class Transform {
             searchresultsElem.setAttribute("id", SEARCH_RESULTS_ELEMENT_ID);
 
             searchresultsElem.setAttribute(A_DOCGEN_RANK, E_SECTION);
-            
+
         	// Docgen templates may expect page-elements to have a title:
 	        Element titleElem = doc.createElementNS(XMLNS_DOCBOOK5, E_TITLE);
 	        titleElem.setTextContent(SEARCH_RESULTS_PAGE_TITLE);
 	        searchresultsElem.appendChild(titleElem);
         }
-        
+
         // We must add it to the document so that .node?root and such will work.
         doc.getDocumentElement().appendChild(searchresultsElem);
         try {
@@ -2611,7 +2635,7 @@ public final class Transform {
 	        searchresultsTOCNode.setFileElement(true);
 	        searchresultsTOCNode.setOutputFileName(FILE_SEARCH_RESULTS_HTML);
 	        currentFileTOCNode = searchresultsTOCNode;
-	
+
 	        generateHTMLFile_inner(dataModel, currentFileTOCNode.getOutputFileName());
         } finally {
         	doc.getDocumentElement().removeChild(searchresultsElem);
@@ -2683,12 +2707,12 @@ public final class Transform {
         if (elem.hasAttribute(A_DOCGEN_NOT_ADDRESSABLE)) {
             return null;
         }
-        
+
         String extLink = getExternalLinkTOCNodeURLOrNull(elem);
         if (extLink != null) {
             return extLink;
         }
-        
+
         // Find the closest id:
         String id = null;
         Node node = elem;
@@ -2781,7 +2805,7 @@ public final class Transform {
 
         return createElementLinkURL(elem);
     }
-    
+
     private TemplateMethodModelEx createLinkFromNode
             = new TemplateMethodModelEx() {
 
@@ -3004,7 +3028,7 @@ public final class Transform {
         public void setFileElement(boolean fileElement) {
             this.fileElement = fileElement;
         }
-        
+
         public boolean isFileElement() {
             return fileElement;
         }
@@ -3022,7 +3046,7 @@ public final class Transform {
             return traversalIndex > 0
                     ? tocNodes.get(traversalIndex - 1) : null;
         }
-        
+
     }
 
     enum DocumentStructureRank {
