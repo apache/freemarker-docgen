@@ -36,6 +36,7 @@
   <#compress>
     <head prefix="og: http://ogp.me/ns#">
       <meta charset="utf-8">
+      <meta name="google-site-verification" content="UfgFHMBMYV7snPYKXIFyFDRwRMszylM3Z9J2WFKvxDU">
       <title>${fullTitle}</title>
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
