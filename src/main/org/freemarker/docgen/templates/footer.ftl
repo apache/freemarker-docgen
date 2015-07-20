@@ -61,7 +61,7 @@
   <p class="copyright">
     © <span itemprop="copyrightYear">${copyrightStartYear?string('0')}</span><#rt>
     <#lt><#if transformStartTime?string('yyyy')?number != copyrightStartYear>–${transformStartTime?string('yyyy')}</#if>
-    <a itemtype="http://schema.org/Person" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a>. All rights reserved.<#t>
+    <a itemtype="http://schema.org/Organization" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a>. All rights reserved.<#t>
   </p>
 </#macro>
 
@@ -85,7 +85,12 @@
       <ul><#t>
         <#local links = columns[columnTitle]>
         <#list links?keys as linkTitle>
+          <#if linkTitle == "License">
+            <li><a itemprop="license" href="${links[linkTitle]}">${linkTitle}</a></li><#t>
+          <#else>
           <li><a href="${links[linkTitle]}">${linkTitle}</a></li><#t>
+          </#if>
+
         </#list>
       </ul><#t>
     </div><#t>

@@ -11,7 +11,7 @@
       <div class="site-width header-top"><#t>
         <#if logo??>
           <a class="logo" href="${logo.href}" role="banner"><#t>
-            <img src="${logo.src}" alt="${logo.alt}">
+            <img itemprop="image" src="${logo.src}" alt="${logo.alt}">
           </a><#t>
         </#if>
         <@nav.tabs /><#t>

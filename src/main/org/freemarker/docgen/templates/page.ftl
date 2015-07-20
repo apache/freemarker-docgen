@@ -1,6 +1,5 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
 <#escape x as x?html>
-
 <#import "util.ftl" as u>
 <#import "footer.ftl" as footer>
 <#import "header.ftl" as header>
@@ -9,12 +8,12 @@
 <#import "node-handlers.ftl" as defaultNodeHandlers>
 <#import "customizations.ftl" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
-
 <@page>
   <#assign titleElement = u.getRequiredTitleElement(.node)>
   <@head />
 
-  <body itemscope itemtype="http://schema.org/Article"><#lt>
+  <body itemscope itemtype="https://schema.org/Code"><#lt>
+    <meta itemprop="version" content="${.version}">
     <@browserWarning />
     <@header.header />
     <div class="main-content site-width">
@@ -36,7 +35,6 @@
   <#compress>
     <head prefix="og: http://ogp.me/ns#">
       <meta charset="utf-8">
-      <meta name="google-site-verification" content="UfgFHMBMYV7snPYKXIFyFDRwRMszylM3Z9J2WFKvxDU">
       <title>${fullTitle}</title>
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,7 +44,7 @@
       <meta property="og:site_name" content="${siteTitle}">
       <meta property="og:title" content="${sectionTitle}">
       <#if seoMetaDescription??>
-        <meta name="Description" content="${seoMetaDescription}">
+        <meta name="description" content="${seoMetaDescription}">
         <meta name="og:description" content="${seoMetaDescription}">
       </#if>
       <meta property="og:locale" content="${.locale}">
@@ -59,6 +57,7 @@
       <#if !offline && onlineTrackerHTML??>
         <#noEscape>${onlineTrackerHTML}</#noEscape>
       </#if>
+      <meta name="google-site-verification" content="UfgFHMBMYV7snPYKXIFyFDRwRMszylM3Z9J2WFKvxDU">
     </head>
   </#compress>
 </#macro>

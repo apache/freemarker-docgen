@@ -590,7 +590,7 @@
   <#local classAtt = "">
 
   <${htmlHElem} class="content-header header-${hierarElem.@docgen_rank}" <#if !disableAnchors && hierarElem.@id[0]??>id="${hierarElem.@id[0]}"</#if><#t>
-    <#if htmlHLevel == 1> itemprop="name"</#if>><#t>
+    <#if htmlHLevel == 1> itemprop="headline"</#if>><#t>
     <#recurse><#t>
     <#local subtitleElem = u.getOptionalSubtitleElement(hierarElem)>
     <#if subtitleElem?hasContent>
