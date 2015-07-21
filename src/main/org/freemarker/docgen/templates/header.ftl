@@ -31,11 +31,11 @@
   <div class="header-bottom-bg"><#t>
     <div class="site-width search-row"><#t>
       <#local book = .node?root.*>
-      <a href="${CreateLinkFromNode(book)}" class="navigationHeader"><#t>
+      <a href="${CreateLinkFromNode(book)}" class="navigation-header"><#t>
         <#recurse u.getRequiredTitleElement(book, true) using nodeHandlers><#t>
       </a><#t>
       <#-- empty div to maintain layout -->
-      <div class="navigationHeader"></div><#t>
+      <div class="navigation-header"></div><#t>
       <@searchForm /><#t>
     </div><#t>
     <div class="site-width breadcrumb-row"><#t>
