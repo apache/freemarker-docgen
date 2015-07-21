@@ -61,7 +61,6 @@
       <#if !offline && onlineTrackerHTML??>
         <#noEscape>${onlineTrackerHTML}</#noEscape>
       </#if>
-      <meta name="google-site-verification" content="UfgFHMBMYV7snPYKXIFyFDRwRMszylM3Z9J2WFKvxDU">
     </head>
   </#compress>
 </#macro>
