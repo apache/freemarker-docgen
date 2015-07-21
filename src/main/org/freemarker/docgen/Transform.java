@@ -55,6 +55,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -146,6 +147,9 @@ import freemarker.template.utility.StringUtil;
  *               "Report a Bug": { ... }<br>
  *               ...<br>
  *             }</tt>
+ *         <li><p><tt>ignoredFiles</tt> (object): The list of file name globs (can use: {@code *}, {@code ?} and
+ *              {@code **}) of the files that won't be copyied over as static files. The are relative to the topmost
+ *              source directory. 
  *         <li><p><tt>socialLinks</tt> (object): An array of objects for the
  *             social links, like:<tt><br>
  *             {<br>
@@ -422,7 +426,7 @@ public final class Transform {
     // -------------------------------------------------------------------------
     // Constants:
 
-		static final String FILE_BOOK = "book.xml";
+    static final String FILE_BOOK = "book.xml";
     static final String FILE_ARTICLE = "article.xml";
     static final String FILE_SETTINGS = "docgen.cjson";
     /** Used for the Table of Contents file when a different node was marked to be the index.html. */
@@ -436,9 +440,10 @@ public final class Transform {
     static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
 
-		static final String FILE_SITEMAP_XML_TEMPLATE = "sitemap.ftl";
-		static final String FILE_SITEMAP_XML_OUTPUT = "sitemap.xml";
+    static final String FILE_SITEMAP_XML_TEMPLATE = "sitemap.ftl";
+    static final String FILE_SITEMAP_XML_OUTPUT = "sitemap.xml";
 
+    static final String SETTING_IGNORED_FILES = "ignoredFiles";
     static final String SETTING_VALIDATION = "validation";
     static final String SETTING_OFFLINE = "offline";
     static final String SETTING_SIMPLE_NAVIGATION_MODE = "simpleNavigationMode";
@@ -682,6 +687,8 @@ public final class Transform {
     private File srcDir;
 
     private File contentDir;
+    
+    private List<Pattern> ignoredFilePathPatterns = new ArrayList<>();
 
     private Boolean offline;
 
@@ -839,7 +846,12 @@ public final class Transform {
                 final String settingName = cfgEnt.getKey();
                 final Object settingValue = cfgEnt.getValue();
 
-                if (settingName.equals(SETTING_OLINKS)) {
+                if (settingName.equals(SETTING_IGNORED_FILES)) {
+                    List<String> patterns = castSettingToStringList(cfgFile, settingName, settingValue);
+                    for (String pattern : patterns) {
+                        ignoredFilePathPatterns.add(FileUtil.globToRegexp(pattern));
+                    }
+                } else if (settingName.equals(SETTING_OLINKS)) {
                     Map<String, Object> m = castSettingToMap(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
@@ -1202,6 +1214,7 @@ public final class Transform {
         }
         Document doc = XMLUtil.loadDocBook5XML(
                 docFile, validate, validationOps, logger);
+        ignoredFilePathPatterns.add(FileUtil.globToRegexp(docFile.getName()));
 
         // - Post-edit and examine the DOM:
         preprocessDOM(doc);
@@ -1430,7 +1443,7 @@ public final class Transform {
 
         // - Copy the custom statics:
         logger.info("Copying custom static files...");
-        int bookSpecStaticFileCounter = FileUtil.copyDir(contentDir, destDir, true);
+        int bookSpecStaticFileCounter = FileUtil.copyDir(contentDir, destDir, ignoredFilePathPatterns);
 
         // - Eclipse ToC:
         if (generateEclipseTOC) {

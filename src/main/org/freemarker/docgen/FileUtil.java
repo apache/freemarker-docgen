@@ -9,6 +9,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Pattern;
+
+import freemarker.template.utility.StringUtil;
 
 final class FileUtil {
     
@@ -76,20 +81,26 @@ final class FileUtil {
 
     static int copyDir(
             File srcDir, File destDir) throws IOException {
-        return copyDir(srcDir, destDir, false);
+        return copyDir(srcDir, destDir, srcDir, Collections.emptySet());
     }
-    
+
+    static int copyDir(
+            File srcDir, File destDir, Collection<Pattern> ignoredFilePathPatterns)
+            throws IOException {
+        return copyDir(srcDir, destDir, srcDir, ignoredFilePathPatterns);
+    }
     
     /**
      * @return the number of files copied.
      */
-    static int copyDir(
-            File srcDir, File destDir, boolean skipTopLevelXMLs)
+    private static int copyDir(
+            File srcDir, File destDir, File srcBaseDir, Collection<Pattern> ignoredFilePathPatterns)
             throws IOException {
         int fileCounter = 0;
         
         destDir = destDir.getAbsoluteFile();
         srcDir = srcDir.getAbsoluteFile();
+        String srcBaseDirPath = ensureEndsWithFileSeparator(srcBaseDir.getAbsolutePath());
         
         if (!destDir.isDirectory()) {
             if (destDir.exists()) {
@@ -115,13 +126,12 @@ final class FileUtil {
             }
             File dest = new File(destDir, fName);
             if (f.isFile()) {
-                if (!(skipTopLevelXMLs
-                        && fName.toLowerCase().endsWith(".xml"))) {
+                if (!isIgnoredFile(f, srcBaseDirPath, ignoredFilePathPatterns)) {
                     copyFile(f, dest);
                     fileCounter++;
                 }
             } else if (f.isDirectory()) {
-                fileCounter += copyDir(f, dest);
+                fileCounter += copyDir(f, dest, srcBaseDir, ignoredFilePathPatterns);
             } else {
                 throw new IOException(
                         "Failed decide if it's a file or a directory: "
@@ -130,6 +140,28 @@ final class FileUtil {
         }
         
         return fileCounter;
+    }
+
+    private static boolean isIgnoredFile(File f, String srcBaseDirPath, Collection<Pattern> ignoredFilePathPatterns)
+            throws IOException {
+        if (ignoredFilePathPatterns.isEmpty()) {
+            return false;
+        }
+        
+        srcBaseDirPath = ensureEndsWithFileSeparator(srcBaseDirPath);
+        
+        String filePath = f.getAbsolutePath();
+        if (!filePath.startsWith(srcBaseDirPath)) {
+            throw new IOException("Unexpected: " + StringUtil.jQuote(filePath) + " doesn't start with "
+                    + StringUtil.jQuote(srcBaseDirPath));
+        }
+        String slashRelFilePath = pathToUnixStyle(filePath.substring(srcBaseDirPath.length() - 1));
+        for (Pattern pattern : ignoredFilePathPatterns) {
+            if (pattern.matcher(slashRelFilePath).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void copyFile(File src, File dst) throws IOException {
@@ -237,4 +269,64 @@ final class FileUtil {
         return sb.toString();
     }
 
+    /**
+     * Converts UN*X style path to regular expression. In additional to standard UN*X path meta characters (
+     * <code>*</code>, <code>?</code>) it understands <code>**</code>, that is the same as in Ant. It assumes that the
+     * matched path always starts with slash (they are absoulte paths to an imaginary base), and uses slash instead of
+     * backslash.
+     */
+    public static Pattern globToRegexp(String text) {
+        StringBuilder sb = new StringBuilder();
+    
+        if (!text.startsWith("/")) {
+            text = "/" + text;
+        }
+        if (text.endsWith("/")) {
+            text += "**";
+        }
+        
+        char[] chars = text.toCharArray();
+        int ln = chars.length;
+        for (int i = 0; i < ln; i++) {
+            char c = chars[i];
+            if (c == '\\' || c == '^' || c == '.' || c == '$' || c == '|'
+                    || c == '(' || c == ')' || c == '[' || c == ']'
+                    || c == '+' || c == '{'
+                    || c == '}' || c == '@') {
+                sb.append('\\');
+                sb.append(c);
+            } else if (i == 0 && ln > 2
+                    && chars[0] == '*' && chars[1] == '*'
+                    && chars[2] == '/') {
+                sb.append(".*/");
+                i += 2;
+            } else if (c == '/' && i + 2 < ln
+                    && chars[i + 1] == '*' && chars[i + 2] == '*') {
+                if (i + 3 == ln) {
+                    sb.append("/.*");
+                } else {
+                    sb.append("(/.*)?");
+                }
+                i += 2;
+            } else if (c == '*') {
+                sb.append("[^/]*");
+            } else if (c == '?') {
+                sb.append("[^/]");
+            } else {
+                sb.append(c);
+            }
+        }
+    
+        return Pattern.compile(sb.toString());
+    }
+    
+    public static String pathToUnixStyle(String path) {
+        return path.replace(File.separatorChar, '/');
+    }
+
+    public static String ensureEndsWithFileSeparator(String path) {
+        return path.length() > 0 && path.charAt(path.length() - 1) == File.separatorChar
+                ? path : path + File.separatorChar;
+    }
+    
 }
