@@ -14,7 +14,6 @@
   <@head />
 
   <body itemscope itemtype="https://schema.org/Code"><#lt>
-    <meta itemprop="version" content="${.version}">
     <meta itemprop="url" content="${deployUrl}">
     <meta itemprop="name" content="${siteTitle}">
 
