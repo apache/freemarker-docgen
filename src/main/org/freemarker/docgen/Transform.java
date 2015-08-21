@@ -79,6 +79,8 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.utility.ClassUtil;
+import freemarker.template.utility.DateUtil;
+import freemarker.template.utility.DateUtil.DateParseException;
 import freemarker.template.utility.StringUtil;
 
 /**
@@ -578,6 +580,8 @@ public final class Transform {
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
+    static final String SYSPROP_GENERATION_TIME = "docgen.generationTime";
+    
     // Docgen-specific XML attributes (added during DOM-tree postediting):
 
     /**
@@ -1316,8 +1320,23 @@ public final class Transform {
                     VAR_ROOT_ELEMENT, doc.getDocumentElement());
 
             // Calculated data:
-            fmConfig.setSharedVariable(
-                    VAR_TRANSFORM_START_TIME, new Date());
+            {
+                Date generationTime;
+                String generationTimeStr = System.getProperty(SYSPROP_GENERATION_TIME);
+                if (generationTimeStr == null) {
+                    generationTime = new Date();
+                } else {
+                    try {
+                        generationTime = DateUtil.parseISO8601DateTime(generationTimeStr, DateUtil.UTC,
+                                new DateUtil.TrivialCalendarFieldsToDateConverter());
+                    } catch (DateParseException e) {
+                        throw new DocgenException(
+                                "Malformed \"" + SYSPROP_GENERATION_TIME
+                                + "\" system property value: " + generationTimeStr, e);
+                    }
+                }
+                fmConfig.setSharedVariable(VAR_TRANSFORM_START_TIME, generationTime);
+            }
             fmConfig.setSharedVariable(
                     VAR_INDEX_ENTRIES, indexEntries);
             int tofCntLv1 = countTOFEntries(tocNodes.get(0), 1);
