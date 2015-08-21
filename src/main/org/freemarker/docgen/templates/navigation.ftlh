@@ -1,10 +1,9 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
-<#escape x as x?html>
 
 <#import "util.ftl" as u>
 
-<#import "node-handlers.ftl" as defaultNodeHandlers>
-<#import "customizations.ftl" as customizations>
+<#import "node-handlers.ftlh" as defaultNodeHandlers>
+<#import "customizations.ftlh" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 
 <#macro navigationBar top>
@@ -26,7 +25,7 @@
     <div class="navigation">
       <#-- keep site-width inside navigation so that the background extends -->
       <div class="site-width">
-        <#noEscape>${captured}</#noEscape><#t>
+        ${captured?noEsc}<#t>
       </div>
     </div>
   </#if>
@@ -66,23 +65,25 @@
 
 
 <#macro breadcrumbJs>
-  var breadcrumb = [<#t>
-  <#local path = []>
-  <#local curNode = .node>
-  <#list 1.. as _>
-    <#local path = [curNode] + path>
-    <#if curNode.@docgen_root_element?size != 0>
-      <#break>
-    </#if>
-    <#local curNode = curNode?parent>
-  </#list>
-  <#if (path?size > 1)>
-    <#list path as step>
-      "<#noEscape>${u.titleToString(step.title[0]!step.info.title)?jsString}</#noEscape>"<#t>
-      <#sep>,<#t>
+  <#outputFormat "plainText">
+    var breadcrumb = [<#t>
+    <#local path = []>
+    <#local curNode = .node>
+    <#list 1.. as _>
+      <#local path = [curNode] + path>
+      <#if curNode.@docgen_root_element?size != 0>
+        <#break>
+      </#if>
+      <#local curNode = curNode?parent>
     </#list>
-  </#if>
-  ];<#t>
+    <#if (path?size > 1)>
+      <#list path as step>
+        "${u.titleToString(step.title[0]!step.info.title)?jsString}"<#t>
+        <#sep>,<#t>
+      </#list>
+    </#if>
+    ];<#t>
+  </#outputFormat>
 </#macro>
 
 
@@ -155,4 +156,3 @@
   </#compress>
 </#macro>
 
-</#escape>

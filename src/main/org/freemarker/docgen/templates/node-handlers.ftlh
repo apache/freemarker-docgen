@@ -5,7 +5,6 @@
 <#-- Constants: -->
 <#assign forProgrammersCss = "programmers-note">
 
-
 <#-- State variables: -->
 <#assign
     inHtmlP = false, compactPara = false,
@@ -14,7 +13,7 @@
 >
 <#assign footnotes = []>
 
-<#macro @text>${.node?html}</#macro>
+<#macro @text>${.node}</#macro>
 
 <#macro @element>
   <#stop "This DocBook element is not supported by the Docgen transformer, "
@@ -112,7 +111,7 @@
         <#elseIf mark = "">
             <ul><#t>
         <#else>
-            <ul type="${mark?html}"><#t>
+            <ul type="${mark}"><#t>
         </#if>
         <#recurse>
         </ul><#t>
@@ -122,16 +121,16 @@
 
 <#macro link>
    <#if .node.@linkend?hasContent>
-      <a href="${CreateLinkFromID(.node.@linkend)?html}"><#recurse></a><#t>
+      <a href="${CreateLinkFromID(.node.@linkend)}"><#recurse></a><#t>
    <#else>
-      <a href="${.node["@xlink:href"]?html}"><#recurse></a><#t>
+      <a href="${.node["@xlink:href"]}"><#recurse></a><#t>
    </#if>
 </#macro>
 
 <#macro listitem>
    <#local mark=.node?parent.@mark[0]!>
    <#if mark != "">
-       <li style="list-style-type: ${mark?html}"><#t>
+       <li style="list-style-type: ${mark}"><#t>
    <#else>
        <li><#t>
    </#if>
@@ -211,7 +210,7 @@
 <#macro olink>
     <#if !(olinks[.node.@targetdoc]??)>
       <#stop "The olink element refers to an unknown targetdoc: \""
-             + .node.@targetdoc?xml
+             + .node.@targetdoc?jsString
              + "\". Ensure this target is defined in the docgen.cfg file.">
     </#if>
     <a href="${olinks[.node.@targetdoc]}"><#recurse></a><#t>
@@ -249,10 +248,10 @@
     <p<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
     <#local content><@Anchor /><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
-    <#if !content?matches(r".*<p>\s*$", "s")>
+    <#if !content?markup?matches(r".*<p>\s*$", "s")>
         ${content}</p><#t>
     <#else>
-        ${content[0 ..< content?lastIndexOf("<p>")]}<#t>
+        ${content?markup[0 ..< content?lastIndexOf("<p>")]?noEsc}<#t>
     </#if>
     <#assign inHtmlP = false>
   </#if>
@@ -364,7 +363,7 @@
     <div class="code-wrapper"><#t>
     <pre class="code-block ${codeType}"><@Anchor/><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
-      ${content?chopLinebreak}</pre></div><#t>
+      ${content?markup?chopLinebreak?noEsc}</pre></div><#t>
   </@CantBeNestedIntoP>
 </#macro>
 
@@ -459,7 +458,7 @@
     <#list indexEntries as key>
       <#local letter = key[0]?upperCase>
       <#if lastLetter != letter>
-        <#if lastLetter != "">&nbsp;| </#if><a href="#${index_safeID(letter)?html}">${letter?html}</a><#t>
+        <#if lastLetter != "">&nbsp;| </#if><a href="#${index_safeID(letter)}">${letter}</a><#t>
         <#local lastLetter = letter>
       </#if>
     </#list>
@@ -474,14 +473,14 @@
         </dl></div><#lt>
       </#if>
       <div class="indexdiv"><#lt>
-      <a name="${index_safeID(letter)?html}"></a><#lt>
-      <h2 class="indexLabel">${letter?html}</h2><#lt>
+      <a name="${index_safeID(letter)}"></a><#lt>
+      <h2 class="indexLabel">${letter}</h2><#lt>
       <dl><#lt>
       <#local lastLetter = letter>
     </#if>
     <#local entryNodes = primaryIndexTermLookup[key]>
     <dt>
-      ${key?html}<#if entryNodes?hasContent>,&nbsp;&nbsp;</#if><#rt>
+      ${key}<#if entryNodes?hasContent>,&nbsp;&nbsp;</#if><#rt>
       <#list entryNodes as entryNode>
         <a href="${CreateLinkFromNode(entryNode)}"><#t><@index_entryText entryNode/></a><#t>
         <#sep>,</#sep><#lt>
@@ -492,7 +491,7 @@
       <dd><dl>
       <#list secondaryTerms?keys?sort as secondary>
         <dt><#rt>
-        ${secondary?html}, <#t>
+        ${secondary}, <#t>
         <#list secondaryTerms[secondary] as secondaryNode>
           <a href="${CreateLinkFromNode(secondaryNode)}"><#t>
             <@index_entryText secondaryNode/><#t>
@@ -517,7 +516,7 @@
     <#if node.title?hasContent>
       <#local title=node.title>
       <#if !node.@id[0]!?startsWith("autoid_")>
-        ${title?trim?html}<#t>
+        ${title?trim}<#t>
         <#return>
       </#if>
     </#if>
@@ -541,7 +540,7 @@
       <#if fullgt?size != 0>
         <#local gtl = fullgt.@@text[0]?upperCase>
         <#if gtl != lgtl>
-          <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id?html}">${gtl?html}</a><#t>
+          <#if lgtl != "">&nbsp;| </#if><a href="#${ge.@id}">${gtl}</a><#t>
           <#local lgtl = gtl>
         </#if>
       </#if>
@@ -608,7 +607,7 @@
 </#macro>
 
 <#macro ulink>
-  <a href="${.node.@url?html}"><#recurse></a><#t>
+  <a href="${.node.@url}"><#recurse></a><#t>
 </#macro>
 
 <#macro xref>
@@ -618,7 +617,7 @@
 
   <#local label = targetNode.@xreflabel[0]!>
   <#if label?hasContent>
-    <a href="${targetLink?html}">${label?html}</a><#t>
+    <a href="${targetLink}">${label}</a><#t>
   <#else>
     <#local labelHTMLs = buildTitleHTMLChain(targetNode)>
     <#if labelHTMLs?size == 0>
@@ -626,16 +625,16 @@
           + "\" has no \"title\" element in it nor \"xreflabel\" attribute.">
     </#if>
     <#local ctxLabelHTMLs = buildTitleHTMLChain(.node, true)>
-    <a href="${targetLink?html}"><#t>
+    <a href="${targetLink}"><#t>
       <#local started = false>
       <#list labelHTMLs as labelHTML>
         <#if started || !(
               labelHTML?hasNext
               && ctxLabelHTMLs[labelHTML?index]??
-              && labelHTML == ctxLabelHTMLs[labelHTML?index]
+              && labelHTML?markup == ctxLabelHTMLs[labelHTML?index]?markup
             )
         >
-          ${labelHTML}<#sep>/</#sep><#t>
+          ${labelHTML?noEsc}<#sep>/</#sep><#t>
           <#local started = true>
         </#if>
       </#list>
@@ -685,7 +684,7 @@
   <${.node?nodeName}<#t>
     <#list .node.@@ as att>
       <#if supportedAtts[att?nodeName]??>
-        ${' '}${att?nodeName}="${att?html}"<#t>
+        ${' '}${att?nodeName}="${att}"<#t>
       <#else>
         <#stop 'Unimplemented attribute for "${.node?nodeName}": ' + att?nodeName>
       </#if>
@@ -695,7 +694,7 @@
     <#recurse><#t>
     </${.node?nodeName}><#t>
   </#if>
-  ${"\n"}<#t>
+  ${'\n'}<#t>
 </#macro>
 
 <#assign htmlAlignAtts = {"align":true, "valign":true}>

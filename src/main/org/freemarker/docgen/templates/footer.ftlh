@@ -1,16 +1,10 @@
-<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
-<#escape x as x?html>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 
 <#import "util.ftl" as u>
 
 <#macro footer>
   <#compress>
     <#local book = .node?root.*>
-    <#local footerTitleHTML = u.getRequiredTitleAsString(book)>
-    <#local bookSubtitle = u.getOptionalSubtitleAsString(book)>
-    <#if bookSubtitle?hasContent>
-      <#local footerTitleHTML += " – " + bookSubtitle?html>
-    </#if>
 
     <div class="site-footer"><#t>
       <#-- keep site-width inside so background extends -->
@@ -52,7 +46,7 @@
 <#macro lastGenerated>
   Last generated:
   <time itemprop="dateModified" datetime="${transformStartTime?datetime?isoUtc}" title="${transformStartTime?datetime?string.full}"><#t>
-    ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')?html}<#t>
+    ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')}<#t>
   </time><#t>
 </#macro>
 
@@ -95,5 +89,3 @@
     </div><#t>
   </#list>
 </#macro>
-
-</#escape>

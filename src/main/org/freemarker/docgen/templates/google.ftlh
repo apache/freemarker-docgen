@@ -1,8 +1,9 @@
 <#macro search>
   <#if searchKey??>
     <script>
+      <#noAutoEsc>
       (function() {
-        var cx = '${searchKey}';
+        var cx = '${searchKey?jsString}';
         var gcse = document.createElement('script');
         gcse.type = 'text/javascript';
         gcse.async = true;
@@ -11,6 +12,7 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(gcse, s);
       })();
+      </#noAutoEsc>
     </script>
     <gcse:searchbox></gcse:searchbox>
   </#if>
@@ -21,8 +23,9 @@
   <#if searchKey??>
     <div class="search-results">
       <script>
+        <#noAutoEsc>
         (function() {
-          var cx = '${searchKey}';
+          var cx = '${searchKey?jsString}';
           var gcse = document.createElement('script');
           gcse.type = 'text/javascript';
           gcse.async = true;
@@ -31,6 +34,7 @@
           var s = document.getElementsByTagName('script')[0];
           s.parentNode.insertBefore(gcse, s);
         })();
+        </#noAutoEsc>
       </script>
       <gcse:searchresults-only>Loading…</gcse:searchresults-only>
     </div>

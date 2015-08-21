@@ -1,8 +1,7 @@
-<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
-<#escape x as x?html>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 
-<#import "navigation.ftl" as nav>
-<#import "google.ftl" as google>
+<#import "navigation.ftlh" as nav>
+<#import "google.ftlh" as google>
 
 
 <#macro header>
@@ -79,5 +78,3 @@
     </#list>
   </ul><#t>
 </#macro>
-
-</#escape>

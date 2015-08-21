@@ -1,12 +1,11 @@
-<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText = true>
-<#escape x as x?html>
+<#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"} stripText=true>
 <#import "util.ftl" as u>
-<#import "footer.ftl" as footer>
-<#import "header.ftl" as header>
-<#import "navigation.ftl" as nav>
-<#import "google.ftl" as google>
-<#import "node-handlers.ftl" as defaultNodeHandlers>
-<#import "customizations.ftl" as customizations>
+<#import "footer.ftlh" as footer>
+<#import "header.ftlh" as header>
+<#import "navigation.ftlh" as nav>
+<#import "google.ftlh" as google>
+<#import "node-handlers.ftlh" as defaultNodeHandlers>
+<#import "customizations.ftlh" as customizations>
 <#assign nodeHandlers = [customizations, defaultNodeHandlers]>
 <@page>
   <#assign titleElement = u.getRequiredTitleElement(.node)>
@@ -58,7 +57,7 @@
       <@css />
 
       <#if !offline && onlineTrackerHTML??>
-        <#noEscape>${onlineTrackerHTML}</#noEscape>
+        ${onlineTrackerHTML?noEsc}
       </#if>
     </head>
   </#compress>
@@ -206,8 +205,7 @@
   </#compress>
 </#macro>
 
+
 <#function getPageType>
   <#return pageType!.node?nodeName>
 </#function>
-
-</#escape>

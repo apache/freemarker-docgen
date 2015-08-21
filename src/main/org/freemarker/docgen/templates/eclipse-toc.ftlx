@@ -1,6 +1,5 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 <#import "util.ftl" as u>
-<#escape x as x?html>
 <?xml version="1.0" encoding="utf-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
@@ -36,5 +35,3 @@
 </#macro>
 
 <#macro "@text"></#macro>
-
-</#escape>

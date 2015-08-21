@@ -357,7 +357,7 @@ import freemarker.template.utility.StringUtil;
  *       <li><p><tt>docgen-templates</tt> directory:
  *           The templates here will have priority over the ones in the
  *           {@code org.freemarker.docgen.templates} package.
- *           This is mostly used for overriding <tt>customizations.ftl</tt>;
+ *           This is mostly used for overriding <tt>customizations.ftlh</tt>;
  *           that FTL is <tt>#import</tt>-ed at the beginning of all
  *           template files, and searched first for the
  *           <tt>#visit</tt>/<tt>#recurse</tt> calls.
@@ -438,11 +438,11 @@ public final class Transform {
     static final String FILE_SEARCH_RESULTS_HTML = "search-results.html";
     static final String FILE_TOC_JSON_TEMPLATE = "toc-json.ftl";
     static final String FILE_TOC_JSON_OUTPUT = "toc.js";
-    static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftl";
+    static final String FILE_ECLIPSE_TOC_TEMPLATE = "eclipse-toc.ftlx";
     static final String FILE_ECLIPSE_TOC_OUTPUT = "eclipse-toc.xml";
     static final String DIR_TEMPLATES = "docgen-templates";
 
-    static final String FILE_SITEMAP_XML_TEMPLATE = "sitemap.ftl";
+    static final String FILE_SITEMAP_XML_TEMPLATE = "sitemap.ftlx";
     static final String FILE_SITEMAP_XML_OUTPUT = "sitemap.xml";
 
     static final String SETTING_IGNORED_FILES = "ignoredFiles";
@@ -1182,7 +1182,7 @@ public final class Transform {
             throw new BugException(e);
         }
 
-        fmConfig = new Configuration(Configuration.VERSION_2_3_23);
+        fmConfig = new Configuration(Configuration.VERSION_2_3_24);
 
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
@@ -2676,7 +2676,7 @@ public final class Transform {
 
 	private void generateHTMLFile_inner(SimpleHash dataModel, String fileName)
             throws TemplateException, IOException {
-        Template template = fmConfig.getTemplate("page.ftl");
+        Template template = fmConfig.getTemplate("page.ftlh");
         File outputFile = new File(destDir, fileName);
         FileOutputStream fos = new FileOutputStream(outputFile);
         OutputStreamWriter osw = new OutputStreamWriter(fos, UTF_8);
