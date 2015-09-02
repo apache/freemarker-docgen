@@ -248,10 +248,10 @@
     <p<#if cssClass?hasContent> class="${cssClass}"</#if>><#t>
     <#local content><@Anchor /><#recurse></#local><#t>
     <#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. -->
-    <#if !content?markup?matches(r".*<p>\s*$", "s")>
+    <#if !content?markupString?matches(r".*<p>\s*$", "s")>
         ${content}</p><#t>
     <#else>
-        ${content?markup[0 ..< content?lastIndexOf("<p>")]?noEsc}<#t>
+        ${content?markupString[0 ..< content?lastIndexOf("<p>")]?noEsc}<#t>
     </#if>
     <#assign inHtmlP = false>
   </#if>
@@ -363,7 +363,7 @@
     <div class="code-wrapper"><#t>
     <pre class="code-block ${codeType}"><@Anchor/><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
       <#local content><#recurse></#local><#t>
-      ${content?markup?chopLinebreak?noEsc}</pre></div><#t>
+      ${content?markupString?chopLinebreak?noEsc}</pre></div><#t>
   </@CantBeNestedIntoP>
 </#macro>
 
@@ -631,7 +631,7 @@
         <#if started || !(
               labelHTML?hasNext
               && ctxLabelHTMLs[labelHTML?index]??
-              && labelHTML?markup == ctxLabelHTMLs[labelHTML?index]?markup
+              && labelHTML?markupString == ctxLabelHTMLs[labelHTML?index]?markupString
             )
         >
           ${labelHTML?noEsc}<#sep>/</#sep><#t>
