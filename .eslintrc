@@ -1,19 +1,24 @@
-env:
-  node: true
-  browser: true
-
-globals:
-  toc: true
-  breadcrumb: true
-
-
-rules:
-  indent: [2, 2]
-  quotes: [2, "single"]
-  no-spaced-func: [2]
-  space-before-function-paren: [2, "never"]
-  valid-jsdoc: [2, { prefer: { "return": "returns"}}]
-  space-after-keywords: [2, "always"]
-  space-before-blocks: [2, "always"]
-  space-in-parens: [2, "never"]
-  strict: [2, "never"]
+{
+    "rules": {
+        "indent": [2, 2],
+        "quotes": [2, "single"],
+        "linebreak-style": [2, "unix"],
+        "semi": [2, "always"],
+        "space-in-parens": [2, "never"],
+        "strict": [2, "never"],
+        "no-spaced-func": [2],
+        "space-before-function-paren": [2, "never"],
+        "valid-jsdoc": [2, { "prefer": { "return": "returns" } }],
+        "space-after-keywords": [2, "always"],
+        "space-before-blocks": [2, "always"],
+        "space-in-parens": [2, "never"]
+    },
+    "env": {
+        "browser": true
+    },
+    "globals": {
+        "toc": true,
+        "breadcrumb": true
+    },
+    "extends": "eslint:recommended"
+}
