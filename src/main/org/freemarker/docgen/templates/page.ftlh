@@ -69,7 +69,7 @@
     <#local urlPath = CreateLinkFromID(.node.@id)>
     <#local canonicalUrl = deployUrl?ensureEndsWith("/") + urlPath?removeBeginning("/")>
     <meta property="og:url" content="${canonicalUrl}">
-    <link rel="canoical" href="${canonicalUrl}">
+    <link rel="canonical" href="${canonicalUrl}">
   </#if>
 </#macro>
 
