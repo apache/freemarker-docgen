@@ -12,7 +12,7 @@ use it for other projects as well, so it's not entirely specialized either.
 You must have the following libraries installed to build this project:
 
 * [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [NodeJS 0.10 or higher](https://nodejs.org/)
+* [NodeJS 0.12.4 or higher](https://nodejs.org/)
 * [Apache Ant](http://ant.apache.org/bindownload.cgi)
 
 ## Usage
