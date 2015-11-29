@@ -1,18 +1,18 @@
 (function(toc, breadcrumb) {
 
-  var LEVEL = 0;
-
-
+  var menuLevel = 0;
 
   function menuItemInnerHTML(nodeData) {
-    var isLink = nodeData.url != null; 
+    var isLink = nodeData.url != null;
     var a = document.createElement(isLink ? 'a' : 'span');
 
     a.innerHTML = nodeData.title;
+
     if (isLink) {
       a.href = nodeData.url;
     }
-    a.className = 'depth-' + LEVEL + '-link';
+
+    a.className = 'depth-' + menuLevel + '-link';
 
     return a;
   }
@@ -38,7 +38,6 @@
     if (!nodeData.children.length) {
       return true;
     } else {
-
       // don't print out children if they are only anchors
       for (var x = 0; x < nodeData.children.length; x++) {
         if (nodeData.children[x].isFile) {
@@ -64,7 +63,7 @@
   function menuChildren(children, depth, onPath) {
 
     var ul = document.createElement('ul');
-    ul.classList.add('depth-' + LEVEL);
+    ul.classList.add('depth-' + menuLevel);
 
     for (var x = 0; x < children.length; x++) {
       var node = children[x];
@@ -72,7 +71,7 @@
       var li = document.createElement('li');
       var isLast = checkIfLast(node);
 
-      if (LEVEL === 0) {
+      if (menuLevel === 0) {
         li.classList.add('section');
       }
 
@@ -94,35 +93,34 @@
         }
 
         // 'section' is always open
-        if (LEVEL !== 0) {
+        if (menuLevel !== 0) {
           li.classList.add('open');
         }
 
         depth++;
 
-      } else if (LEVEL > 0) {
+      } else if (menuLevel > 0) {
         li.classList.add('closed');
       }
 
       if (isLast) {
-
         li.classList.add('last');
 
         // @todo: add flags to docgen
         if (typeof node.flags !== 'undefined') {
           li.classList.add(node.flags.join(' '));
         }
-      } else if (LEVEL > 0) {
-        // don't add for top level elements
+      } else if (menuLevel > 0) {
+        // don't add for top menuLevel elements
         li.classList.add('has-children');
       }
 
       if (!isLast) {
-        LEVEL++;
+        menuLevel++;
 
         li.appendChild(menuChildren(node.children, depth, (node.title === breadcrumb[depth])));
 
-        LEVEL--;
+        menuLevel--;
       }
 
       ul.appendChild(li);
