@@ -2,7 +2,7 @@
     "rules": {
         "indent": [2, 2],
         "quotes": [2, "single"],
-        "linebreak-style": [2, "unix"],
+        "linebreak-style": [2, "windows"],
         "semi": [2, "always"],
         "space-in-parens": [2, "never"],
         "strict": [2, "never"],

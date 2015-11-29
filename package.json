@@ -3,16 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "npm install gulp eslint -g",
-    "lint": "eslint  --ext .js ./src/main/org/freemarker/docgen/js/"
+    "build": "./node_modules/.bin/gulp",
+    "lint": "./node_modules/.bin/eslint  --ext .js ./src/main/org/freemarker/docgen/js/"
   },
   "dependencies": {
-    "gulp": "^3.8.11",
-    "gulp-autoprefixer": "^2.2.0",
-    "gulp-concat": "^2.5.2",
-    "gulp-less": "^3.0.3",
-    "gulp-minify-css": "^1.1.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.2.0"
+    "clean-css": "3.4.8",
+    "eslint": "1.10.2",
+    "gulp": "3.9.0",
+    "gulp-autoprefixer": "3.1.0",
+    "gulp-concat": "2.6.0",
+    "gulp-less": "3.0.5",
+    "gulp-minify-css": "1.2.1",
+    "gulp-rename": "1.2.2",
+    "gulp-uglify": "1.5.1",
+    "less": "2.5.3"
+  },
+  "engines": {
+    "node": ">=0.12.4"
   }
 }
