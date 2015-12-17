@@ -123,7 +123,8 @@
    <#if .node.@linkend?hasContent>
       <a href="${CreateLinkFromID(.node.@linkend)}"><#recurse></a><#t>
    <#else>
-      <a href="${.node["@xlink:href"]}"><#recurse></a><#t>
+      <#local url = .node["@xlink:href"]>
+      <a href="${url}"><#if .node?children?size != 0><#recurse><#else>${url}</#if></a><#t>   
    </#if>
 </#macro>
 
