@@ -230,8 +230,9 @@ import freemarker.template.utility.StringUtil;
  *            for canonical URL-s)
  *         <li><p><tt>olinks</tt> (map):
  *            Maps <tt>olink</tt> <tt>targetdoc</tt> attribute values to
- *            actual URL-s.
- *
+ *            actual URL-s. The target URL can also be like <tt>olink:<i>someOlinkName<i></tt>, in which case it
+ *            will be an alias to another olink (which can also be a further reference and so on, and can be defined
+ *            both after or before the referring olink).
  *         <li><p><tt>validation</tt> (map):
  *            This is where you can configure the optional Docgen-specific
  *            DocBook validation restrictions. Accepted map entries are:
@@ -882,6 +883,19 @@ public final class Transform {
                                 cfgFile, settingName, ent.getValue());
                         olinks.put(name, target);
                     }
+                    // Resolve "olink:"-s:
+                    boolean hadSubstitutions;
+                    do {
+                        hadSubstitutions = false;
+                        for (Map.Entry<String, String> ent : olinks.entrySet()) {
+                            String value = ent.getValue();
+                            String resolvedValue = resolveDocgenURL(SETTING_OLINKS, value);
+                            if (value != resolvedValue) {
+                                ent.setValue(resolvedValue);
+                                hadSubstitutions = true;
+                            }
+                        }
+                    } while (hadSubstitutions);
                 } else if (settingName.equals(SETTING_INTERNAL_BOOKMARKS)) {
                     Map<String, Object> m = castSettingToMap(
                             cfgFile, settingName, settingValue);
