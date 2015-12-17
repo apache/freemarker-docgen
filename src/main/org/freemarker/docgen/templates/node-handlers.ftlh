@@ -213,7 +213,8 @@
              + .node.@targetdoc?jsString
              + "\". Ensure this target is defined in the docgen.cfg file.">
     </#if>
-    <a href="${olinks[.node.@targetdoc]}"><#recurse></a><#t>
+    <#local url = olinks[.node.@targetdoc]>
+    <a href="${url}"><#if .node?children?size != 0><#recurse><#else>${url}</#if></a><#t>
 </#macro>
 
 <#macro orderedlist>
