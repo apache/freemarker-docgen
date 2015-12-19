@@ -230,9 +230,8 @@ import freemarker.template.utility.StringUtil;
  *            for canonical URL-s)
  *         <li><p><tt>olinks</tt> (map):
  *            Maps <tt>olink</tt> <tt>targetdoc</tt> attribute values to
- *            actual URL-s. The target URL can also be like <tt>olink:<i>someOlinkName<i></tt>, in which case it
- *            will be an alias to another olink (which can also be a further reference and so on, and can be defined
- *            both after or before the referring olink).
+ *            actual URL-s. The target URL can also be an "olink:" or "id:" URL, and the result of resolving that can
+ *            also be further such URL, and so on.
  *         <li><p><tt>validation</tt> (map):
  *            This is where you can configure the optional Docgen-specific
  *            DocBook validation restrictions. Accepted map entries are:
@@ -883,19 +882,6 @@ public final class Transform {
                                 cfgFile, settingName, ent.getValue());
                         olinks.put(name, target);
                     }
-                    // Resolve "olink:"-s:
-                    boolean hadSubstitutions;
-                    do {
-                        hadSubstitutions = false;
-                        for (Map.Entry<String, String> ent : olinks.entrySet()) {
-                            String value = ent.getValue();
-                            String resolvedValue = resolveDocgenURL(SETTING_OLINKS, value);
-                            if (value != resolvedValue) {
-                                ent.setValue(resolvedValue);
-                                hadSubstitutions = true;
-                            }
-                        }
-                    } while (hadSubstitutions);
                 } else if (settingName.equals(SETTING_INTERNAL_BOOKMARKS)) {
                     Map<String, Object> m = castSettingToMap(
                             cfgFile, settingName, settingValue);
@@ -1256,6 +1242,12 @@ public final class Transform {
         preprocessDOM(doc);
 
         // Resolve Docgen URL schemes in setting values:
+        // Olinks must come first:
+        if (olinks != null) {
+            for (Entry<String, String> olinkEnt : olinks.entrySet()) {
+                olinkEnt.setValue(resolveDocgenURL(SETTING_OLINKS, olinkEnt.getValue()));
+            }
+        }
         if (tabs != null) {
             for (Entry<String, String> tabEnt : tabs.entrySet()) {
                 tabEnt.setValue(resolveDocgenURL(SETTING_TABS, tabEnt.getValue()));
@@ -1542,7 +1534,7 @@ public final class Transform {
                         + StringUtil.jQuote(settingName)
                         + ": " + StringUtil.jQuote(oLinkName));
             }
-            return resolvedOLink;
+            return resolveDocgenURL(settingName, resolvedOLink);
         } else if (url.startsWith(ID_SCHEMA_START)) {
             String id = url.substring(ID_SCHEMA_START.length());
             try {
@@ -2861,6 +2853,9 @@ public final class Transform {
     };
 
     private String createLinkFromId(String id) throws DocgenException {
+        if (elementsById == null) {
+            throw new IllegalStateException("Can't resolve ID as elementsById is still null: " + id);
+        }
         Element elem = elementsById.get(id);
         if (elem == null) {
             throw new DocgenException(
