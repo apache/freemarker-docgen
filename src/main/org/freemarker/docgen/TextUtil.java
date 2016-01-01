@@ -18,6 +18,11 @@
  */
 package org.freemarker.docgen;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import freemarker.template.utility.StringUtil;
+
 final class TextUtil {
 
     // Can't be instantiated
@@ -261,6 +266,40 @@ final class TextUtil {
         }
         
         return sb.toString();
+    }
+
+    public static String detectEOL(String s, String defaultEOL) {
+        int unixEOLs = 0;
+        int windowsEOLs = 0;
+        int macEOLs = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\n') {
+                unixEOLs++;
+            }
+            if (c == '\r') {
+                if (i + 1 < s.length() && s.charAt(i + 1) == '\n') {
+                    i++;
+                    windowsEOLs++;
+                } else {
+                    macEOLs++;
+                }
+            }
+        }
+        
+        if (unixEOLs > windowsEOLs && unixEOLs > macEOLs) {
+            return "\n";
+        } else if (windowsEOLs > unixEOLs && windowsEOLs > macEOLs) {
+            return "\r\n";
+        } else if (macEOLs > unixEOLs && macEOLs > windowsEOLs) {
+            return "\r";
+        } else {
+            return defaultEOL;
+        }
+    }
+    
+    public static String normalizeEOL(final String s, String eol) throws FileNotFoundException, IOException {
+        return StringUtil.replace(s, "\r\n", eol).replace("\n", eol).replace("\r", eol);
     }
     
 }

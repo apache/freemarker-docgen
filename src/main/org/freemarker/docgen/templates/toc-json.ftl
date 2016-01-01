@@ -1,4 +1,7 @@
 <#import "util.ftl" as u>
+<#if copyrightComment?hasContent>
+  ${copyrightJavaComment}<#lt>
+</#if>
 <#macro tocNodeToJSON node>
     {
         "title": "${u.getRequiredTitleAsString(node.element)?jsonString}",

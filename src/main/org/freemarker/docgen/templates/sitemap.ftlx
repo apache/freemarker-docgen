@@ -18,6 +18,11 @@
     </#list>
 </#macro>
 <?xml version="1.0" encoding="UTF-8"?>
+<#if copyrightComment?hasContent>
+  <!--<#lt>
+  ${copyrightComment}<#lt>
+  --><#lt>
+</#if>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <@sitemapUrls tocRoot />
 </urlset>

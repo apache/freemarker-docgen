@@ -49,13 +49,19 @@ import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOPLEVEL_ELEMENTS;
 import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
 import static org.freemarker.docgen.DocBook5Constants.XMLNS_XLINK;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -369,7 +375,12 @@ import freemarker.template.utility.StringUtil;
  *         <li><p><tt>showXXELogo</tt> (boolean): Specifies if an
  *           "Edited with XXE" logo should be shown on the generated pages.
  *           Defaults to <tt>false</tt>.
- *
+ *           
+ *         <li><p><tt>copyrightStartYear</tt> (String): Used in the page footer copyright notice. 
+ *         <li><p><tt>copyrightHolder</tt> (String): Used in the page footer copyright notice.
+ *         <li><p><tt>copyrightCommentFile</tt> (String): The path of a HTML file to the text used inside
+ *         the output files as copyright header comment. If this path is relative, it's relative to the source
+ *         directory.
  *       </ul>
  *
  *       <li><p><tt>docgen-templates</tt> directory:
@@ -402,7 +413,7 @@ import freemarker.template.utility.StringUtil;
  *   <li>You can omit the commas that otherwise would be at the end of the line.
  *   <li>JavaScript comments are supported (<tt>/* ... *<!-- -->/</tt> and
  *       <tt>// ...</tt>)
- *   <li>If a file is expected to contain a map, like most configuration
+ *   <li>If a file is expected to contain a JSON object, like most configuration
  *       files are, putting the whole thing between <tt>{</tt> and <tt>}</tt> is
  *       optional.
  *   <li>Maps remember the order in which the entries were specified in the
@@ -474,6 +485,7 @@ public final class Transform {
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
     static final String SETTING_COPYRIGHT_HOLDER = "copyrightHolder";
     static final String SETTING_COPYRIGHT_START_YEAR = "copyrightStartYear";
+    static final String SETTING_COPYRIGHT_COMMENT_FILE = "copyrightCommentFile";
     static final String SETTING_SEO_META = "seoMeta";
     static final String SETTING_LOGO = "logo";
     static final String SETTING_LOGO_KEY_SRC = "src";
@@ -540,6 +552,8 @@ public final class Transform {
             = SETTING_DEPLOY_URL;
     private static final String VAR_ONLINE_TRACKER_HTML
             = SETTING_ONLINE_TRACKER_HTML;
+    private static final String VAR_COPYRIGHT_COMMENT = "copyrightComment";
+    private static final String VAR_COPYRIGHT_JAVA_COMMENT = "copyrightJavaComment";
     private static final String VAR_SHOW_EDITORAL_NOTES
             = "showEditoralNotes";
     private static final String VAR_TRANSFORM_START_TIME
@@ -766,6 +780,8 @@ public final class Transform {
 
     private String copyrightHolder;
     private Integer copyrightStartYear;
+    private String copyrightComment;
+    private String copyrightJavaComment;
 
     private Map<String, Map<String, String>> seoMeta;
 
@@ -928,6 +944,14 @@ public final class Transform {
                     copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
                     copyrightStartYear = castSettingToInt(cfgFile, settingName, settingValue);
+                } else if (settingName.equals(SETTING_COPYRIGHT_COMMENT_FILE)) {
+                    copyrightComment = StringUtil.chomp(getFileContentForSetting(cfgFile, settingName, settingValue));
+                    String eol = TextUtil.detectEOL(copyrightComment, "\n");
+                    StringBuilder sb = new StringBuilder("/*").append(eol);
+                    new BufferedReader(new StringReader(copyrightComment)).lines()
+                            .forEach(s -> sb.append(" * ").append(s).append(eol));
+                    sb.append(" */");
+                    copyrightJavaComment = sb.toString();
                 } else if (settingName.equals(SETTING_SEO_META)) {
                     Map<String, Object> m = castSettingToMap(
                             cfgFile, settingName, settingValue);
@@ -1023,14 +1047,7 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_DEPLOY_URL)) {
                     deployUrl = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
-                    String onlineTrackerHtmlPath = castSettingToString(cfgFile, settingName, settingValue);
-                    File f = new File(getSourceDirectory(), onlineTrackerHtmlPath);
-                    if (!f.exists()) {
-                        throw newCfgFileException(
-                                cfgFile, SETTING_ONLINE_TRACKER_HTML,
-                                "File not found: " + f.toPath());
-                    }
-                    onlineTrackerHTML = FileUtil.loadString(f, UTF_8);
+                    onlineTrackerHTML = getFileContentForSetting(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
                     removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
                             castSettingToStringList(cfgFile, settingName, settingValue)));
@@ -1329,6 +1346,10 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_START_YEAR, copyrightStartYear);
             fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_COMMENT, copyrightComment);
+            fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_JAVA_COMMENT, copyrightJavaComment);
+            fmConfig.setSharedVariable(
                     VAR_TABS, tabs);
             fmConfig.setSharedVariable(
                     VAR_SECONDARY_TABS, secondaryTabs);
@@ -1471,6 +1492,7 @@ public final class Transform {
         copyCommonStatic("fonts/icomoon.svg");
         copyCommonStatic("fonts/icomoon.ttf");
         copyCommonStatic("fonts/icomoon.woff");
+        copyCommonStatic("fonts/NOTICE");
 
         for (int i = 1; i < 15; i++) {
             copyCommonStatic("img/callouts/" + i + ".gif");
@@ -1624,7 +1646,7 @@ public final class Transform {
         }
         return (String) settingValue;
     }
-
+    
     private boolean caseSettingToBoolean(File cfgFile,
             String settingName, Object settingValue) throws DocgenException {
         if (!(settingValue instanceof Boolean)) {
@@ -1754,10 +1776,87 @@ public final class Transform {
         return (Map<String, String>) mapEntryValue;
     }
 
-    private void copyCommonStatic(String path) throws IOException {
-        FileUtil.copyResourceIntoFile(
-                Transform.class, "statics", path,
-                new File(destDir, "docgen-resources"));
+    private String getFileContentForSetting(File cfgFile,
+            String settingName, Object settingValue) throws DocgenException {
+        String settingValueStr = castSettingToString(cfgFile, settingName, settingValue);
+        File f = new File(getSourceDirectory(), settingValueStr);
+        if (!f.exists()) {
+            throw newCfgFileException(
+                    cfgFile, settingName,
+                    "File not found: " + f.toPath());
+        }
+        try {
+            return FileUtil.loadString(f, UTF_8);
+        } catch (IOException e) {
+            throw newCfgFileException(
+                    cfgFile, "Error while reading file for setting \"" + settingName + "\": " + f.toPath(),
+                    e);
+        }
+    }
+
+    private void copyCommonStatic(String staticFileName) throws IOException, DocgenException {
+        String resourcePath = "statics/" + staticFileName; 
+        try (InputStream in = Transform.class.getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                throw new IOException("Failed to open class-loader resource: " + resourcePath + " relatively to "
+                        + Transform.class.getPackage().getName());
+            }
+            
+            if (copyrightComment != null && (staticFileName.endsWith(".css") || staticFileName.endsWith(".js"))) {
+                // ISO-8859-1 will be good enough as far as the resource isn't UTF-16 or EBCDIC:
+                final Charset fileCharset = StandardCharsets.ISO_8859_1;
+                String content = FileUtil.loadString(in, fileCharset);
+                final String eol = TextUtil.detectEOL(content, "\n");
+                
+                // If we have an initial comment, then that must be a copyright header, which we will remove.
+                if (content.startsWith("/*")) {
+                    int commentEnd = content.indexOf("*/");
+                    if (commentEnd == -1) {
+                        throw new BugException("Unclosed initial \"/*\" in resource " + resourcePath);
+                    }
+                    commentEnd += 2;
+                    String comment = content.substring(0, commentEnd);
+                    if (!comment.contains("Copyright") && !comment.contains("copyright")
+                            && !comment.contains("License") && !comment.contains("license")) {
+                        throw new BugException("The initial /*...*/ comments doesn't look like a copyright header "
+                                + "in resource " + resourcePath);
+                    }
+                    
+                    // Include an EOL after the comment, if there's any.
+                    if (commentEnd < content.length()) {
+                        char c = content.charAt(commentEnd);
+                        if (c == '\n') {
+                            commentEnd++;
+                        } else if (c == '\r') {
+                            commentEnd++;
+                            if (commentEnd < content.length() && content.charAt(commentEnd) == '\n') {
+                                commentEnd++;
+                            }
+                        }
+                    }
+                    
+                    // Remove existing copyright header:
+                    content = content.substring(commentEnd);
+                }
+                
+                // Add copyright comment:
+                StringBuilder sb = new StringBuilder(TextUtil.normalizeEOL(copyrightJavaComment, eol));
+                sb.append(eol);
+                if (content.length() > 0 && content.charAt(0) != '\n' && content.charAt(0) != '\r') {
+                    sb.append(eol);
+                }
+                sb.append(content);
+                content = sb.toString();
+                
+                Path destSubdir = destDir.toPath().resolve("docgen-resources");
+                Files.createDirectories(destSubdir);
+                Files.write(destSubdir.resolve(staticFileName), content.getBytes(fileCharset));
+            } else {
+                FileUtil.copyResourceIntoFile(
+                        Transform.class, "statics", staticFileName,
+                        new File(destDir, "docgen-resources"));                
+            }
+        }
     }
 
     /**

@@ -1,6 +1,11 @@
 <#ftl nsPrefixes={"D":"http://docbook.org/ns/docbook"}>
 <#import "util.ftl" as u>
 <?xml version="1.0" encoding="utf-8"?>
+<#if copyrightComment?hasContent>
+  <!--<#lt>
+  ${copyrightComment}<#lt>
+  --><#lt>
+</#if>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <#assign

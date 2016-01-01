@@ -774,7 +774,7 @@ final class CJSONInterpreter {
        
         c = tx.charAt(p);
        
-        // Map:
+        // JSON Object:
         if (c == '{') {
             Object nr;
             p++;
@@ -815,7 +815,7 @@ final class CJSONInterpreter {
             return res; //!
         }
 
-        // List:
+        // JSON array:
         if (c == '[') {
             p++;
             List<Object> res = new ArrayList<Object>();

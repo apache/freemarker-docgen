@@ -91,6 +91,11 @@
 
 <#macro page>
   <!doctype html><#lt>
+  <#if copyrightComment?hasContent>
+    <!--<#lt>
+    ${copyrightComment}<#lt>
+    --><#lt>
+  </#if>
   <html lang="en" class="page-type-${getPageType()?replace(':', '-')?replace('_', '-')}"><#lt>
     <#nested>
   </html><#lt>
