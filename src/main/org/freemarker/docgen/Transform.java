@@ -380,7 +380,9 @@ import freemarker.template.utility.StringUtil;
  *         <li><p><tt>copyrightHolder</tt> (String): Used in the page footer copyright notice.
  *         <li><p><tt>copyrightCommentFile</tt> (String): The path of a HTML file to the text used inside
  *         the output files as copyright header comment. If this path is relative, it's relative to the source
- *         directory.
+ *         directory. Currently, the copyright comment is only inserted if the {@code offline} mode is {@code true}.
+ *         That's because at ASF currently only the documentation files that are part of the released archive need
+ *         these comments.
  *       </ul>
  *
  *       <li><p><tt>docgen-templates</tt> directory:
@@ -1048,6 +1050,19 @@ public final class Transform {
                     deployUrl = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
                     onlineTrackerHTML = getFileContentForSetting(cfgFile, settingName, settingValue);
+                    if (onlineTrackerHTML.startsWith("<!--")) {
+                        int commentEnd = onlineTrackerHTML.indexOf("-->");
+                        if (commentEnd != -1) {
+                            commentEnd += 3;
+                            String comment = onlineTrackerHTML.substring(0, commentEnd);
+                            if (comment.contains("copyright") || comment.contains("Copyright")) {
+                                onlineTrackerHTML = onlineTrackerHTML.substring(commentEnd);
+                            }
+                        }
+                    }
+                    String eol = TextUtil.detectEOL(onlineTrackerHTML, "\n");
+                    onlineTrackerHTML = onlineTrackerHTML.trim();
+                    onlineTrackerHTML += eol;
                 } else if (settingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
                     removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
                             castSettingToStringList(cfgFile, settingName, settingValue)));
@@ -1802,7 +1817,7 @@ public final class Transform {
                         + Transform.class.getPackage().getName());
             }
             
-            if (copyrightComment != null && (staticFileName.endsWith(".css") || staticFileName.endsWith(".js"))) {
+            if (staticFileName.endsWith(".css") || staticFileName.endsWith(".js")) {
                 // ISO-8859-1 will be good enough as far as the resource isn't UTF-16 or EBCDIC:
                 final Charset fileCharset = StandardCharsets.ISO_8859_1;
                 String content = FileUtil.loadString(in, fileCharset);
@@ -1823,14 +1838,16 @@ public final class Transform {
                     }
                     
                     // Include an EOL after the comment, if there's any.
-                    if (commentEnd < content.length()) {
-                        char c = content.charAt(commentEnd);
-                        if (c == '\n') {
-                            commentEnd++;
-                        } else if (c == '\r') {
-                            commentEnd++;
-                            if (commentEnd < content.length() && content.charAt(commentEnd) == '\n') {
+                    for (int i = 0; i < 2; i++) {
+                        if (commentEnd < content.length()) {
+                            char c = content.charAt(commentEnd);
+                            if (c == '\n') {
                                 commentEnd++;
+                            } else if (c == '\r') {
+                                commentEnd++;
+                                if (commentEnd < content.length() && content.charAt(commentEnd) == '\n') {
+                                    commentEnd++;
+                                }
                             }
                         }
                     }
@@ -1839,14 +1856,16 @@ public final class Transform {
                     content = content.substring(commentEnd);
                 }
                 
-                // Add copyright comment:
-                StringBuilder sb = new StringBuilder(TextUtil.normalizeEOL(copyrightJavaComment, eol));
-                sb.append(eol);
-                if (content.length() > 0 && content.charAt(0) != '\n' && content.charAt(0) != '\r') {
+                if (offline && copyrightComment != null) {                
+                    // Add copyright comment:
+                    StringBuilder sb = new StringBuilder(TextUtil.normalizeEOL(copyrightJavaComment, eol));
                     sb.append(eol);
+                    if (content.length() > 0 && content.charAt(0) != '\n' && content.charAt(0) != '\r') {
+                        sb.append(eol);
+                    }
+                    sb.append(content);
+                    content = sb.toString();
                 }
-                sb.append(content);
-                content = sb.toString();
                 
                 Path destSubdir = destDir.toPath().resolve("docgen-resources");
                 Files.createDirectories(destSubdir);

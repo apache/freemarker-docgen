@@ -91,7 +91,7 @@
 
 <#macro page>
   <!doctype html><#lt>
-  <#if copyrightComment?hasContent>
+  <#if offline && copyrightComment?hasContent>
     <!--<#lt>
     ${copyrightComment}<#lt>
     --><#lt>

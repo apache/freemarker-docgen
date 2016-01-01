@@ -1,5 +1,5 @@
 <#import "util.ftl" as u>
-<#if copyrightComment?hasContent>
+<#if offline && copyrightComment?hasContent>
   ${copyrightJavaComment}<#lt>
 </#if>
 <#macro tocNodeToJSON node>
