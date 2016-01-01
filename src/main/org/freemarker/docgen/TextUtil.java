@@ -18,11 +18,6 @@
  */
 package org.freemarker.docgen;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import freemarker.template.utility.StringUtil;
-
 final class TextUtil {
 
     // Can't be instantiated
@@ -298,8 +293,43 @@ final class TextUtil {
         }
     }
     
-    public static String normalizeEOL(final String s, String eol) throws FileNotFoundException, IOException {
-        return StringUtil.replace(s, "\r\n", eol).replace("\n", eol).replace("\r", eol);
+    public static String normalizeEOL(final String s, String eol) {
+        int ln = s.length();
+        int i = 0;
+        while (i < ln) {
+            char c = s.charAt(i);
+            if (c == '\r' || c == '\n') {
+                break;
+            }
+            i++;
+        }
+        if (i == ln) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder(ln + ln / 10);
+        int nextToAppend = 0;
+        while (i < ln) {
+            char c = s.charAt(i);
+            if (c == '\r' || c == '\n') {
+                sb.append(s, nextToAppend, i);
+                sb.append(eol);
+                if (c == '\r' && i + 1 < ln && s.charAt(i + 1) == '\n') {
+                    i++;
+                }
+                nextToAppend = i + 1;
+            }
+            i++;
+        }
+        sb.append(s, nextToAppend, ln);
+        return sb.toString();
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(normalizeEOL("", "|"));
+        System.out.println(normalizeEOL("abc", "|"));
+        System.out.println(normalizeEOL("a\nb\nc\r\nd", "|"));
+        System.out.println(normalizeEOL("\n\n\r\r\r\n", "|"));
     }
     
 }
