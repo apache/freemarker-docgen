@@ -16,7 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-/*
- * GENERATED FILE - DO NOT EDIT! Instead, regenerate with Gulp!
- */

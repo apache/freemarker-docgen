@@ -15,7 +15,8 @@ var headerfooter = require('gulp-headerfooter');
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
 var OUT_DIR = path.join(BASE_DIR, 'statics');
 
-var header = fs.readFileSync(path.join(__dirname, 'gulp-output-header.txt'));
+var copyrightHeader = fs.readFileSync(path.join(__dirname, 'gulp-output-copyright-header.txt'));
+var doNotEditHeader = "/* GENERATED WITH GULP - DO NOT EDIT! */\n\n"
 
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
@@ -24,7 +25,7 @@ gulp.task('styles', function() {
     // rename and prefix
     .pipe(rename({ basename: 'docgen' }))
     .pipe(prefix({ cascade: false }))
-    .pipe(headerfooter.header(header))
+    .pipe(headerfooter.header(doNotEditHeader))
     .pipe(gulp.dest(OUT_DIR))
 
     // minify
@@ -34,7 +35,7 @@ gulp.task('styles', function() {
       restructuring: false,
       aggressiveMerging: false
     }))
-    .pipe(headerfooter.header(header))
+    .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
 });
 
@@ -46,11 +47,11 @@ gulp.task('js', function() {
       path.join(BASE_DIR, 'js', 'search.js')
     ])
     .pipe(concat('main.js'))
-    .pipe(headerfooter.header(header))
+    .pipe(headerfooter.header(doNotEditHeader))
     .pipe(gulp.dest(OUT_DIR))
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
-    .pipe(headerfooter.header(header))
+    .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
 });
 
