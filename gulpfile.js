@@ -19,6 +19,7 @@ var copyrightHeader = fs.readFileSync(path.join(__dirname, 'gulp-output-copyrigh
 var doNotEditHeader = "/*\n"
         + " * GENERATED WITH GULP - DO NOT EDIT!\n"
         + " * Any copyright headers below are coming from the source files from which this file was generated.\n"
+        + " * <#DO_NOT_UPDATE_COPYRIGHT>\n"
         + " */\n\n"
 
 gulp.task('styles', function() {
