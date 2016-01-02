@@ -15,7 +15,7 @@ var headerfooter = require('gulp-headerfooter');
 var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen');
 var OUT_DIR = path.join(BASE_DIR, 'statics');
 
-var header = fs.readFileSync(path.join(BASE_DIR, 'gulp-output-header.txt'));
+var header = fs.readFileSync(path.join(__dirname, 'gulp-output-header.txt'));
 
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
