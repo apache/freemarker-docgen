@@ -1499,7 +1499,6 @@ public final class Transform {
 
         // - Copy the standard statics:
         logger.info("Copying common static files...");
-        copyCommonStatic("docgen.css");
         copyCommonStatic("docgen.min.css");
         copyCommonStatic("img/patterned-bg.png");
 
@@ -1517,7 +1516,6 @@ public final class Transform {
             copyCommonStatic("img/xxe.png");
         }
         if (!disableJavaScript) {
-          copyCommonStatic("main.js");
           copyCommonStatic("main.min.js");
         }
 

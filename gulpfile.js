@@ -16,7 +16,10 @@ var BASE_DIR = path.join(__dirname, 'src', 'main', 'org', 'freemarker', 'docgen'
 var OUT_DIR = path.join(BASE_DIR, 'statics');
 
 var copyrightHeader = fs.readFileSync(path.join(__dirname, 'gulp-output-copyright-header.txt'));
-var doNotEditHeader = "/* GENERATED WITH GULP - DO NOT EDIT! */\n\n"
+var doNotEditHeader = "/*\n"
+        + " * GENERATED WITH GULP - DO NOT EDIT!\n"
+        + " * Any copyright headers below are coming from the source files from which this file was generated.\n"
+        + " */\n\n"
 
 gulp.task('styles', function() {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
