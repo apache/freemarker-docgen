@@ -33,12 +33,8 @@
 .directory
 .Trash*
 
-src/manual/book.xml~
-
 node_modules
-
 npm-debug.log
-
 main.js
 main.min.js
 docgen.min.css
