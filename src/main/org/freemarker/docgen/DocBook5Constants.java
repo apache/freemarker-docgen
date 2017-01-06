@@ -123,7 +123,7 @@ final class DocBook5Constants {
      * Elements that directly generates visible artifacts on the page and
      * occur directly under document-structural elements.
      */
-    public static final Set<String> VISIBLE_TOPLEVEL_ELEMENTS;
+    public static final Set<String> VISIBLE_TOP_LEVEL_ELEMENTS;
     static {
         HashSet<String> visibleTopLevelElems = new HashSet<String>();
 
@@ -143,7 +143,7 @@ final class DocBook5Constants {
         visibleTopLevelElems.add(E_NOTE);
         visibleTopLevelElems.add(E_WARNING);
 
-        VISIBLE_TOPLEVEL_ELEMENTS = Collections.unmodifiableSet(
+        VISIBLE_TOP_LEVEL_ELEMENTS = Collections.unmodifiableSet(
                 visibleTopLevelElems);
     }
 

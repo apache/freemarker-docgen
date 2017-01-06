@@ -45,7 +45,7 @@ import static org.freemarker.docgen.DocBook5Constants.E_SIMPLESECT;
 import static org.freemarker.docgen.DocBook5Constants.E_SUBTITLE;
 import static org.freemarker.docgen.DocBook5Constants.E_TABLE;
 import static org.freemarker.docgen.DocBook5Constants.E_TITLE;
-import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOPLEVEL_ELEMENTS;
+import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOP_LEVEL_ELEMENTS;
 import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
 import static org.freemarker.docgen.DocBook5Constants.XMLNS_XLINK;
 
@@ -589,8 +589,6 @@ public final class Transform {
             = SETTING_NUMBERED_SECTIONS;
     private static final String VAR_INDEX_ENTRIES
             = "indexEntries";
-    private static final String VAR_STARTS_WITH_TOP_LEVEL_CONTENT
-            = "startsWithTopLevelContent";
     private static final String VAR_PAGE_TYPE = "pageType";
     private static final String VAR_ALTERNATIVE_TOC_LINK
             = "alternativeTOCLink";
@@ -2254,8 +2252,9 @@ public final class Transform {
                 // Must do it at the end: We need the docgen_... XML attributes here, and we must be past the
                 // TOC topology checks.
                 for (TOCNode tocNode : tocNodes) {
+                    // Don't generate a file for pages that would only contain a table of contents 
                     if (tocNode.isFileElement()
-                            && (tocNode.getParent() == null || !hasTopLevelContent(tocNode.getElement()))) {
+                            && (tocNode.getParent() == null || !hasContentInTheSameFile(tocNode))) {
                         tocNode.setOutputFileName(null);
                         tocNode.getElement().setAttribute(A_DOCGEN_NOT_ADDRESSABLE, "true");
                     }
@@ -2718,9 +2717,6 @@ public final class Transform {
                 VAR_TOC_DISPLAY_DEPTH,
                 isTheDocumentElement
                         ? maxTOFDisplayDepth : maxMainTOFDisplayDepth);
-        dataModel.put(
-                VAR_STARTS_WITH_TOP_LEVEL_CONTENT,
-                hasTopLevelContent(currentFileTOCNode.getElement()));
 
         if (seoMeta != null) {
             Map<String, String> seoMetaMap = seoMeta.get("file:" + currentFileTOCNode.getOutputFileName());
@@ -2847,33 +2843,26 @@ public final class Transform {
 	    return sum;
 	}
 
-	/**
-     * Checks if a document-structure-element has top-level content.
-     * Top-level content is visible content that is outside the nested
-     * document-structure-element-s that have enough rank to get into the
-     * Page Contents table.
+    /**
+     * Returns if the TOC node contains anything (other than generated content) in the same file where the TOC node
+     * is displayed. 
      */
-    private boolean hasTopLevelContent(Element element) {
-        for (Element elem : XMLUtil.childrenElementsOf(element)) {
+    private boolean hasContentInTheSameFile(TOCNode tocNode) {
+        for (Element elem : XMLUtil.childrenElementsOf(tocNode.getElement())) {
             if (elem.getNamespaceURI().equals(XMLNS_DOCBOOK5)) {
-                if (elem.hasAttribute(A_DOCGEN_FILE_ELEMENT)
-                        || elem.hasAttribute(A_DOCGEN_PAGE_TOC_ELEMENT)) {
-                    return false;
-                }
                 String name = elem.getLocalName();
-                if (!name.equals(E_TITLE) && !name.equals(E_SUBTITLE)
+                if (!elem.hasAttribute(A_DOCGEN_FILE_ELEMENT)
+                        && VISIBLE_TOP_LEVEL_ELEMENTS.contains(name)
+                        && !name.equals(E_TITLE) && !name.equals(E_SUBTITLE)
                         && !name.equals(E_INFO)
                         && !name.equals(E_FOOTNOTE)) {
-                    if (VISIBLE_TOPLEVEL_ELEMENTS.contains(name)) {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
-
         return false;
     }
-
+    
     private String createElementLinkURL(final Element elem)
             throws DocgenException {
         if (elem.hasAttribute(A_DOCGEN_NOT_ADDRESSABLE)) {
@@ -2913,6 +2902,7 @@ public final class Transform {
                 curElem = (Element) curElem.getParentNode();
             } else {
                 fileName = fileTOCNode.getOutputFileName();
+                if (fileName == null) throw new IllegalStateException("fileTOCNode with null outputFileName");
             }
         } while (fileName == null);
 
