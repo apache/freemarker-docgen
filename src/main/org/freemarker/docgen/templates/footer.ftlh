@@ -22,8 +22,6 @@
 
 <#macro footer>
   <#compress>
-    <#local book = .node?root.*>
-
     <div class="site-footer"><#t>
       <#-- keep site-width inside so background extends -->
       <div class="site-width"><#t>
@@ -47,13 +45,8 @@
           </div><#t>
         </#if>
         <div class="footer-bottom"><#t>
-            <p><#t>
-              <#if book.info.productname?hasContent>
-                <span class="generated-for-product">Generated for: ${book.info.productname}</span><#t>
-              </#if>
-              <span class="last-updated"><@lastGenerated /></span><#t>
-            </p><#t>
-            <@copyright /><#t>
+          <@lastGenerated />
+          <@copyright />
         </div><#t>
       </div><#t>
     </div><#t>
@@ -62,10 +55,16 @@
 
 
 <#macro lastGenerated>
-  Last generated:
-  <time itemprop="dateModified" datetime="${transformStartTime?datetime?isoUtc}" title="${transformStartTime?datetime?string.full}"><#t>
-    ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')}<#t>
-  </time><#t>
+  <p class="last-generated">
+    Last generated:
+    <time itemprop="dateModified" datetime="${transformStartTime?datetime?isoUtc}" title="${transformStartTime?datetime?string.full}"><#t>
+      ${transformStartTime?string('yyyy-MM-dd HH:mm:ss z')}<#t>
+    </time><#t>
+    <#local book = .node?root.*>
+    <#if book.info.productname?hasContent>
+      , for ${book.info.productname}<#t>
+    </#if>
+  </p>
 </#macro>
 
 
@@ -73,7 +72,8 @@
   <p class="copyright">
     © <span itemprop="copyrightYear">${copyrightStartYear?string('0')}</span><#rt>
     <#lt><#if transformStartTime?string('yyyy')?number != copyrightStartYear>–${transformStartTime?string('yyyy')}</#if>
-    <a itemtype="http://schema.org/Organization" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a>. All rights reserved.<#t>
+    <a itemtype="http://schema.org/Organization" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a><#t>
+    <#if copyrightSuffix??>. ${copyrightSuffix}</#if><#t>
   </p>
 </#macro>
 

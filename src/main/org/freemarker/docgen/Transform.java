@@ -376,8 +376,9 @@ import freemarker.template.utility.StringUtil;
  *           "Edited with XXE" logo should be shown on the generated pages.
  *           Defaults to <tt>false</tt>.
  *           
- *         <li><p><tt>copyrightStartYear</tt> (String): Used in the page footer copyright notice. 
- *         <li><p><tt>copyrightHolder</tt> (String): Used in the page footer copyright notice.
+ *         <li><p><tt>copyrightHolder</tt> (String): Required. Used in the page footer copyright notice.
+ *         <li><p><tt>copyrightStartYear</tt> (String): Required. Used in the page footer copyright notice. 
+ *         <li><p><tt>copyrightSuffix</tt> (String): Optional. Appended after the generated copyright text.
  *         <li><p><tt>copyrightCommentFile</tt> (String): The path of a HTML file to the text used inside
  *         the output files as copyright header comment. If this path is relative, it's relative to the source
  *         directory. Currently, the copyright comment is only inserted if the {@code offline} mode is {@code true}.
@@ -487,6 +488,7 @@ public final class Transform {
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
     static final String SETTING_COPYRIGHT_HOLDER = "copyrightHolder";
     static final String SETTING_COPYRIGHT_START_YEAR = "copyrightStartYear";
+    static final String SETTING_COPYRIGHT_SUFFIX = "copyrightSuffix";
     static final String SETTING_COPYRIGHT_COMMENT_FILE = "copyrightCommentFile";
     static final String SETTING_SEO_META = "seoMeta";
     static final String SETTING_LOGO = "logo";
@@ -574,6 +576,7 @@ public final class Transform {
     private static final String VAR_LOGO = SETTING_LOGO;
     private static final String VAR_COPYRIGHT_HOLDER = SETTING_COPYRIGHT_HOLDER;
     private static final String VAR_COPYRIGHT_START_YEAR = SETTING_COPYRIGHT_START_YEAR;
+    private static final String VAR_COPYRIGHT_SUFFIX = SETTING_COPYRIGHT_SUFFIX;
     private static final String VAR_SEO_META_TITLE_OVERRIDE = "seoMetaTitleOverride";
     private static final String VAR_SEO_META_FULL_TITLE_OVERRIDE = "seoMetaFullTitleOverride";
     private static final String VAR_SEO_META_DESCRIPTION = "seoMetaDescription";
@@ -779,6 +782,7 @@ public final class Transform {
     private HashMap<String, String> logo;
 
     private String copyrightHolder;
+    private String copyrightSuffix;
     private Integer copyrightStartYear;
     private String copyrightComment;
     private String copyrightJavaComment;
@@ -944,6 +948,8 @@ public final class Transform {
                     copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
                     copyrightStartYear = castSettingToInt(cfgFile, settingName, settingValue);
+                } else if (settingName.equals(SETTING_COPYRIGHT_SUFFIX)) {
+                    copyrightSuffix = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_COPYRIGHT_COMMENT_FILE)) {
                     copyrightComment = StringUtil.chomp(getFileContentForSetting(cfgFile, settingName, settingValue));
                     String eol = TextUtil.detectEOL(copyrightComment, "\n");
@@ -1360,6 +1366,8 @@ public final class Transform {
                     VAR_LOGO, logo);
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_HOLDER, copyrightHolder);
+            fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_SUFFIX, copyrightSuffix);
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_START_YEAR, copyrightStartYear);
             fmConfig.setSharedVariable(
