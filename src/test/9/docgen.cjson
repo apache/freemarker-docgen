@@ -35,4 +35,9 @@ eclipse: {
   link_to: "freemarker-toc.xml#ManualLink"
 }
 
+copyrightHolder: "The Apache Software Foundation"
+copyrightStartYear: 1999
+
+deployUrl: "http://example.com/"
+
 showXXELogo

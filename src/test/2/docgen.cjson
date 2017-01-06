@@ -14,3 +14,8 @@ logo: {
 timeZone: "GMT+01"
 generateEclipseTOC
 showEditoralNotes
+
+copyrightHolder: "The Apache Software Foundation"
+copyrightStartYear: 1999
+
+deployUrl: "http://example.com/"

@@ -11,3 +11,8 @@ logo: {
 lowestFileElementRank: book
 
 numberedSections
+
+copyrightHolder: "The Apache Software Foundation"
+copyrightStartYear: 1999
+
+deployUrl: "http://example.com/"

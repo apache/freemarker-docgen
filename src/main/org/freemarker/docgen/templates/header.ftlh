@@ -21,7 +21,6 @@
 <#import "navigation.ftlh" as nav>
 <#import "google.ftlh" as google>
 
-
 <#macro header>
   <#if logo?? || tabs?? || secondaryTabs??>
     <div class="header-top-bg"><#t>
@@ -33,7 +32,21 @@
         </#if>
         <@nav.tabs /><#t>
         <#if secondaryTabs??>
-          <@secondaryTabs tabs=secondaryTabs /><#t>
+          <ul class="secondary-tabs"><#t>
+            <#list secondaryTabs as tabTitle, tab>
+              <li><#t>
+                <#if tab.href??>
+                  <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tabTitle}"><#t>
+                    <span>${tabTitle}</span><#t>
+                  </a><#t>
+                <#else>
+                  <div class="tab<#if tab.class??> ${tab.class}</#if>" title="${tabTitle}"><#t>
+                    <span>${tabTitle}</span><#t>
+                  </div><#t>
+                </#if>
+              </li><#t>
+            </#list>
+          </ul><#t>
         </#if>
       </div><#t>
     </div><#t>
@@ -42,7 +55,6 @@
     <@navigationHeader /><#t>
   </#if>
 </#macro>
-
 
 <#macro navigationHeader>
   <div class="header-bottom-bg"><#t>
@@ -62,7 +74,6 @@
   </div><#t>
 </#macro>
 
-
 <#macro searchForm>
   <#if searchKey?? && !offline>
     <form method="get" class="search-form<#if offline> offline</#if>" action="search-results.html"><#t>
@@ -74,25 +85,4 @@
       </fieldset><#t>
     </form><#t>
   </#if>
-</#macro>
-
-
-<#macro secondaryTabs tabs>
-  <#local secondaryTabs = .dataModel.secondaryTabs>
-  <ul class="secondary-tabs"><#t>
-    <#list secondaryTabs?keys as tabTitle>
-      <#local tab = secondaryTabs[tabTitle]>
-      <li><#t>
-        <#if tab.href??>
-          <a class="tab<#if tab.class??> ${tab.class}</#if>" href="${tab.href}" title="${tabTitle}"><#t>
-            <span>${tabTitle}</span><#t>
-          </a><#t>
-        <#else>
-          <div class="tab<#if tab.class??> ${tab.class}</#if>" title="${tabTitle}"><#t>
-            <span>${tabTitle}</span><#t>
-          </div><#t>
-        </#if>
-      </li><#t>
-    </#list>
-  </ul><#t>
 </#macro>

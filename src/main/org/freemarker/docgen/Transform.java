@@ -1174,6 +1174,10 @@ public final class Transform {
                 }
             } // for each cfg settings
 
+            if (deployUrl == null) {
+                throw new DocgenException(
+                        "The \"" + SETTING_DEPLOY_URL + "\" setting wasn't specified");
+            }
             if (offline == null) {
                 throw new DocgenException(
                         "The \"" + SETTING_OFFLINE

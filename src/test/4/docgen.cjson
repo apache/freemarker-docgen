@@ -30,3 +30,8 @@ lowestPageTOCElementRank: simplesect
 numberedSections
 
 disableJavaScript
+
+copyrightHolder: "The Apache Software Foundation"
+copyrightStartYear: 1999
+
+deployUrl: "http://example.com/"
