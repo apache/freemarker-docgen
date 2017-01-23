@@ -377,6 +377,7 @@ import freemarker.template.utility.StringUtil;
  *           Defaults to <tt>false</tt>.
  *           
  *         <li><p><tt>copyrightHolder</tt> (String): Required. Used in the page footer copyright notice.
+ *         <li><p><tt>copyrightHolderSite</tt> (String): Required. The homepage of the copyright holder.
  *         <li><p><tt>copyrightStartYear</tt> (String): Required. Used in the page footer copyright notice. 
  *         <li><p><tt>copyrightSuffix</tt> (String): Optional. Appended after the generated copyright text.
  *         <li><p><tt>copyrightCommentFile</tt> (String): The path of a HTML file to the text used inside
@@ -487,6 +488,7 @@ public final class Transform {
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
     static final String SETTING_COPYRIGHT_HOLDER = "copyrightHolder";
+    static final String SETTING_COPYRIGHT_HOLDER_SITE = "copyrightHolderSite";
     static final String SETTING_COPYRIGHT_START_YEAR = "copyrightStartYear";
     static final String SETTING_COPYRIGHT_SUFFIX = "copyrightSuffix";
     static final String SETTING_COPYRIGHT_COMMENT_FILE = "copyrightCommentFile";
@@ -575,6 +577,7 @@ public final class Transform {
             = SETTING_EXTERNAL_BOOKMARKS;
     private static final String VAR_LOGO = SETTING_LOGO;
     private static final String VAR_COPYRIGHT_HOLDER = SETTING_COPYRIGHT_HOLDER;
+    private static final String VAR_COPYRIGHT_HOLDER_SITE = SETTING_COPYRIGHT_HOLDER_SITE;
     private static final String VAR_COPYRIGHT_START_YEAR = SETTING_COPYRIGHT_START_YEAR;
     private static final String VAR_COPYRIGHT_SUFFIX = SETTING_COPYRIGHT_SUFFIX;
     private static final String VAR_SEO_META_TITLE_OVERRIDE = "seoMetaTitleOverride";
@@ -782,6 +785,7 @@ public final class Transform {
     private HashMap<String, String> logo;
 
     private String copyrightHolder;
+    private String copyrightHolderSite;
     private String copyrightSuffix;
     private Integer copyrightStartYear;
     private String copyrightComment;
@@ -946,6 +950,8 @@ public final class Transform {
                     }
                 } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER)) {
                     copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
+                } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER_SITE)) {
+                    copyrightHolderSite = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
                     copyrightStartYear = castSettingToInt(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_COPYRIGHT_SUFFIX)) {
@@ -1198,6 +1204,10 @@ public final class Transform {
                 throw new DocgenException(
                         "The \"" + SETTING_COPYRIGHT_HOLDER + "\" setting wasn't specified.");
             }
+            if (copyrightHolderSite == null) {
+                throw new DocgenException(
+                        "The \"" + SETTING_COPYRIGHT_HOLDER_SITE + "\" setting wasn't specified.");
+            }
             if (copyrightStartYear == null) {
                 throw new DocgenException(
                         "The \"" + SETTING_COPYRIGHT_START_YEAR + "\" setting wasn't specified.");
@@ -1367,6 +1377,8 @@ public final class Transform {
                     VAR_LOGO, logo);
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_HOLDER, copyrightHolder);
+            fmConfig.setSharedVariable(
+                    VAR_COPYRIGHT_HOLDER_SITE, copyrightHolderSite);
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_SUFFIX, copyrightSuffix);
             fmConfig.setSharedVariable(

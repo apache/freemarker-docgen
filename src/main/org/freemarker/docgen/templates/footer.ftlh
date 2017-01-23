@@ -72,7 +72,7 @@
   <p class="copyright">
     © <span itemprop="copyrightYear">${copyrightStartYear?string('0')}</span><#rt>
     <#lt><#if transformStartTime?string('yyyy')?number != copyrightStartYear>–${transformStartTime?string('yyyy')}</#if>
-    <a itemtype="http://schema.org/Organization" itemprop="copyrightHolder" href="http://freemarker.org">${copyrightHolder}</a><#t>
+    <a itemtype="http://schema.org/Organization" itemprop="copyrightHolder" href="${copyrightHolderSite}">${copyrightHolder}</a><#t>
     <#if copyrightSuffix??>. ${copyrightSuffix}</#if><#t>
   </p>
 </#macro>
