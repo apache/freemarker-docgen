@@ -233,7 +233,7 @@
              + "\". Ensure this target is defined in the docgen.cfg file.">
     </#if>
     <#local url = olinks[.node.@targetdoc]>
-    <a href="${url}"><#if .node?children?size != 0><#recurse><#else>${url}</#if></a><#t>
+    <a href="${url}"><#if .node?children?size != 0><#recurse>><#else>${url?removeBeginning('mailto:')}</#if></a><#t>
 </#macro>
 
 <#macro orderedlist>
