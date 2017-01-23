@@ -1240,7 +1240,8 @@ public final class Transform {
             throw new BugException(e);
         }
 
-        fmConfig = new Configuration(Configuration.VERSION_2_3_24);
+        logger.info("Using FreeMarker " + Configuration.getVersion());
+        fmConfig = new Configuration(Configuration.VERSION_2_3_25);
 
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
