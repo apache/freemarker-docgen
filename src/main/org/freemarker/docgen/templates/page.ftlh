@@ -96,7 +96,7 @@
   <#if !offline>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:500,700,400,300|Droid+Sans+Mono"><#lt>
   </#if>
-  <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css"><#lt>
+  <link rel="stylesheet" type="text/css" href="docgen-resources/docgen.min.css?${transformStartTime?long?c}"><#lt>
 </#macro>
 
 
@@ -127,8 +127,8 @@
     <#-- execute immediately to prevent page jerking -->
     <#if !disableJavaScript>
       <script><@nav.breadcrumbJs /></script>
-      <script src="toc.js"></script>
-      <script src="docgen-resources/main.min.js"></script>
+      <script src="toc.js?${transformStartTime?long?c}"></script>
+      <script src="docgen-resources/main.min.js?${transformStartTime?long?c}"></script>
     </#if>
   </div>
 </#macro>
