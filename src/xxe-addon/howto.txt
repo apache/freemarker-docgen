@@ -25,10 +25,7 @@ will be better for editing documentations conforming to the Docgen
 conventions. The customization will only affect the documents that has
 conformance="docgen" in their root element, not all DocBook documents.
 
-It will also add a Ctrl+Alt+C for copying selection as plain text.
-(Not needed since XXE 5.5.)
-
-Requires at least XXE 4.2.1. Last tested on 6.0.0.
+Requires at least XXE 4.2.1. Last tested on 7.4.1.
 
 
 How to install

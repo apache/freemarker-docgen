@@ -38,9 +38,4 @@
     <left css="Table of contents" size="0.25" />
   </windowLayout>
 
-  <binding>
-    <keyPressed code="C" modifiers="ctrl alt" />
-    <command name="copyChars" parameter="[separateParagraphs]" />
-  </binding>
-
 </configuration>
