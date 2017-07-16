@@ -123,7 +123,7 @@ in the `build/dummy-server-ivy-repo` directory. See the README file in the
 [site Git repo](https://git-wip-us.apache.org/repos/asf/incubator-freemarker-site.git)
 on how to upload content to the FreeMarker homepage!
 
-    
+
 ## Icon Font Attribution
 
 The icon font in this project was built using [IcoMoon](https://icomoon.io/)
