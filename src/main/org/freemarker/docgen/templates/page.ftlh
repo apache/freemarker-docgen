@@ -130,6 +130,15 @@
       <script src="toc.js?${transformStartTime?long?c}"></script>
       <script src="docgen-resources/main.min.js?${transformStartTime?long?c}"></script>
     </#if>
+    <#list sideTOCLogos!>
+      <div class="side-toc-logos">
+        <#items as logo>
+          <div class="side-toc-logo">
+            <a href="${logo.href}" target="_blank"><img src="${logo.src}" alt="${logo.alt}" /></a>
+          </div>
+        </#items>
+      </div>
+    </#list>
   </div>
 </#macro>
 

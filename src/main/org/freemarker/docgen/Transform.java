@@ -18,36 +18,7 @@
  */
 package org.freemarker.docgen;
 
-import static org.freemarker.docgen.DocBook5Constants.A_FILEREF;
-import static org.freemarker.docgen.DocBook5Constants.A_TARGETDOC;
-import static org.freemarker.docgen.DocBook5Constants.A_XLINK_HREF;
-import static org.freemarker.docgen.DocBook5Constants.DOCUMENT_STRUCTURE_ELEMENTS;
-import static org.freemarker.docgen.DocBook5Constants.E_APPENDIX;
-import static org.freemarker.docgen.DocBook5Constants.E_ARTICLE;
-import static org.freemarker.docgen.DocBook5Constants.E_BOOK;
-import static org.freemarker.docgen.DocBook5Constants.E_CHAPTER;
-import static org.freemarker.docgen.DocBook5Constants.E_FOOTNOTE;
-import static org.freemarker.docgen.DocBook5Constants.E_GLOSSARY;
-import static org.freemarker.docgen.DocBook5Constants.E_GLOSSENTRY;
-import static org.freemarker.docgen.DocBook5Constants.E_IMAGEDATA;
-import static org.freemarker.docgen.DocBook5Constants.E_INDEX;
-import static org.freemarker.docgen.DocBook5Constants.E_INDEXTERM;
-import static org.freemarker.docgen.DocBook5Constants.E_INFO;
-import static org.freemarker.docgen.DocBook5Constants.E_INFORMALTABLE;
-import static org.freemarker.docgen.DocBook5Constants.E_LINK;
-import static org.freemarker.docgen.DocBook5Constants.E_OLINK;
-import static org.freemarker.docgen.DocBook5Constants.E_PART;
-import static org.freemarker.docgen.DocBook5Constants.E_PREFACE;
-import static org.freemarker.docgen.DocBook5Constants.E_PRIMARY;
-import static org.freemarker.docgen.DocBook5Constants.E_SECONDARY;
-import static org.freemarker.docgen.DocBook5Constants.E_SECTION;
-import static org.freemarker.docgen.DocBook5Constants.E_SIMPLESECT;
-import static org.freemarker.docgen.DocBook5Constants.E_SUBTITLE;
-import static org.freemarker.docgen.DocBook5Constants.E_TABLE;
-import static org.freemarker.docgen.DocBook5Constants.E_TITLE;
-import static org.freemarker.docgen.DocBook5Constants.VISIBLE_TOP_LEVEL_ELEMENTS;
-import static org.freemarker.docgen.DocBook5Constants.XMLNS_DOCBOOK5;
-import static org.freemarker.docgen.DocBook5Constants.XMLNS_XLINK;
+import static org.freemarker.docgen.DocBook5Constants.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -385,6 +356,12 @@ import freemarker.template.utility.StringUtil;
  *         directory. Currently, the copyright comment is only inserted if the {@code offline} mode is {@code true}.
  *         That's because at ASF currently only the documentation files that are part of the released archive need
  *         these comments.
+ *         
+ *         <li><p><tt>sideTOCLogos</tt> (list of maps): Specifies the logos that should be shown under the
+ *         Table of Contents shown on the side of each page. This is usually used to show the logos of sponsors.
+ *         The logo images should as wide as the ToC, and will be listed vertically. The maps in the list should
+ *         follow the same format as the <tt>logo</tt> setting. 
+ *         
  *       </ul>
  *
  *       <li><p><tt>docgen-templates</tt> directory:
@@ -497,6 +474,7 @@ public final class Transform {
     static final String SETTING_LOGO_KEY_SRC = "src";
     static final String SETTING_LOGO_KEY_ALT = "alt";
     static final String SETTING_LOGO_KEY_HREF = "href";
+    static final String SETTING_SIDE_TOC_LOGOS = "sideTOCLogos";
     static final String SETTING_TABS = "tabs";
     static final String SETTING_SECONDARY_TABS = "secondaryTabs";
     static final String SETTING_SOCIAL_LINKS = "socialLinks";
@@ -576,6 +554,7 @@ public final class Transform {
     private static final String VAR_EXTERNAL_BOOKMARDS
             = SETTING_EXTERNAL_BOOKMARKS;
     private static final String VAR_LOGO = SETTING_LOGO;
+    private static final String VAR_SIDE_TOC_LOGOS = SETTING_SIDE_TOC_LOGOS;
     private static final String VAR_COPYRIGHT_HOLDER = SETTING_COPYRIGHT_HOLDER;
     private static final String VAR_COPYRIGHT_HOLDER_SITE = SETTING_COPYRIGHT_HOLDER_SITE;
     private static final String VAR_COPYRIGHT_START_YEAR = SETTING_COPYRIGHT_START_YEAR;
@@ -782,8 +761,10 @@ public final class Transform {
     private Map<String, Map<String, String>> secondaryTabs;
     private Map<String, Map<String, String>> socialLinks;
 
-    private HashMap<String, String> logo;
+    private Logo logo;
 
+    private List<Logo> sideTOCLogos;
+    
     private String copyrightHolder;
     private String copyrightHolderSite;
     private String copyrightSuffix;
@@ -898,7 +879,7 @@ public final class Transform {
                         ignoredFilePathPatterns.add(FileUtil.globToRegexp(pattern));
                     }
                 } else if (settingName.equals(SETTING_OLINKS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
@@ -907,7 +888,7 @@ public final class Transform {
                         olinks.put(name, target);
                     }
                 } else if (settingName.equals(SETTING_INTERNAL_BOOKMARKS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
@@ -918,7 +899,7 @@ public final class Transform {
                     // Book-mark targets will be checked later, when the XML
                     // document is already loaded.
                 } else if (settingName.equals(SETTING_EXTERNAL_BOOKMARKS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
@@ -927,26 +908,16 @@ public final class Transform {
                         externalBookmarks.put(name, target);
                     }
                 } else if (settingName.equals(SETTING_LOGO)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
-                    logo = new HashMap<>();
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String k = ent.getKey();
-                        String v = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
-                        if (!(k.equals(SETTING_LOGO_KEY_SRC) || k.equals(SETTING_LOGO_KEY_ALT)
-                                || k.equals(SETTING_LOGO_KEY_HREF))) {
-                            throw newCfgFileException(cfgFile, SETTING_LOGO, "Unknown logo option: " + k);
-                        }
-                        logo.put(k, v);
-                    }
-                    if (!logo.containsKey(SETTING_LOGO_KEY_SRC)) {
-                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_SRC);
-                    }
-                    if (!logo.containsKey(SETTING_LOGO_KEY_ALT)) {
-                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_ALT);
-                    }
-                    if (!logo.containsKey(SETTING_LOGO_KEY_HREF)) {
-                        throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_HREF);
+                    logo = castMapToLogo(cfgFile, settingName, m);
+                } else if (settingName.equals(SETTING_SIDE_TOC_LOGOS)) {
+                    List<Map<String, Object>> listOfMaps
+                            = castSettingToListOfMapsWithStringKeys(cfgFile, settingName, settingValue);
+                    sideTOCLogos = new ArrayList<>(); 
+                    for (int i = 0; i < listOfMaps.size(); i++) {
+                        Map<String, Object> map = listOfMaps.get(i);
+                        sideTOCLogos.add(castMapToLogo(cfgFile, settingName + "[" + i + "]", map));
                     }
                 } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER)) {
                     copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
@@ -965,7 +936,7 @@ public final class Transform {
                     sb.append(" */");
                     copyrightJavaComment = sb.toString();
                 } else if (settingName.equals(SETTING_SEO_META)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     seoMeta = new LinkedHashMap<>();
                     for (Entry<String, Object> ent : m.entrySet()) {
@@ -976,7 +947,7 @@ public final class Transform {
                         seoMeta.put(k, v);
                     }
                 } else if (settingName.equals(SETTING_TABS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String k = ent.getKey();
@@ -984,7 +955,7 @@ public final class Transform {
                         tabs.put(k, v);
                     }
                 } else if (settingName.equals(SETTING_SECONDARY_TABS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     secondaryTabs = new LinkedHashMap<>();
                     for (Entry<String, Object> ent : m.entrySet()) {
@@ -995,7 +966,7 @@ public final class Transform {
                         secondaryTabs.put(k, v);
                     }
                 } else if (settingName.equals(SETTING_SOCIAL_LINKS)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     socialLinks = new LinkedHashMap<>();
                     for (Entry<String, Object> ent : m.entrySet()) {
@@ -1007,10 +978,10 @@ public final class Transform {
                     }
                 } else if (settingName.equals(SETTING_FOOTER_SITEMAP)) {
                     // TODO Check value in more details
-                    footerSiteMap = (Map) castSettingToMap(
+                    footerSiteMap = (Map) castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                 }else if (settingName.equals(SETTING_VALIDATION)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, SETTING_VALIDATION, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
@@ -1077,7 +1048,7 @@ public final class Transform {
                     removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
                             castSettingToStringList(cfgFile, settingName, settingValue)));
                 } else if (settingName.equals(SETTING_ECLIPSE)) {
-                    Map<String, Object> m = castSettingToMap(
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String name = ent.getKey();
@@ -1327,9 +1298,11 @@ public final class Transform {
             }
         }
         if (logo != null) {
-            String logoHref = logo.get(SETTING_LOGO_KEY_HREF);
-            if (logoHref != null) {
-                logo.put(SETTING_LOGO_KEY_HREF, resolveDocgenURL(SETTING_LOGO, logoHref));
+            resolveLogoHref(logo);
+        }
+        if (sideTOCLogos != null) {
+            for (Logo logo : sideTOCLogos) {
+                resolveLogoHref(logo);
             }
         }
 
@@ -1375,6 +1348,8 @@ public final class Transform {
                     VAR_NUMBERED_SECTIONS, numberedSections);
             fmConfig.setSharedVariable(
                     VAR_LOGO, logo);
+            fmConfig.setSharedVariable(
+                    VAR_SIDE_TOC_LOGOS, sideTOCLogos);
             fmConfig.setSharedVariable(
                     VAR_COPYRIGHT_HOLDER, copyrightHolder);
             fmConfig.setSharedVariable(
@@ -1580,6 +1555,13 @@ public final class Transform {
                 + (generateEclipseTOC ? " + Eclipse ToC" : ""));
     }
 
+    private void resolveLogoHref(Logo logo) throws DocgenException {
+        String logoHref = logo.getHref();
+        if (logoHref != null) {
+            logo.setHref(resolveDocgenURL(SETTING_LOGO, logoHref));
+        }
+    }
+
     /**
      * Resolves the URL if it uses the {@code "olink:"} or {@code "id:"} schema, returns it as if otherwise.
      */
@@ -1634,15 +1616,23 @@ public final class Transform {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> castSettingToMap(
+    private Map<String, Object> castSettingToMapWithStringKeys(
             File cfgFile, String settingName, Object settingValue)
             throws DocgenException {
         if (!(settingValue instanceof Map)) {
             throw newCfgFileException(
                     cfgFile, settingName,
-                    "Should be a map (like {key1: value1, key2: value2}), but "
+                    "Should be a map (like { key1: value1, key2: value2 }), but "
                     + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
                     + ".");
+        }
+        for (Object key : ((Map<?, ?>) settingValue).keySet()) {
+            if (!(key instanceof String)) {
+                throw newCfgFileException(
+                        cfgFile, settingName,
+                        "All keys should be String-s, but one of them is a(n) "
+                        + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
+            }
         }
         return (Map<String, Object>) settingValue;
     }
@@ -1651,14 +1641,7 @@ public final class Transform {
     private List<String> castSettingToStringList(
             File cfgFile, String settingName, Object settingValue)
             throws DocgenException {
-        if (!(settingValue instanceof List)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a list (like [value1, value2, ... valueN]), but "
-                    + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
-                    + ".");
-        }
-        List<?> settingValueAsList = (List<?>) settingValue;
+        List<?> settingValueAsList = castSettingToList(cfgFile, settingName, settingValue);
         for (int i = 0; i < settingValueAsList.size(); i++) {
             Object listItem = settingValueAsList.get(i);
             if (!(listItem instanceof String)) {
@@ -1670,6 +1653,28 @@ public final class Transform {
             }
         }
         return (List<String>) settingValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> castSettingToListOfMapsWithStringKeys(
+            File cfgFile, String settingName, Object settingValue)
+            throws DocgenException {
+        List<?> settingValueAsList = castSettingToList(cfgFile, settingName, settingValue);
+        for (int i = 0; i < settingValueAsList.size(); i++) {
+            castSettingToMapWithStringKeys(cfgFile, settingName + "[" + i + "]", settingValueAsList.get(i));
+        }
+        return (List) settingValue;
+    }
+    
+    private List<?> castSettingToList(File cfgFile, String settingName, Object settingValue) throws DocgenException {
+        if (!(settingValue instanceof List)) {
+            throw newCfgFileException(
+                    cfgFile, settingName,
+                    "Should be a list (like [value1, value2, ... valueN]), but "
+                    + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
+                    + ".");
+        }
+        return (List<?>) settingValue;
     }
 
     private String castSettingToString(File cfgFile,
@@ -1810,6 +1815,40 @@ public final class Transform {
             }
         }
         return (Map<String, String>) mapEntryValue;
+    }
+    
+    private Logo castMapToLogo(File cfgFile, final String settingName, Map<String, Object> map)
+            throws DocgenException {
+        Logo logo = new Logo();
+        for (Entry<String, Object> ent : map.entrySet()) {
+            String key = ent.getKey();
+            String value = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
+            switch (key) {
+            case SETTING_LOGO_KEY_SRC:
+                logo.setSrc(value);
+                break;
+            case SETTING_LOGO_KEY_ALT:
+                logo.setAlt(value);
+                break;
+            case SETTING_LOGO_KEY_HREF:
+                logo.setHref(value);
+                break;
+            default:
+                throw newCfgFileException(cfgFile, SETTING_LOGO, "Unknown logo option: " + StringUtil.jQuote(key));
+            }
+        }
+
+        if (logo.getSrc() == null) {
+            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_SRC);
+        }
+        if (logo.getAlt() == null) {
+            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_ALT);
+        }
+        if (logo.getHref() == null) {
+            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_HREF);
+        }
+        
+        return logo;
     }
 
     private String getFileContentForSetting(File cfgFile,
