@@ -1506,10 +1506,6 @@ public final class Transform {
         copyCommonStatic("fonts/icomoon.woff");
         copyCommonStatic("fonts/NOTICE");
 
-        for (int i = 1; i < 15; i++) {
-            copyCommonStatic("img/callouts/" + i + ".gif");
-        }
-
         if (showXXELogo) {
             copyCommonStatic("img/xxe.png");
         }

@@ -202,11 +202,34 @@
    limitations under the License.
 
 ==============================================================================
-END LICENSE
 
+The Apache FreeMarker (incubating) source code contains the following
+files without copyright header for technical reasons, which were created
+at the Apache FreeMarker (incubating) project, and hence are covered by
+the same license as the other source files of it:
 
-Docgen subcomponents with different copyright owners
-----------------------------------------------------
+    package.json
+    package-lock.json
+    src/main/org/freemarker/docgen/statics/fonts/selection.json
+    src/main/org/freemarker/docgen/statics/img/patterned-bg.png
+    src/main/org/freemarker/docgen/statics/img/xxe.gif
+    src/main/org/freemarker/docgen/statics/img/xxe.png
+    src/test/1/bat.jpg
+    src/test/1/figures/model2sketch.png
+    src/test/1/figures/overview.png
+    src/test/1/figures/tree.png
+    src/test/1/logo.png
+    src/test/2/logo.png
+    src/test/2/test.gif
+    src/test/3/logo.png
+    src/test/4/logo.png
+    src/test/5/logo.png
+    src/test/6/logo.png
+    src/test/7/logo.png
+    src/test/8/logo.png
+    src/test/9/logo.png
+
+==============================================================================
 
 The "icomoon" font files (icomoon.eot, icomoon.svg, icomoon.ttf, and
 icomoon.woff) under the "documentation" directory of the FreeMarker
@@ -228,3 +251,8 @@ the binary, freemarker.jar. The fonts are:
   (http://google.github.io/material-design-icons/), licensed under
   Creative Common Attribution 4.0 International License (CC-BY 4.0)
   (https://creativecommons.org/licenses/by/4.0/).
+    
+==============================================================================
+
+See the license of the src/main/org/freemarker/docgen/schema/docbook.rng file
+in the following file: LICENSE-DOCBOOK-RNG
