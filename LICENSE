@@ -203,34 +203,6 @@
 
 ==============================================================================
 
-The Apache FreeMarker (incubating) source code contains the following
-files without copyright header for technical reasons, which were created
-at the Apache FreeMarker (incubating) project, and hence are covered by
-the same license as the other source files of it:
-
-    package.json
-    package-lock.json
-    src/main/org/freemarker/docgen/statics/fonts/selection.json
-    src/main/org/freemarker/docgen/statics/img/patterned-bg.png
-    src/main/org/freemarker/docgen/statics/img/xxe.gif
-    src/main/org/freemarker/docgen/statics/img/xxe.png
-    src/test/1/bat.jpg
-    src/test/1/figures/model2sketch.png
-    src/test/1/figures/overview.png
-    src/test/1/figures/tree.png
-    src/test/1/logo.png
-    src/test/2/logo.png
-    src/test/2/test.gif
-    src/test/3/logo.png
-    src/test/4/logo.png
-    src/test/5/logo.png
-    src/test/6/logo.png
-    src/test/7/logo.png
-    src/test/8/logo.png
-    src/test/9/logo.png
-
-==============================================================================
-
 The "icomoon" font files (icomoon.eot, icomoon.svg, icomoon.ttf, and
 icomoon.woff) under the "documentation" directory of the FreeMarker
 distribution contains a selection from the fonts listed below. Note that
