@@ -77,6 +77,9 @@
       <#if !offline && onlineTrackerHTML??>
         ${onlineTrackerHTML?noEsc}
       </#if>
+      <#if !offline && cookieConsentScriptURL??>
+        <script type="text/javascript" src="${cookieConsentScriptURL}"></script>
+      </#if>
     </head>
   </#compress>
 </#macro>

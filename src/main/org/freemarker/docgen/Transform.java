@@ -343,6 +343,9 @@ import freemarker.template.utility.StringUtil;
  *         insert the Google Analytics <tt>script</tt> element. If this path is
  *         relative, it's relative to the source directory.
  *
+ *         <li><p><tt>cookineConsentScriptURL</tt> (string): The URL used as the <tt>src</tt> attribute of the
+ *         EU cookie consent <tt>script</tt> tag. This is usually a CDN URL.
+ *
  *         <li><p><tt>showXXELogo</tt> (boolean): Specifies if an
  *           "Edited with XXE" logo should be shown on the generated pages.
  *           Defaults to <tt>false</tt>.
@@ -461,6 +464,7 @@ public final class Transform {
     static final String SETTING_SIMPLE_NAVIGATION_MODE = "simpleNavigationMode";
     static final String SETTING_DEPLOY_URL = "deployUrl";
     static final String SETTING_ONLINE_TRACKER_HTML = "onlineTrackerHTML";
+    static final String SETTING_COOKIE_CONSENT_SCRIPT_URL = "cookieConsentScriptURL";
     static final String SETTING_REMOVE_NODES_WHEN_ONLINE = "removeNodesWhenOnline";
     static final String SETTING_INTERNAL_BOOKMARKS = "internalBookmarks";
     static final String SETTING_EXTERNAL_BOOKMARKS = "externalBookmarks";
@@ -536,6 +540,7 @@ public final class Transform {
             = SETTING_DEPLOY_URL;
     private static final String VAR_ONLINE_TRACKER_HTML
             = SETTING_ONLINE_TRACKER_HTML;
+    private static final String VAR_COOKIE_CONSENT_SCRIPT_URL = SETTING_COOKIE_CONSENT_SCRIPT_URL;
     private static final String VAR_COPYRIGHT_COMMENT = "copyrightComment";
     private static final String VAR_COPYRIGHT_JAVA_COMMENT = "copyrightJavaComment";
     private static final String VAR_SHOW_EDITORAL_NOTES
@@ -716,6 +721,7 @@ public final class Transform {
     private String deployUrl;
 
     private String onlineTrackerHTML;
+    private String cookieConstentScriptURL;
 
     private Set<String> removeNodesWhenOnline;
 
@@ -1044,6 +1050,8 @@ public final class Transform {
                     String eol = TextUtil.detectEOL(onlineTrackerHTML, "\n");
                     onlineTrackerHTML = onlineTrackerHTML.trim();
                     onlineTrackerHTML += eol;
+                } else if (settingName.equals(SETTING_COOKIE_CONSENT_SCRIPT_URL)) {
+                    cookieConstentScriptURL = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
                     removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
                             castSettingToStringList(cfgFile, settingName, settingValue)));
@@ -1334,6 +1342,8 @@ public final class Transform {
                     VAR_DEPLOY_URL, deployUrl);
             fmConfig.setSharedVariable(
                     VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
+            fmConfig.setSharedVariable(
+                    VAR_COOKIE_CONSENT_SCRIPT_URL, cookieConstentScriptURL);
             fmConfig.setSharedVariable(
                     VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
             fmConfig.setSharedVariable(
