@@ -19,6 +19,16 @@ Before building for the first time:
   dependencies. This need to be repeated if you add new dependencies
   to `gulpfile.js`.
 
+Possible node.js related problems and solutions:
+* "Error: ENOENT, stat <someDirectoryHere>": create that directory manually,
+  then retry.
+* If the system doesn't find `npm`: Open a new terminal (command window) so
+  that it pick up the "path" environment variable changes. Adjust it if
+  necessary.
+* If the build has once worked, but now keeps failing due to some missing
+  modules, or anything strange, delete the "node_modules" directory, and
+  issue `npm install` to recreate it.
+  
 To build Docgen:
 
 ```sh
