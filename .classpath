@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="ide-dependencies/isorelax-20030108.jar"/>
 	<classpathentry kind="lib" path="ide-dependencies/jing-20091111.jar"/>
 	<classpathentry kind="lib" path="ide-dependencies/saxon-8.7.jar"/>
-	<classpathentry kind="lib" path="ide-dependencies/xercesImpl-2.9.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/FreeMarker-2.3-gae"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FreeMarker--2.3-gae"/>
 	<classpathentry kind="output" path=".bin"/>
 </classpath>
