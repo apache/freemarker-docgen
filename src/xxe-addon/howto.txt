@@ -37,11 +37,14 @@ subdirectory of your XXE user preferences directory, which is
 
 On UNIX:
   $HOME/.xxe/addon
+
+On Windows 7-10:
+  c:\Users\%USERNAME%\AppData\Roaming\XMLmind\XMLEditor<V>\addon
+  (replace %USERNAME% with your user name that you see in the Windows start menu,
+  <V> with the XEE major version.)
   
 On Windows XP:
   C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor<V>\addon
-  (replace %USERNAME% with your user name that you see in the Windows start menu,
-  <V> with the XEE major version.)
 
 Then restart XXE if it was running. From now on all DocBook 5 XML-s
 whose root element has a conformance="docgen" attribute will be opened
