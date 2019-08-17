@@ -25,7 +25,7 @@ var fs = require('fs');
 var gulp = require('gulp');
 var less = require('gulp-less');
 var rename = require('gulp-rename');
-var minifyCss = require('gulp-minify-css');
+var cleanCss = require('gulp-clean-css');
 var prefix = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
@@ -53,7 +53,7 @@ gulp.task('styles', gulp.series(function(done) {
 
     // minify
     .pipe(rename({ suffix: '.min' }))
-    .pipe(minifyCss({
+    .pipe(cleanCss({
       advanced: false,
       restructuring: false,
       aggressiveMerging: false
