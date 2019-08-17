@@ -13,7 +13,7 @@ it tries to be reusable in other projects as well.
 Before building for the first time:
 * JDK 8 must be used (tried with 1.8.0_20)
 * Apache Ant must be installed (tried with 1.8.1), and use JDK 8 for building.
-* [Node.js](https://nodejs.org/) must be installed (tried with v0.12.4).
+* [Node.js](https://nodejs.org/) must be installed (tried with v10.16.2).
 * Create a `build.properties` file based on `build.properties.sample`
 * Issue `npm install` from the project directory to install Node.js
   dependencies. This need to be repeated if you add new dependencies

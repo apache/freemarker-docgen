@@ -41,7 +41,7 @@ var doNotEditHeader = "/*\n"
         + " * <#DO_NOT_UPDATE_COPYRIGHT>\n"
         + " */\n\n"
 
-gulp.task('styles', function() {
+gulp.task('styles', gulp.series(function(done) {
   gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
     .pipe(less({ paths: path.join(__dirname, 'node_modules') }))
 
@@ -60,9 +60,10 @@ gulp.task('styles', function() {
     }))
     .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
-});
+	done();
+}));
 
-gulp.task('js', function() {
+gulp.task('js', gulp.series(function(done) {
   return gulp.src([
       path.join(BASE_DIR, 'js', 'use-strict.js'),
       path.join(BASE_DIR, 'js', 'make-toc.js'),
@@ -76,11 +77,13 @@ gulp.task('js', function() {
     .pipe(rename({ suffix: '.min' }))
     .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
-});
+	done();
+}));
 
-gulp.task('default', ['styles', 'js']);
+gulp.task('default', gulp.series(['styles', 'js']));
 
-gulp.task('watch-less', ['styles'], function() {
+gulp.task('watch-less', gulp.series(['styles'], function(done) {
   // watch less files
   gulp.watch([path.join(BASE_DIR, 'less', '**', '*')], ['styles']);
-});
+  done();
+}));
