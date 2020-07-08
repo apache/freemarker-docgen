@@ -19,19 +19,19 @@
 # --------
 
 # Files covered in the LICENSE file:
-src/main/org/freemarker/docgen/schema/docbook.rng
-src/main/org/freemarker/docgen/statics/fonts/icomoon.svg
-src/main/org/freemarker/docgen/statics/fonts/icomoon.eot
-src/main/org/freemarker/docgen/statics/fonts/icomoon.ttf
-src/main/org/freemarker/docgen/statics/fonts/icomoon.woff
+src/main/resources/org/freemarker/docgen/schema/docbook.rng
+src/main/resources/org/freemarker/docgen/statics/fonts/icomoon.svg
+src/main/resources/org/freemarker/docgen/statics/fonts/icomoon.eot
+src/main/resources/org/freemarker/docgen/statics/fonts/icomoon.ttf
+src/main/resources/org/freemarker/docgen/statics/fonts/icomoon.woff
 
 # Files without license header that were created in the FreeMarker project:
 package.json
 package-lock.json
-src/main/org/freemarker/docgen/statics/fonts/selection.json
-src/main/org/freemarker/docgen/statics/img/patterned-bg.png
-src/main/org/freemarker/docgen/statics/img/xxe.gif
-src/main/org/freemarker/docgen/statics/img/xxe.png
+src/main/resources/org/freemarker/docgen/statics/fonts/selection.json
+src/main/resources/org/freemarker/docgen/statics/img/patterned-bg.png
+src/main/resources/org/freemarker/docgen/statics/img/xxe.gif
+src/main/resources/org/freemarker/docgen/statics/img/xxe.png
 src/test/1/bat.jpg
 src/test/1/figures/model2sketch.png
 src/test/1/figures/overview.png

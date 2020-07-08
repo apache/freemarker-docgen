@@ -16,13 +16,7 @@
 # under the License.
 
 language: java
-before_install: ant download-ivy
-install: ant all
-
-before_script: ant test
-script:
-  - ant -f test.xml
-  - npm run-script lint
-
 jdk:
-  - oraclejdk8
+  - openjdk8
+script:
+  - mvn clean install
