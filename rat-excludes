@@ -15,6 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# About the paths in this file
+#
+# Rat will use this file when building any of the modules, or the parent
+# project. When Maven builds a module, it will interpret these paths relatively
+# to that module. So, unfortunatelly, we have a mix of all the module-relative
+# paths here, some only makes sense when a certain module is built.
+
 # In src/:
 # --------
 
@@ -32,20 +39,21 @@ src/main/resources/org/freemarker/docgen/statics/fonts/selection.json
 src/main/resources/org/freemarker/docgen/statics/img/patterned-bg.png
 src/main/resources/org/freemarker/docgen/statics/img/xxe.gif
 src/main/resources/org/freemarker/docgen/statics/img/xxe.png
-src/test/1/bat.jpg
-src/test/1/figures/model2sketch.png
-src/test/1/figures/overview.png
-src/test/1/figures/tree.png
-src/test/1/logo.png
-src/test/2/logo.png
-src/test/2/test.gif
-src/test/3/logo.png
-src/test/4/logo.png
-src/test/5/logo.png
-src/test/6/logo.png
-src/test/7/logo.png
-src/test/8/logo.png
-src/test/9/logo.png
+legacy-tests/build/**
+legacy/srcdirs/1/bat.jpg
+legacy/srcdirs/1/figures/model2sketch.png
+legacy/srcdirs/1/figures/overview.png
+legacy/srcdirs/1/figures/tree.png
+legacy/srcdirs/1/logo.png
+legacy/srcdirs/2/logo.png
+legacy/srcdirs/2/test.gif
+legacy/srcdirs/3/logo.png
+legacy/srcdirs/4/logo.png
+legacy/srcdirs/5/logo.png
+legacy/srcdirs/6/logo.png
+legacy/srcdirs/7/logo.png
+legacy/srcdirs/8/logo.png
+legacy/srcdirs/9/logo.png
 
 # Tooling/IDE generated files:
 # ----------------------------

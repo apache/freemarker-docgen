@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="FreeMarker Manual">
+  
+<topic
+      label="Preface"
+      href="preface.html"
+  ></topic>  
+<topic
+      label="I: Template Author&apos;s Guide"
+      href="dgui.html"
+  >  
+<topic
+      label="1: Getting Started"
+      href="dgui_quickstart.html"
+  >  
+<topic
+      label="1.1: Template + data-model = output"
+      href="dgui_quickstart_basics.html"
+  ></topic>  
+<topic
+      label="1.2: The data-model at a glance"
+      href="dgui_quickstart_datamodel.html"
+  ></topic>  
+<topic
+      label="1.3: The template at a glance"
+      href="dgui_quickstart_template.html"
+  ></topic></topic>  
+<topic
+      label="2: Values, Types"
+      href="dgui_datamodel.html"
+  >  
+<topic
+      label="2.1: Basics"
+      href="dgui_datamodel_basics.html"
+  ></topic>  
+<topic
+      label="2.2: The types"
+      href="dgui_datamodel_types.html"
+  ></topic></topic>  
+<topic
+      label="3: The Template"
+      href="dgui_template.html"
+  >  
+<topic
+      label="3.1: Overall structure"
+      href="dgui_template_overallstructure.html"
+  ></topic>  
+<topic
+      label="3.2: Directives"
+      href="dgui_template_directives.html"
+  ></topic>  
+<topic
+      label="3.3: Expressions"
+      href="dgui_template_exp.html"
+  ></topic>  
+<topic
+      label="3.4: Interpolations"
+      href="dgui_template_valueinsertion.html"
+  ></topic></topic>  
+<topic
+      label="4: Miscellaneous"
+      href="dgui_misc.html"
+  >  
+<topic
+      label="4.1: Defining your own directives"
+      href="dgui_misc_userdefdir.html"
+  ></topic>  
+<topic
+      label="4.2: Defining variables in the template"
+      href="dgui_misc_var.html"
+  ></topic>  
+<topic
+      label="4.3: Namespaces"
+      href="dgui_misc_namespace.html"
+  ></topic>  
+<topic
+      label="4.4: White-space handling"
+      href="dgui_misc_whitespace.html"
+  ></topic>  
+<topic
+      label="4.5: Alternative (square bracket) syntax"
+      href="dgui_misc_alternativesyntax.html"
+  ></topic></topic></topic>  
+<topic
+      label="II: Programmer&apos;s Guide"
+      href="pgui.html"
+  >  
+<topic
+      label="1: Getting Started"
+      href="pgui_quickstart.html"
+  >  
+<topic
+      label="1.1: Create a configuration instance"
+      href="pgui_quickstart_createconfiguration.html"
+  ></topic>  
+<topic
+      label="1.2: Create a data-model"
+      href="pgui_quickstart_createdatamodel.html"
+  ></topic>  
+<topic
+      label="1.3: Get the template"
+      href="pgui_quickstart_gettemplate.html"
+  ></topic>  
+<topic
+      label="1.4: Merging the template with the data-model"
+      href="pgui_quickstart_merge.html"
+  ></topic>  
+<topic
+      label="1.5: Putting all together"
+      href="pgui_quickstart_all.html"
+  ></topic></topic>  
+<topic
+      label="2: The Data Model"
+      href="pgui_datamodel.html"
+  >  
+<topic
+      label="2.1: Basics"
+      href="pgui_datamodel_basics.html"
+  ></topic>  
+<topic
+      label="2.2: Scalars"
+      href="pgui_datamodel_scalar.html"
+  ></topic>  
+<topic
+      label="2.3: Containers"
+      href="pgui_datamodel_parent.html"
+  ></topic>  
+<topic
+      label="2.4: Methods"
+      href="pgui_datamodel_method.html"
+  ></topic>  
+<topic
+      label="2.5: Directives"
+      href="pgui_datamodel_directive.html"
+  ></topic>  
+<topic
+      label="2.6: Node variables"
+      href="pgui_datamodel_node.html"
+  ></topic>  
+<topic
+      label="2.7: Object wrappers"
+      href="pgui_datamodel_objectWrapper.html"
+  ></topic></topic>  
+<topic
+      label="3: The Configuration"
+      href="pgui_config.html"
+  >  
+<topic
+      label="3.1: Basics"
+      href="pgui_config_basics.html"
+  ></topic>  
+<topic
+      label="3.2: Shared variables"
+      href="pgui_config_sharedvariables.html"
+  ></topic>  
+<topic
+      label="3.3: Settings"
+      href="pgui_config_settings.html"
+  ></topic>  
+<topic
+      label="3.4: Template loading"
+      href="pgui_config_templateloading.html"
+  ></topic>  
+<topic
+      label="3.5: Error handling"
+      href="pgui_config_errorhandling.html"
+  ></topic></topic>  
+<topic
+      label="4: Miscellaneous"
+      href="pgui_misc.html"
+  >  
+<topic
+      label="4.1: Variables"
+      href="pgui_misc_var.html"
+  ></topic>  
+<topic
+      label="4.2: Charset issues"
+      href="pgui_misc_charset.html"
+  ></topic>  
+<topic
+      label="4.3: Multithreading"
+      href="pgui_misc_multithreading.html"
+  ></topic>  
+<topic
+      label="4.4: Bean wrapper"
+      href="pgui_misc_beanwrapper.html"
+  ></topic>  
+<topic
+      label="4.5: Logging"
+      href="pgui_misc_logging.html"
+  ></topic>  
+<topic
+      label="4.6: Using FreeMarker with servlets"
+      href="pgui_misc_servlet.html"
+  ></topic>  
+<topic
+      label="4.7: Configuring security policy for FreeMarker"
+      href="pgui_misc_secureenv.html"
+  ></topic>  
+<topic
+      label="4.8: Legacy XML wrapper implementation"
+      href="pgui_misc_xml_legacy.html"
+  ></topic>  
+<topic
+      label="4.9: Using FreeMarker with Ant"
+      href="pgui_misc_ant.html"
+  ></topic>  
+<topic
+      label="4.10: Jython wrapper"
+      href="pgui_misc_jythonwrapper.html"
+  ></topic></topic></topic>  
+<topic
+      label="III: XML Processing Guide"
+      href="xgui.html"
+  >  
+<topic
+      label="Preface"
+      href="xgui_preface.html"
+  ></topic>  
+<topic
+      label="1: Exposing XML documents"
+      href="xgui_expose.html"
+  >  
+<topic
+      label="1.1: The DOM tree"
+      href="xgui_expose_dom.html"
+  ></topic>  
+<topic
+      label="1.2: Putting the XML into the data-model"
+      href="xgui_expose_put.html"
+  ></topic></topic>  
+<topic
+      label="2: Imperative XML processing"
+      href="xgui_imperative.html"
+  >  
+<topic
+      label="2.1: Learning by example"
+      href="xgui_imperative_learn.html"
+  ></topic>  
+<topic
+      label="2.2: Formal description"
+      href="xgui_imperative_formal.html"
+  ></topic></topic>  
+<topic
+      label="3: Declarative XML Processing"
+      href="xgui_declarative.html"
+  >  
+<topic
+      label="3.1: Basics"
+      href="xgui_declarative_basics.html"
+  ></topic>  
+<topic
+      label="3.2: Details"
+      href="xgui_declarative_details.html"
+  ></topic></topic></topic>  
+<topic
+      label="IV: Reference"
+      href="ref.html"
+  >  
+<topic
+      label="1: Built-in Reference"
+      href="ref_builtins.html"
+  >  
+<topic
+      label="1.1: Built-ins for strings"
+      href="ref_builtins_string.html"
+  ></topic>  
+<topic
+      label="1.2: Built-ins for numbers"
+      href="ref_builtins_number.html"
+  ></topic>  
+<topic
+      label="1.3: Built-ins for dates"
+      href="ref_builtins_date.html"
+  ></topic>  
+<topic
+      label="1.4: Built-ins for booleans"
+      href="ref_builtins_boolean.html"
+  ></topic>  
+<topic
+      label="1.5: Built-ins for sequences"
+      href="ref_builtins_sequence.html"
+  ></topic>  
+<topic
+      label="1.6: Built-ins for hashes"
+      href="ref_builtins_hash.html"
+  ></topic>  
+<topic
+      label="1.7: Built-ins for nodes (for XML)"
+      href="ref_builtins_node.html"
+  ></topic>  
+<topic
+      label="1.8: Seldom used and expert built-ins"
+      href="ref_builtins_expert.html"
+  ></topic></topic>  
+<topic
+      label="2: Directive Reference"
+      href="ref_directives.html"
+  >  
+<topic
+      label="2.1: if, else, elseif"
+      href="ref_directive_if.html"
+  ></topic>  
+<topic
+      label="2.2: switch, case, default, break"
+      href="ref_directive_switch.html"
+  ></topic>  
+<topic
+      label="2.3: list, break"
+      href="ref_directive_list.html"
+  ></topic>  
+<topic
+      label="2.4: include"
+      href="ref_directive_include.html"
+  ></topic>  
+<topic
+      label="2.5: import"
+      href="ref_directive_import.html"
+  ></topic>  
+<topic
+      label="2.6: noparse"
+      href="ref_directive_noparse.html"
+  ></topic>  
+<topic
+      label="2.7: compress"
+      href="ref_directive_compress.html"
+  ></topic>  
+<topic
+      label="2.8: escape, noescape"
+      href="ref_directive_escape.html"
+  ></topic>  
+<topic
+      label="2.9: assign"
+      href="ref_directive_assign.html"
+  ></topic>  
+<topic
+      label="2.10: global"
+      href="ref_directive_global.html"
+  ></topic>  
+<topic
+      label="2.11: local"
+      href="ref_directive_local.html"
+  ></topic>  
+<topic
+      label="2.12: setting"
+      href="ref_directive_setting.html"
+  ></topic>  
+<topic
+      label="2.13: User-defined directive (&lt;@...&gt;)"
+      href="ref_directive_userDefined.html"
+  ></topic>  
+<topic
+      label="2.14: macro, nested, return"
+      href="ref_directive_macro.html"
+  ></topic>  
+<topic
+      label="2.15: function, return"
+      href="ref_directive_function.html"
+  ></topic>  
+<topic
+      label="2.16: flush"
+      href="ref_directive_flush.html"
+  ></topic>  
+<topic
+      label="2.17: stop"
+      href="ref_directive_stop.html"
+  ></topic>  
+<topic
+      label="2.18: ftl"
+      href="ref_directive_ftl.html"
+  ></topic>  
+<topic
+      label="2.19: t, lt, rt"
+      href="ref_directive_t.html"
+  ></topic>  
+<topic
+      label="2.20: nt"
+      href="ref_directive_nt.html"
+  ></topic>  
+<topic
+      label="2.21: attempt, recover"
+      href="ref_directive_attempt.html"
+  ></topic>  
+<topic
+      label="2.22: visit, recurse, fallback"
+      href="ref_directive_visit.html"
+  ></topic></topic>  
+<topic
+      label="3: Special Variable Reference"
+      href="ref_specvar.html"
+  ></topic>  
+<topic
+      label="4: Reserved names in FTL"
+      href="ref_reservednames.html"
+  ></topic>  
+<topic
+      label="5: Deprecated FTL constructs"
+      href="ref_deprecated.html"
+  >  
+<topic
+      label="5.1: List of deprecated directives"
+      href="ref_depr_directive.html"
+  ></topic>  
+<topic
+      label="5.2: List of deprecated built-ins"
+      href="ref_depr_builtin.html"
+  ></topic>  
+<topic
+      label="5.3: Old-style macro and call directives"
+      href="ref_depr_oldmacro.html"
+  ></topic>  
+<topic
+      label="5.4: Transform directive"
+      href="ref_depr_transform.html"
+  ></topic>  
+<topic
+      label="5.5: Old FTL syntax"
+      href="ref_depr_oldsyntax.html"
+  ></topic>  
+<topic
+      label="5.6: #{...}: Numerical interpolation"
+      href="ref_depr_numerical_interpolation.html"
+  ></topic></topic></topic>  
+<topic
+      label="V: Appendixes"
+      href="app.html"
+  >  
+<topic
+      label="A: FAQ"
+      href="app_faq.html"
+  ></topic>  
+<topic
+      label="B: Installing FreeMarker"
+      href="app_install.html"
+  ></topic>  
+<topic
+      label="C: Building FreeMarker"
+      href="app_build.html"
+  ></topic>  
+<topic
+      label="D: Versions"
+      href="app_versions.html"
+  >  
+<topic
+      label="D.1: 2.3.16"
+      href="versions_2_3_16.html"
+  ></topic>  
+<topic
+      label="D.2: 2.3.15"
+      href="versions_2_3_15.html"
+  ></topic>  
+<topic
+      label="D.3: 2.3.14"
+      href="versions_2_3_14.html"
+  ></topic>  
+<topic
+      label="D.4: 2.3.13"
+      href="versions_2_3_13.html"
+  ></topic>  
+<topic
+      label="D.5: 2.3.12"
+      href="versions_2_3_12.html"
+  ></topic>  
+<topic
+      label="D.6: 2.3.11"
+      href="versions_2_3_11.html"
+  ></topic>  
+<topic
+      label="D.7: 2.3.10"
+      href="versions_2_3_10.html"
+  ></topic>  
+<topic
+      label="D.8: 2.3.9"
+      href="versions_2_3_9.html"
+  ></topic>  
+<topic
+      label="D.9: 2.3.8"
+      href="versions_2_3_8.html"
+  ></topic>  
+<topic
+      label="D.10: 2.3.7"
+      href="versions_2_3_7.html"
+  ></topic>  
+<topic
+      label="D.11: 2.3.7 RC1"
+      href="versions_2_3_7rc1.html"
+  ></topic>  
+<topic
+      label="D.12: 2.3.6"
+      href="versions_2_3_6.html"
+  ></topic>  
+<topic
+      label="D.13: 2.3.5"
+      href="versions_2_3_5.html"
+  ></topic>  
+<topic
+      label="D.14: 2.3.4"
+      href="versions_2_3_4.html"
+  ></topic>  
+<topic
+      label="D.15: 2.3.3"
+      href="versions_2_3_3.html"
+  ></topic>  
+<topic
+      label="D.16: 2.3.2"
+      href="versions_2_3_2.html"
+  ></topic>  
+<topic
+      label="D.17: 2.3.1"
+      href="versions_2_3_1.html"
+  ></topic>  
+<topic
+      label="D.18: 2.3"
+      href="versions_2_3.html"
+  ></topic>  
+<topic
+      label="D.19: 2.2.8"
+      href="versions_2_2_8.html"
+  ></topic>  
+<topic
+      label="D.20: 2.2.7"
+      href="versions_2_2_7.html"
+  ></topic>  
+<topic
+      label="D.21: 2.2.6"
+      href="versions_2_2_6.html"
+  ></topic>  
+<topic
+      label="D.22: 2.2.5"
+      href="versions_2_2_5.html"
+  ></topic>  
+<topic
+      label="D.23: 2.2.4"
+      href="versions_2_2_4.html"
+  ></topic>  
+<topic
+      label="D.24: 2.2.3"
+      href="versions_2_2_3.html"
+  ></topic>  
+<topic
+      label="D.25: 2.2.2"
+      href="versions_2_2_2.html"
+  ></topic>  
+<topic
+      label="D.26: 2.2.1"
+      href="versions_2_2_1.html"
+  ></topic>  
+<topic
+      label="D.27: 2.2"
+      href="versions_2_2.html"
+  ></topic>  
+<topic
+      label="D.28: 2.1.5"
+      href="versions_2_1_5.html"
+  ></topic>  
+<topic
+      label="D.29: 2.1.4"
+      href="versions_2_1_4.html"
+  ></topic>  
+<topic
+      label="D.30: 2.1.3"
+      href="versions_2_1_3.html"
+  ></topic>  
+<topic
+      label="D.31: 2.1.2"
+      href="versions_2_1_2.html"
+  ></topic>  
+<topic
+      label="D.32: 2.1.1"
+      href="versions_2_1_1.html"
+  ></topic>  
+<topic
+      label="D.33: 2.1"
+      href="versions_2_1.html"
+  ></topic>  
+<topic
+      label="D.34: 2.01"
+      href="versions_2_01.html"
+  ></topic>  
+<topic
+      label="D.35: 2.0"
+      href="versions_2_0.html"
+  ></topic>  
+<topic
+      label="D.36: 2.0 RC3"
+      href="versions_2_0RC3.html"
+  ></topic>  
+<topic
+      label="D.37: 2.0 RC2"
+      href="versions_2_0RC2.html"
+  ></topic>  
+<topic
+      label="D.38: 2.0 RC1"
+      href="versions_2_0RC1.html"
+  ></topic></topic>  
+<topic
+      label="E: License"
+      href="app_license.html"
+  ></topic></topic>  
+<topic
+      label="Glossary"
+      href="gloss.html"
+  ></topic>  
+<topic
+      label="Alphabetical Index"
+      href="alphaidx.html"
+  ></topic></toc>
+

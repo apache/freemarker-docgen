@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="The test book">
+  
+<topic
+      label="1: Testing some elements"
+      href="autoid_2.html"
+  >  
+<topic
+      label="Footers"
+      href="autoid_3.html"
+  ></topic>  
+<topic
+      label="Program listings"
+      href="prg.html"
+  ></topic>  
+<topic
+      label="XREF-s"
+      href="xrefs.html"
+  ></topic>  
+<topic
+      label="Tables"
+      href="tables.html"
+  ></topic>  
+<topic
+      label="HTML anchors"
+      href="autoid_4.html"
+  ></topic>  
+<topic
+      label="In-line literals"
+      href="autoid_5.html"
+  ></topic></topic>  
+<topic
+      label="2: Just for the sake of structure"
+      href="autoid_6.html"
+  ></topic>  
+<topic
+      label="3: Yet another chapter"
+      href="autoid_7.html"
+  >  
+<topic
+      label="Yet another section"
+      href="yet_another_section.html"
+  ></topic>  
+<topic
+      label="Yet yet another section"
+      href="autoid_8.html"
+  ></topic></topic></toc>
+

@@ -12,12 +12,11 @@ it tries to be reusable in other projects as well.
 
 Before building for the first time:
 * JDK 8 must be used (tried with 1.8.0_212)
-* Apache Maven must be installed (tried with 3.6.1), and use JDK 8 for building.
+* Apache Maven must be installed (tried with 3.6.1)
 * [Node.js](https://nodejs.org/) must be installed (tried with v10.16.2).
-* Create a `build.properties` file based on `build.properties.sample`
-* Issue `npm install` from the project directory to install Node.js
-  dependencies. This need to be repeated if you add new dependencies
-  to `gulpfile.js`.
+* Go to `freemarker-docgen-core`, and issue `npm install` there to install
+  Node.js dependencies. Repeat this step if you add new dependencies to
+  `gulpfile.js`.
 
 Possible node.js related problems and solutions:
 * "Error: ENOENT, stat <someDirectoryHere>": create that directory manually,
@@ -29,19 +28,19 @@ Possible node.js related problems and solutions:
   modules, or anything strange, delete the "node_modules" directory, and
   issue `npm install` to recreate it.
   
-To build Docgen:
+To build Docgen (again, do the npm npm installation first!):
 
 ```sh
 mvn install
 ```
 
 For some examples see:
-* `src/test` and `test.xml` in this project
+* `legacy-tests`
 * `src/manual` in [the `freemarker` project](https://git-wip-us.apache.org/repos/asf/incubator-freemarker.git)
 * `src/main/docgen` the [`site` project](https://git-wip-us.apache.org/repos/asf/incubator-freemarker-site.git)
 
 For editing DocBook, we are using [XXE](http://www.xmlmind.com/xmleditor/)
-with the `src/xxe-addon` installed.
+with the `xxe-addon` installed.
 
 ### Try your modifications
 
@@ -66,7 +65,7 @@ The generated output is in `target\resources-gulp`.
 
 ## Publishing a new Docgen version
 
-TODO
+TODO Standard ASF release procedure. Binary release to Maven Central.
 
 ## Icon Font Attribution
 

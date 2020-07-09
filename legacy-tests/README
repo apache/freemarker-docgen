@@ -1,0 +1,4 @@
+Moved old tests here. These doesn't run as part of the build, but are ran manually.
+
+First, build the parent project via `mvn package`
+Then try to run `ant` from this directory.
