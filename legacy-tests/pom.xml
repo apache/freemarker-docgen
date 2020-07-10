@@ -23,52 +23,33 @@
     <parent>
         <groupId>org.apache.freemarker.docgen</groupId>
         <artifactId>freemarker-docgen</artifactId>
+        
+        <!-- *** KEEP THIS UP TO DATE! *** -->
         <version>0.0.1</version>
     </parent>
 
     <groupId>org.apache.freemarker.docgen</groupId>
-    <artifactId>freemarker-docgen-cli</artifactId>
-    <name>Apache FreeMarker Docgen - CLI</name>
-    <description>Docgen command line interface</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.freemarker.docgen</groupId>
-            <artifactId>freemarker-docgen-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <artifactId>freemarker-docgen-test</artifactId>
 
     <build>
+        <directory>../target/legacy-tests/maven</directory>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.10</version>
+                <groupId>org.apache.freemarker.docgen</groupId>
+                <artifactId>freemarker-docgen-maven</artifactId>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>assemble</goal>
+                            <goal>transform</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <repositoryLayout>flat</repositoryLayout>
-                    <repositoryName>lib</repositoryName>
-                    <extraJvmArguments>-Xms64m -Xmx512m</extraJvmArguments>
-                    <endorsedDir>endorsed</endorsedDir>
-                    <useWildcardClassPath>true</useWildcardClassPath>
-                    <programs>
-                        <program>
-                            <platforms>
-                                <platform>windows</platform>
-                                <platform>unix</platform>
-                            </platforms>
-                            <mainClass>org.freemarker.docgen.cli.Main</mainClass>
-                            <id>docgen</id>
-                        </program>
-                    </programs>
+                    <sourceDirectory>srcdirs/1</sourceDirectory>
+                    <outputDirectory>../target/legacy-tests/maven/docgen/1</outputDirectory>
+                    <offline>true</offline>
                 </configuration>
             </plugin>
         </plugins>

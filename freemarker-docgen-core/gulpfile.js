@@ -31,8 +31,8 @@ var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var headerfooter = require('gulp-headerfooter');
 
-var BASE_DIR = path.join(__dirname, 'src', 'main', 'resources-gulp', 'org', 'freemarker', 'docgen');
-var OUT_DIR = path.join(__dirname, 'target', 'resources-gulp', 'org', 'freemarker', 'docgen', 'statics');
+var BASE_DIR = path.join(__dirname, 'src', 'main', 'resources-gulp', 'org', 'freemarker', 'docgen', 'core');
+var OUT_DIR = path.join(__dirname, 'target', 'resources-gulp', 'org', 'freemarker', 'docgen', 'core', 'statics');
 
 var copyrightHeader = fs.readFileSync(path.join(__dirname, 'gulp-output-copyright-header.txt'));
 var doNotEditHeader = "/*\n"
