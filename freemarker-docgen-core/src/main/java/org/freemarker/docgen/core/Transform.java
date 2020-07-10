@@ -177,7 +177,7 @@ public final class Transform {
     private static final String VAR_OFFLINE
             = SETTING_OFFLINE;
     private static final String VAR_SIMPLE_NAVIGATION_MODE
-    		= SETTING_SIMPLE_NAVIGATION_MODE;
+            = SETTING_SIMPLE_NAVIGATION_MODE;
     private static final String VAR_DEPLOY_URL
             = SETTING_DEPLOY_URL;
     private static final String VAR_ONLINE_TRACKER_HTML
@@ -245,7 +245,7 @@ public final class Transform {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     static final String SYSPROP_GENERATION_TIME = "docgen.generationTime";
-    
+
     // Docgen-specific XML attributes (added during DOM-tree postediting):
 
     /**
@@ -304,7 +304,7 @@ public final class Transform {
     /** An element for which it's not possible to create a link. */
     private static final String A_DOCGEN_NOT_ADDRESSABLE = "docgen_not_addressable";
 
-	private static final String AV_INDEX_ROLE = "index.html";
+    private static final String AV_INDEX_ROLE = "index.html";
 
     /**
      * This is how automatically added id attribute values start.
@@ -342,10 +342,10 @@ public final class Transform {
         PREFACE_LIKE_ELEMENTS = Collections.unmodifiableSet(sinlgeFileElems);
     }
 
-	private static final String XMLNS_DOCGEN = "http://freemarker.org/docgen";
+    private static final String XMLNS_DOCGEN = "http://freemarker.org/docgen";
     private static final String E_SEARCHRESULTS = "searchresults";
-	private static final String SEARCH_RESULTS_PAGE_TITLE = "Search results";
-	private static final String SEARCH_RESULTS_ELEMENT_ID = "searchresults";
+    private static final String SEARCH_RESULTS_PAGE_TITLE = "Search results";
+    private static final String SEARCH_RESULTS_ELEMENT_ID = "searchresults";
 
     // -------------------------------------------------------------------------
     // Settings:
@@ -355,7 +355,7 @@ public final class Transform {
     private File srcDir;
 
     private File contentDir;
-    
+
     private List<Pattern> ignoredFilePathPatterns = new ArrayList<>();
 
     private Boolean offline;
@@ -412,7 +412,7 @@ public final class Transform {
     private Logo logo;
 
     private List<Logo> sideTOCLogos;
-    
+
     private String copyrightHolder;
     private String copyrightHolderSite;
     private String copyrightSuffix;
@@ -562,7 +562,7 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_SIDE_TOC_LOGOS)) {
                     List<Map<String, Object>> listOfMaps
                             = castSettingToListOfMapsWithStringKeys(cfgFile, settingName, settingValue);
-                    sideTOCLogos = new ArrayList<>(); 
+                    sideTOCLogos = new ArrayList<>();
                     for (int i = 0; i < listOfMaps.size(); i++) {
                         Map<String, Object> map = listOfMaps.get(i);
                         sideTOCLogos.add(castMapToLogo(cfgFile, settingName + "[" + i + "]", map));
@@ -674,7 +674,7 @@ public final class Transform {
                         offline = caseSettingToBoolean(cfgFile, settingName, settingValue);
                     }
                 } else if (settingName.equals(SETTING_SIMPLE_NAVIGATION_MODE)) {
-                	simpleNavigationMode = caseSettingToBoolean(cfgFile, settingName, settingValue);
+                    simpleNavigationMode = caseSettingToBoolean(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_DEPLOY_URL)) {
                     deployUrl = castSettingToString(cfgFile, settingName, settingValue);
                 } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
@@ -1094,25 +1094,25 @@ public final class Transform {
             }
         }
 
-				// - Generate Sitemap XML:
-				{
-						logger.info("Generating Sitemap XML...");
-						Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
-						try (Writer wr = new BufferedWriter(
-										new OutputStreamWriter(
-														new FileOutputStream(
-																		new File(destDir, FILE_SITEMAP_XML_OUTPUT)),
-														UTF_8))) {
-								try {
-										SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-												dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
-										template.process(dataModel, wr, null, NodeModel.wrap(doc));
-								} catch (TemplateException e) {
-										throw new BugException("Failed to generate Sitemap XML"
-														+ "(see cause exception).", e);
-								}
-						}
-				}
+        // - Generate Sitemap XML:
+        {
+            logger.info("Generating Sitemap XML...");
+            Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
+            try (Writer wr = new BufferedWriter(
+                        new OutputStreamWriter(
+                                        new FileOutputStream(
+                                                        new File(destDir, FILE_SITEMAP_XML_OUTPUT)),
+                                        UTF_8))) {
+                try {
+                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+                            dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                    template.process(dataModel, wr, null, NodeModel.wrap(doc));
+                } catch (TemplateException e) {
+                    throw new BugException("Failed to generate Sitemap XML"
+                            + "(see cause exception).", e);
+                }
+            }
+        }
 
 
         // - Generate the HTML-s:
@@ -1136,10 +1136,10 @@ public final class Transform {
             }
         }
 
-		if (!offline && searchKey != null) {
-			try {
-				generateSearchResultsHTMLFile(doc);
-	            htmlFileCounter++;
+        if (!offline && searchKey != null) {
+            try {
+                generateSearchResultsHTMLFile(doc);
+                htmlFileCounter++;
             } catch (freemarker.core.StopException e) {
                 throw new DocgenException(e.getMessage());
             } catch (TemplateException e) {
@@ -1171,9 +1171,9 @@ public final class Transform {
 
         // - Eclipse ToC:
         if (generateEclipseTOC) {
-        	if (simpleNavigationMode) {
-        		throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
-        	}
+            if (simpleNavigationMode) {
+                throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
+            }
 
             logger.info("Generating Eclipse ToC...");
             Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
@@ -1313,7 +1313,7 @@ public final class Transform {
         }
         return (List) settingValue;
     }
-    
+
     private List<?> castSettingToList(File cfgFile, String settingName, Object settingValue) throws DocgenException {
         if (!(settingValue instanceof List)) {
             throw newCfgFileException(
@@ -1335,7 +1335,7 @@ public final class Transform {
         }
         return (String) settingValue;
     }
-    
+
     private boolean caseSettingToBoolean(File cfgFile,
             String settingName, Object settingValue) throws DocgenException {
         if (!(settingValue instanceof Boolean)) {
@@ -1464,7 +1464,7 @@ public final class Transform {
         }
         return (Map<String, String>) mapEntryValue;
     }
-    
+
     private Logo castMapToLogo(File cfgFile, final String settingName, Map<String, Object> map)
             throws DocgenException {
         Logo logo = new Logo();
@@ -1495,7 +1495,7 @@ public final class Transform {
         if (logo.getHref() == null) {
             throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_HREF);
         }
-        
+
         return logo;
     }
 
@@ -1518,19 +1518,19 @@ public final class Transform {
     }
 
     private void copyCommonStatic(String staticFileName) throws IOException, DocgenException {
-        String resourcePath = "statics/" + staticFileName; 
+        String resourcePath = "statics/" + staticFileName;
         try (InputStream in = Transform.class.getResourceAsStream(resourcePath)) {
             if (in == null) {
                 throw new IOException("Failed to open class-loader resource: " + resourcePath + " relatively to "
                         + Transform.class.getPackage().getName());
             }
-            
+
             if (staticFileName.endsWith(".css") || staticFileName.endsWith(".js")) {
                 // ISO-8859-1 will be good enough as far as the resource isn't UTF-16 or EBCDIC:
                 final Charset fileCharset = StandardCharsets.ISO_8859_1;
                 String content = FileUtil.loadString(in, fileCharset);
                 final String eol = TextUtil.detectEOL(content, "\n");
-                
+
                 // If we have an initial comment, then that must be a copyright header, which we will remove.
                 if (content.startsWith("/*")) {
                     int commentEnd = content.indexOf("*/");
@@ -1544,7 +1544,7 @@ public final class Transform {
                         throw new BugException("The initial /*...*/ comments doesn't look like a copyright header "
                                 + "in resource " + resourcePath);
                     }
-                    
+
                     // Include an EOL after the comment, if there's any.
                     for (int i = 0; i < 2; i++) {
                         if (commentEnd < content.length()) {
@@ -1559,12 +1559,12 @@ public final class Transform {
                             }
                         }
                     }
-                    
+
                     // Remove existing copyright header:
                     content = content.substring(commentEnd);
                 }
-                
-                if (offline && copyrightComment != null) {                
+
+                if (offline && copyrightComment != null) {
                     // Add copyright comment:
                     StringBuilder sb = new StringBuilder(TextUtil.normalizeEOL(copyrightJavaComment, eol));
                     sb.append(eol);
@@ -1574,14 +1574,14 @@ public final class Transform {
                     sb.append(content);
                     content = sb.toString();
                 }
-                
+
                 Path destSubdir = destDir.toPath().resolve("docgen-resources");
                 Files.createDirectories(destSubdir);
                 Files.write(destSubdir.resolve(staticFileName), content.getBytes(fileCharset));
             } else {
                 FileUtil.copyResourceIntoFile(
                         Transform.class, "statics", staticFileName,
-                        new File(destDir, "docgen-resources"));                
+                        new File(destDir, "docgen-resources"));
             }
         }
     }
@@ -1964,7 +1964,7 @@ public final class Transform {
                 // Must do it at the end: We need the docgen_... XML attributes here, and we must be past the
                 // TOC topology checks.
                 for (TOCNode tocNode : tocNodes) {
-                    // Don't generate a file for pages that would only contain a table of contents 
+                    // Don't generate a file for pages that would only contain a table of contents
                     if (tocNode.isFileElement()
                             && (tocNode.getParent() == null || !hasContentInTheSameFile(tocNode))) {
                         tocNode.setOutputFileName(null);
@@ -2222,17 +2222,17 @@ public final class Transform {
             return null;
         }
 
-		Element title = getTitle(elem);
-		if (title == null) {
-		    // An element without title can't be an external link ToC node
-		    return null;
-		}
+        Element title = getTitle(elem);
+        if (title == null) {
+            // An element without title can't be an external link ToC node
+            return null;
+        }
 
-		Iterator<Element> it = XMLUtil.childrenElementsOf(title).iterator();
-		if (it.hasNext()) {
-		    Element firstChild = it.next();
-		    if (!it.hasNext()) { // It's the only child
-		        String firstChildName = firstChild.getLocalName();
+        Iterator<Element> it = XMLUtil.childrenElementsOf(title).iterator();
+        if (it.hasNext()) {
+            Element firstChild = it.next();
+            if (!it.hasNext()) { // It's the only child
+                String firstChildName = firstChild.getLocalName();
                 if (firstChildName.equals(E_LINK)) {
                     String href = XMLUtil.getAttributeNS(firstChild, XMLNS_XLINK, A_XLINK_HREF);
                     if (href == null) {
@@ -2255,35 +2255,35 @@ public final class Transform {
                     }
                     return url;
                 }
-		    }
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 
-	/**
+    /**
      * Ensures that
      * @param tocNodes
      * @throws DocgenException
      */
     private void preprocessDOM_buildTOC_checkEnsureHasIndexHhml(List<TOCNode> tocNodes) throws DocgenException {
-		for (TOCNode tocNode : tocNodes) {
-			if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_INDEX_HTML)) {
-				return;
-			}
-		}
-		// If we had no index.html, the ToC HTML will be renamed to it:
-		for (TOCNode tocNode : tocNodes) {
-			if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_TOC_HTML)) {
-				tocNode.setOutputFileName(FILE_INDEX_HTML);
-				return;
-			}
-		}
-		throw new DocgenException(
-				"No " + FILE_INDEX_HTML + " output file would be generated. Add " + DocBook5Constants.A_ROLE + "=\""
-				+ AV_INDEX_ROLE + "\" to one of the elements for which a separate file is generated.");
-	}
+        for (TOCNode tocNode : tocNodes) {
+            if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_INDEX_HTML)) {
+                return;
+            }
+        }
+        // If we had no index.html, the ToC HTML will be renamed to it:
+        for (TOCNode tocNode : tocNodes) {
+            if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_TOC_HTML)) {
+                tocNode.setOutputFileName(FILE_INDEX_HTML);
+                return;
+            }
+        }
+        throw new DocgenException(
+                "No " + FILE_INDEX_HTML + " output file would be generated. Add " + DocBook5Constants.A_ROLE + "=\""
+                + AV_INDEX_ROLE + "\" to one of the elements for which a separate file is generated.");
+    }
 
-	private boolean hasPrefaceLikeParent(Element elem) {
+    private boolean hasPrefaceLikeParent(Element elem) {
         while (true) {
             Node parent = elem.getParentNode();
             if (parent != null && parent instanceof Element) {
@@ -2494,35 +2494,35 @@ public final class Transform {
         // Create docgen:searchresults element that's no really in the XML file:
         Element searchresultsElem = doc.createElementNS(XMLNS_DOCGEN, E_SEARCHRESULTS);
         {
-        	// Docgen templates may expect page-elements to have an id:
+            // Docgen templates may expect page-elements to have an id:
             if (elementsById.containsKey(SEARCH_RESULTS_ELEMENT_ID)) {
-            	throw new DocgenException("Reserved element id \"" + SEARCH_RESULTS_ELEMENT_ID + "\" was already taken");
+                throw new DocgenException("Reserved element id \"" + SEARCH_RESULTS_ELEMENT_ID + "\" was already taken");
             }
             searchresultsElem.setAttribute("id", SEARCH_RESULTS_ELEMENT_ID);
 
             searchresultsElem.setAttribute(A_DOCGEN_RANK, E_SECTION);
 
-        	// Docgen templates may expect page-elements to have a title:
-	        Element titleElem = doc.createElementNS(XMLNS_DOCBOOK5, E_TITLE);
-	        titleElem.setTextContent(SEARCH_RESULTS_PAGE_TITLE);
-	        searchresultsElem.appendChild(titleElem);
+            // Docgen templates may expect page-elements to have a title:
+            Element titleElem = doc.createElementNS(XMLNS_DOCBOOK5, E_TITLE);
+            titleElem.setTextContent(SEARCH_RESULTS_PAGE_TITLE);
+            searchresultsElem.appendChild(titleElem);
         }
 
         // We must add it to the document so that .node?root and such will work.
         doc.getDocumentElement().appendChild(searchresultsElem);
         try {
-	        TOCNode searchresultsTOCNode = new TOCNode(searchresultsElem, 0);
-	        searchresultsTOCNode.setFileElement(true);
-	        searchresultsTOCNode.setOutputFileName(FILE_SEARCH_RESULTS_HTML);
-	        currentFileTOCNode = searchresultsTOCNode;
+            TOCNode searchresultsTOCNode = new TOCNode(searchresultsElem, 0);
+            searchresultsTOCNode.setFileElement(true);
+            searchresultsTOCNode.setOutputFileName(FILE_SEARCH_RESULTS_HTML);
+            currentFileTOCNode = searchresultsTOCNode;
 
-	        generateHTMLFile_inner(dataModel, currentFileTOCNode.getOutputFileName());
+            generateHTMLFile_inner(dataModel, currentFileTOCNode.getOutputFileName());
         } finally {
-        	doc.getDocumentElement().removeChild(searchresultsElem);
+            doc.getDocumentElement().removeChild(searchresultsElem);
         }
-	}
+    }
 
-	private void generateHTMLFile_inner(SimpleHash dataModel, String fileName)
+    private void generateHTMLFile_inner(SimpleHash dataModel, String fileName)
             throws TemplateException, IOException {
         Template template = fmConfig.getTemplate("page.ftlh");
         File outputFile = new File(destDir, fileName);
@@ -2540,24 +2540,24 @@ public final class Transform {
     }
 
     private int countTOFEntries(TOCNode parent,
-	        int displayDepth) {
-	    int sum = 0;
-	    TOCNode child = parent.getFirstChild();
-	    while (child != null) {
-	        if (child.isFileElement()) {
-	            sum++;
-	            if (displayDepth > 1) {
-	                sum += countTOFEntries(child, displayDepth - 1);
-	            }
-	        }
-	        child = child.getNext();
-	    }
-	    return sum;
-	}
+            int displayDepth) {
+        int sum = 0;
+        TOCNode child = parent.getFirstChild();
+        while (child != null) {
+            if (child.isFileElement()) {
+                sum++;
+                if (displayDepth > 1) {
+                    sum += countTOFEntries(child, displayDepth - 1);
+                }
+            }
+            child = child.getNext();
+        }
+        return sum;
+    }
 
     /**
      * Returns if the TOC node contains anything (other than generated content) in the same file where the TOC node
-     * is displayed. 
+     * is displayed.
      */
     private boolean hasContentInTheSameFile(TOCNode tocNode) {
         for (Element elem : XMLUtil.childrenElementsOf(tocNode.getElement())) {
@@ -2574,7 +2574,7 @@ public final class Transform {
         }
         return false;
     }
-    
+
     private String createElementLinkURL(final Element elem)
             throws DocgenException {
         if (elem.hasAttribute(A_DOCGEN_NOT_ADDRESSABLE)) {
@@ -2760,14 +2760,14 @@ public final class Transform {
     }
 
     public boolean getSimpleNavigationMode() {
-		return simpleNavigationMode;
-	}
+        return simpleNavigationMode;
+    }
 
-	public void setSimpleNavigationMode(boolean simpleNavigationMode) {
-		this.simpleNavigationMode = simpleNavigationMode;
-	}
+    public void setSimpleNavigationMode(boolean simpleNavigationMode) {
+        this.simpleNavigationMode = simpleNavigationMode;
+    }
 
-	public boolean getShowEditoralNotes() {
+    public boolean getShowEditoralNotes() {
         return showEditoralNotes;
     }
 
@@ -2910,7 +2910,7 @@ public final class Transform {
             return fileElement;
         }
 
-		public String theSomethingElement() {
+        public String theSomethingElement() {
             return XMLUtil.theSomethingElement(element);
         }
 
