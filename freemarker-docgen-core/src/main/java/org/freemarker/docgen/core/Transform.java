@@ -961,6 +961,7 @@ public final class Transform {
             throw new IOException("Failed to create destination directory: "
                     + destDir.getAbsolutePath());
         }
+        logger.info("Output directory: " + destDir.getAbsolutePath());
 
         // - Check internal book-marks:
         for (Entry<String, String> ent : internalBookmarks.entrySet()) {
