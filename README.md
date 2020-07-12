@@ -2,70 +2,87 @@
 
 ## About
 
-Docgen is used to generate HTML pages from the two DocBook 5 "book" XML-s that
-[the FreeMarker Manual](http://freemarker.org/docs/) and [the FreeMarker
-homepage](http://freemarker.org/) is written in. As such, it mostly only
-implements the subset of Docgen elements that we actually use, but otherwise
-it tries to be reusable in other projects as well.
+Apache FreeMarker Docgen is an *internal* project under the Apache FreeMarker TLP,
+used for generating [the FreeMarker Manual](https://freemarker.apache.org/docs/),
+[the FreeMarker homepage](https://freemarker.apache.org), and maybe some more.
+
+Docgen generates static web pages from the DocBook 5 "book" XML-s. But, it
+only implements the small subset of DocBook elements that we actually use, and
+it *has no backward compatibility guarantees*.
+
+
+### Usage
+
+For some examples see:
+* The [`freemarker-site` project](https://github.com/apache/freemarker-site)
+* [FreeMarker Manual source code](https://github.com/apache/freemarker/tree/2.3-gae/src/manual/en_US)
+* `legacy-tests` in this project
+
+For editing DocBook, we are using [XXE](http://www.xmlmind.com/xmleditor/),
+with the `xxe-addon` installed, that you can find in this project.
+
 
 ## Building
 
-Before building for the first time:
-* JDK 8 must be used (tried with 1.8.0_212)
+These tools must be installed:
+* JDK 8 must be installed (tried with 1.8.0_212)
 * Apache Maven must be installed (tried with 3.6.1)
 * [Node.js](https://nodejs.org/) must be installed (tried with v10.16.2).
-* Go to `freemarker-docgen-core`, and issue `npm install` there to install
-  Node.js dependencies. Repeat this step if you add new dependencies to
-  `gulpfile.js`.
+  (Node.js is only used to generate static content while building Docgen itself.) 
+
+Run these to build:
+  
+1. In the `freemarker-docgen-core` directory (*not* in the top directory) issue:
+
+   ```npm install```
+   
+   This is to get our JavaScript dependencies, based on `package.json`.
+  
+2. In the project *top* directory (`freemarker-docgen`) issue:
+
+   ```mvn install```
+
+### Node.js troubleshooting
 
 Possible node.js related problems and solutions:
 * "Error: ENOENT, stat <someDirectoryHere>": create that directory manually,
   then retry.
 * If the system doesn't find `npm`: Open a new terminal (command window) so
-  that it pick up the "path" environment variable changes. Adjust it if
+  that it picks up the `PATH` environment variable changes. Adjust it if
   necessary.
 * If the build has once worked, but now keeps failing due to some missing
   modules, or anything strange, delete the "node_modules" directory, and
   issue `npm install` to recreate it.
-  
-To build Docgen (again, do the npm npm installation first!):
 
-```sh
-mvn install
-```
 
-For some examples see:
-* `legacy-tests`
-* `src/manual` in [the `freemarker` project](https://git-wip-us.apache.org/repos/asf/incubator-freemarker.git)
-* `src/main/docgen` the [`site` project](https://git-wip-us.apache.org/repos/asf/incubator-freemarker-site.git)
+### Running Docgen from your IDE
 
-For editing DocBook, we are using [XXE](http://www.xmlmind.com/xmleditor/)
-with the `xxe-addon` installed.
+If you develop/debug Docgen, it's convenient to launch it from your IDE.
+As an example, let's generate the  FreeMarker Manual. For that, create a
+Run Configuration in you IDE, with main class
+`org.freemarker.docgen.cli.Main`, and these command line  arguments
+(replace `<FREEMARKER_PROJECT_DIR>` with the actual directory):
 
-### Try your modifications
-
-If you want to try your modifications, let's say, by regenerating the
-FreeMarker Manual, just create a Run Configuration in you IDE, with main class
-`org.freemarker.docgen.TransformCommandLine`, then specify these command line
-arguments:
-
-    C:\work\freemarker\git\freemarker-2.3-gae\src\manual
-    C:\work\freemarker\git\freemarker-2.3-gae\build\manual
+    <FREEMARKER_PROJECT_DIR>\src\manual
+    <FREEMARKER_PROJECT_DIR>\build\manual
     offline=true
 
-To ease comparing outputs, you can set a fixed value for the last
-modification with a java argument like this:
+To ease comparing the outputs of different runs, you can set a fixed value
+for the last modification with a java argument like this:
 
     -Ddocgen.generationTime=2020-07-15T17:00Z
 
 ### Compiling LESS and JS
 
-This happens automatically during build, in the `generate-resources`.
-The generated output is in `target\resources-gulp`.
+This happens automatically during build, in the `generate-resources` Maven phase.
+The generated output is in `target\resources-gulp`, which will be included in
+the core jar artifact.
 
-## Publishing a new Docgen version
+## Releasing a new Docgen version
 
-TODO Standard ASF release procedure. Binary release to Maven Central.
+\[TODO] Standard ASF release procedure (staging, voting, etc.), so that we can release
+to the Maven Central. Not advertised, no announcements, no backward compatibility
+promises, but makes building our dependent projects easier.
 
 ## Icon Font Attribution
 
