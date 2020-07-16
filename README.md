@@ -6,7 +6,7 @@ Apache FreeMarker Docgen is an *internal* project under the Apache FreeMarker TL
 used for generating [the FreeMarker Manual](https://freemarker.apache.org/docs/),
 [the FreeMarker homepage](https://freemarker.apache.org), and maybe some more.
 
-Docgen generates static web pages from the DocBook 5 "book" XML-s. But, it
+Docgen generates static web pages from a DocBook 5 "book" XML. But, it
 only implements the small subset of DocBook elements that we actually use, and
 it *has no backward compatibility guarantees*.
 
@@ -25,9 +25,9 @@ with the `xxe-addon` installed, that you can find in this project.
 ## Building
 
 These tools must be installed:
-* JDK 8 must be installed (tried with 1.8.0_212)
-* Apache Maven must be installed (tried with 3.6.1)
-* [Node.js](https://nodejs.org/) must be installed (tried with v10.16.2).
+* JDK 8, tested with Oracle 1.8.0_212
+* Apache Maven, tested with 3.6.1
+* [Node.js](https://nodejs.org/), tested with 12.18.2.
   (Node.js is only used to generate static content while building Docgen itself.) 
 
 Run these to build:
