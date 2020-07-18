@@ -104,7 +104,7 @@ final class RelaxNGValidator {
             schema = scemaReader.createSchema(
                     ValidationDriver.uriOrFileInputSource(
                             RelaxNGValidator.class.getResource(
-                                "schema/docbook.rng").toString()),
+                                "/schema/5.0/rng/docbook.rng").toString()),
                     schemaProps.toPropertyMap());
         } catch (IncorrectSchemaException e) {
             throw new BugException(

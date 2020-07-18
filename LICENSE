@@ -204,11 +204,7 @@
 ==============================================================================
 
 The "icomoon" font files (icomoon.eot, icomoon.svg, icomoon.ttf, and
-icomoon.woff) under the "documentation" directory of the FreeMarker
-distribution contains a selection from the fonts listed below. Note that
-the fonts are only used as part of the included documentation, and
-aren't used for the operation of FreeMarker, nor are they included in
-the binary, freemarker.jar. The fonts are:
+icomoon.woff) contains a selection from these fonts:
 
 * Entypo pictograms, version 2.0, by Daniel Bruce (www.entypo.com).
   Each included pictogram is either licensed under Creative
@@ -226,5 +222,12 @@ the binary, freemarker.jar. The fonts are:
     
 ==============================================================================
 
-See the license of the src/main/org/freemarker/docgen/schema/docbook.rng file
-in the following file: LICENSE-DOCBOOK-RNG
+Binary distributions of this product might bundles ISO-RELAX, which
+is available under the MIT license. See LICENSE-ISO-RELAX for more details.
+
+==============================================================================
+
+Binary distributions of this product might bundles Thai Opensource Jing, which
+is available under the 3-Clause BSD license. See LICENSE-JING for more details.
+
+==============================================================================

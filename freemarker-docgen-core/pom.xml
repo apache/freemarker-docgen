@@ -48,6 +48,47 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+                <exclusion>
+                    <!-- Apparently, it's not needed for what we do, so we avoid license complications. -->
+                    <groupId>net.sf.saxon</groupId>
+                    <artifactId>saxon</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.docbook</groupId>
+            <artifactId>docbook-schemas</artifactId>
+            <version>5.1-1</version>
+            <!-- We just need the docbook.rng resource from this artifact, so we exclude all dependencies: -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.saxon</groupId>
+                    <artifactId>Saxon-HE</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.xmlresolver</groupId>
+                    <artifactId>xmlresolver</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
