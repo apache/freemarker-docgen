@@ -28,15 +28,24 @@
 
     <groupId>org.apache.freemarker.docgen</groupId>
     <artifactId>freemarker-docgen</artifactId>
-    <version>0.0.1</version>
-    <name>Apache FreeMarker Docgen</name>
-    <description>Internally used tool to generate HTML from an XDocBook document.</description>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>Apache FreeMarker Docgen</name>
+    <description>Internally used tool to generate HTML from an XDocBook document.</description>
+    <url>https://freemarker.apache.org/</url>
+    <scm>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</developerConnection>
+        <url>https://github.com/apache/freemarker-docgen/tree/${project.scm.tag}</url>
+        <tag>master</tag>
+    </scm>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- This is updated by the release plugin. This is for Reproducible Builds. -->
+        <project.build.outputTimestamp>1970-01-01T00:00:00Z</project.build.outputTimestamp>
     </properties>
     
     <modules>
