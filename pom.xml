@@ -15,7 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -46,30 +47,30 @@
         <!-- This is updated by the release plugin. This is for Reproducible Builds. -->
         <project.build.outputTimestamp>1970-01-01T00:00:00Z</project.build.outputTimestamp>
     </properties>
-    
+
     <modules>
-      <module>freemarker-docgen-core</module>
-      <module>freemarker-docgen-ant</module>
-      <module>freemarker-docgen-maven</module>
-      <module>freemarker-docgen-cli</module>
+        <module>freemarker-docgen-core</module>
+        <module>freemarker-docgen-ant</module>
+        <module>freemarker-docgen-maven</module>
+        <module>freemarker-docgen-cli</module>
     </modules>
-    
+
     <build>
         <pluginManagement>
-          <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.13</version>
-            </plugin>
-          </plugins>
+            <plugins>
+                <!-- Before adding something here, check if it's already in org.apache:apache! -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+            </plugins>
         </pluginManagement>
-    
+
         <plugins>
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
-                <version>0.13</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>

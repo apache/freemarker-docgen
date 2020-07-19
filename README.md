@@ -27,20 +27,15 @@ with the `xxe-addon` installed, that you can find in this project.
 These tools must be installed:
 * JDK 8, tested with Oracle 1.8.0_212
 * Apache Maven, tested with 3.6.1
-* [Node.js](https://nodejs.org/), tested with 12.18.2.
+* [Node.js](https://nodejs.org/), tested with 12.18.2, 14.x.x maybe won't work.
   (Node.js is only used to generate static content while building Docgen itself.) 
 
-Run these to build:
-  
-1. In the `freemarker-docgen-core` directory (*not* in the top directory) issue:
-
-   ```npm install```
-   
-   This is to get our JavaScript dependencies, based on `package.json`.
-  
-2. In the project *top* directory (`freemarker-docgen`) issue:
+To build, ensure that `npm` (from Node.js) is in the path, then in the top project directory
+(`freemarker-docgen`) issue this:
 
    ```mvn install```
+
+
 
 ### Node.js troubleshooting
 
