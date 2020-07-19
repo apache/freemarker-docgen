@@ -15,8 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +27,7 @@
 
     <groupId>org.apache.freemarker.docgen</groupId>
     <artifactId>freemarker-docgen</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
 
     <name>Apache FreeMarker Docgen</name>
@@ -38,14 +37,14 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</developerConnection>
         <url>https://github.com/apache/freemarker-docgen/tree/${project.scm.tag}</url>
-        <tag>master</tag>
+        <tag>freemarker-docgen-0.0.1</tag>
     </scm>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- This is updated by the release plugin. This is for Reproducible Builds. -->
-        <project.build.outputTimestamp>1970-01-01T00:00:00Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-07-19T14:04:04Z</project.build.outputTimestamp>
     </properties>
     
     <modules>
