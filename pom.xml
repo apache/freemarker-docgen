@@ -27,7 +27,7 @@
 
     <groupId>org.apache.freemarker.docgen</groupId>
     <artifactId>freemarker-docgen</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Apache FreeMarker Docgen</name>
@@ -37,14 +37,14 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</developerConnection>
         <url>https://github.com/apache/freemarker-docgen/tree/${project.scm.tag}</url>
-        <tag>freemarker-docgen-0.0.1</tag>
+        <tag>master</tag>
     </scm>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- This is updated by the release plugin. This is for Reproducible Builds. -->
-        <project.build.outputTimestamp>2020-07-19T14:04:04Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2020-07-19T14:05:24Z</project.build.outputTimestamp>
     </properties>
     
     <modules>
