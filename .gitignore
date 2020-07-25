@@ -36,10 +36,6 @@
 
 node_modules
 npm-debug.log
-main.js
-main.min.js
-docgen.min.css
-docgen.css
 /release.properties
 pom.xml.next
 pom.xml.releaseBackup
