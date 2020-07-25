@@ -37,7 +37,7 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/freemarker-docgen.git</developerConnection>
         <url>https://github.com/apache/freemarker-docgen/tree/${project.scm.tag}</url>
-        <tag>master</tag>
+        <tag />
     </scm>
 
     <properties>
@@ -68,6 +68,16 @@
 
         <plugins>
             <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <!-- Note that org.apache:apache already configures this plugin, so we just override settings. -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <localCheckout>true</localCheckout>
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- This will make the build fail if there are Rat violations, so we can't overlook that. -->
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <executions>
