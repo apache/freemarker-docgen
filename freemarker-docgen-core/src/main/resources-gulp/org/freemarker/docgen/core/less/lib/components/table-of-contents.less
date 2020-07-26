@@ -16,15 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+@toc-hamburger-menu-font-size: 18px;
+@toc-xs-menu-font-size: 12px;
+@toc-sm-menu-font-size: 13px;
+
 .table-of-contents {
   list-style-type: none;
   padding: 0;
-  margin: 6px 0 0;
-  font-size: 12px;
+
+  // This is for small screen, where the ToC is popped up by the hamburger menu, so it can be take the whole screen.
+  margin: 0;
+  font-size: @toc-hamburger-menu-font-size;
+
+  @media (min-width: @screen-xs-min) {
+    margin: 6px 0 0;
+    font-size: @toc-xs-menu-font-size;
+  }
 
   @media (min-width: @screen-sm-min) {
     margin-top: 12px;
-    font-size: 13px;
+    font-size: @toc-sm-menu-font-size;
   }
 
   .current {
@@ -90,40 +102,69 @@
   padding: 0;
 
   li {
-    padding-left: 14px;
+    padding-left: @toc-hamburger-menu-font-size + 1;
+    @media (min-width: @screen-xs-min) {
+      padding-left: @toc-xs-menu-font-size + 1;
+    }
+    @media (min-width: @screen-sm-min) {
+      padding-left: @toc-sm-menu-font-size + 1;
+    }
+
     position: relative;
 
     &::before {
       .icon();
       .icon-dot-single();
-      width: 14px;
-      height: 14px;
       display: block;
       position: absolute;
-      left: -3px;
-      top: 2px;
-      font-size: 14px;
       line-height: 1;
+
+      font-size: @toc-hamburger-menu-font-size;
+      top: @toc-hamburger-menu-font-size / 5;
+      left: -@toc-hamburger-menu-font-size / 4;
+      width: @toc-hamburger-menu-font-size;
+      height: @toc-hamburger-menu-font-size;
+      @media (min-width: @screen-xs-min) {
+        font-size: @toc-xs-menu-font-size;
+        top: @toc-xs-menu-font-size / 4;
+        left: -@toc-xs-menu-font-size / 4;
+        width: @toc-xs-menu-font-size;
+        height: @toc-xs-menu-font-size;
+      }
+      @media (min-width: @screen-sm-min) {
+        font-size: @toc-sm-menu-font-size;
+        top: @toc-sm-menu-font-size / 4;
+        left: -@toc-sm-menu-font-size / 4;
+        width: @toc-sm-menu-font-size;
+        height: @toc-sm-menu-font-size;
+      }
     }
 
     &.has-children {
       &::before {
         .icon-add();
-        font-size: 13px;
+
         cursor: pointer;
+        font-size: @toc-hamburger-menu-font-size;
+        @media (min-width: @screen-xs-min) {
+          font-size: @toc-xs-menu-font-size;
+        }
+        @media (min-width: @screen-sm-min) {
+          font-size: @toc-sm-menu-font-size;
+        }
       }
 
       &.open {
         &::before {
           .icon-remove();
-          font-size: 13px;
-        }
-      }
 
-      .last {
-        &::before {
-          .icon-dot-single();
-          top: 3px;
+          font-size: @toc-hamburger-menu-font-size;
+          @media (min-width: @screen-xs-min) {
+            font-size: @toc-xs-menu-font-size;
+          }
+          @media (min-width: @screen-sm-min) {
+            font-size: @toc-sm-menu-font-size;
+          }
         }
       }
     }

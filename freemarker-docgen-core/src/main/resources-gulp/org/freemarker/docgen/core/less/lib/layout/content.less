@@ -38,18 +38,40 @@
     display: block;
   }
 
-  .col-left {
-    flex: 0 0 160px;
-    max-width: 160px; // set max-width to prevent flicker
-    overflow: hidden;
-
-    margin-right: @gutter-width / 4 * 3; // 18px
-
-    // hide for really small screens
+  #table-of-contents-wrapper {
+    // Hide for typical mobile screens:
     display: none;
 
     @media (min-width: @screen-xs-min) {
       display: block;
+    }
+  }
+
+  .col-left {
+    // This is for when it's inside the hamburger-menu:
+    padding: 12px;
+    position: absolute;
+    left: 0px;
+    top: @hamburger-icon-top + @hamburger-icon-height;
+    z-index: 100;
+    background: #fff; // TODO variable?
+    border: 1px solid #000; // TODO variable?
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.33);
+
+    @media (min-width: @screen-xs-min) {
+      // For all widths where we show the left column:
+      padding: 0;
+      position: static;
+      top: 0;
+      left: 0;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
+
+      // For xs width:
+      flex: 0 0 160px;
+      max-width: 160px; // set max-width to prevent flicker
+      margin-right: @gutter-width / 4 * 3;
     }
 
     @media (min-width: @screen-sm-min) {

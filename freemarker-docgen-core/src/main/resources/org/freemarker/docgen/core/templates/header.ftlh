@@ -25,9 +25,10 @@
   <#if logo?? || tabs?? || secondaryTabs??>
     <div class="header-top-bg"><#t>
       <div class="site-width header-top"><#t>
+        <div id="hamburger-menu" role="button"></div><#t>
         <#if logo??>
           <a class="logo" href="${logo.href}" role="banner"><#t>
-            <img itemprop="image" src="${logo.src}" alt="${logo.alt}">
+            <img itemprop="image" src="${logo.src}" alt="${logo.alt}"><#t>
           </a><#t>
         </#if>
         <@nav.tabs /><#t>

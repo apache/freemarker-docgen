@@ -49,11 +49,20 @@
     }, 1);
   }
 
-  function onPageMenuClick(e) {
+  function onPageMenuRelatedClick(e) {
     var node = e.target;
 
+    var toc = document.getElementById('table-of-contents-wrapper');
     if (node.classList.contains('page-menu-link')) {
       highlightNode(node.getAttribute('data-menu-target'));
+    } else if (node.id == 'hamburger-menu') {
+      if (toc.style.display === "block") {
+        toc.style.display = "none";
+      } else {
+        toc.style.display = "block";
+      }
+    } else if (toc.style.display === "block" && !toc.contains(event.target)) {
+      toc.style.display = "none";
     }
   }
 
@@ -74,7 +83,7 @@
   }
 
   function init() {
-    document.addEventListener('click', onPageMenuClick);
+    document.addEventListener('click', onPageMenuRelatedClick);
     document.addEventListener('DOMContentLoaded', onDocReady);
   }
 
