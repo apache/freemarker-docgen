@@ -380,10 +380,11 @@
   </#switch>
 
   <@CantBeNestedIntoP>
-    <div class="code-wrapper"><#t>
-    <pre class="code-block ${codeType}"><@Anchor/><#t><#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-      <#local content><#recurse></#local><#t>
-      ${content?markupString?chopLinebreak?noEsc}</pre></div><#t>
+    <pre class="code-block ${codeType}"><@Anchor/><#t>
+      <#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+      <#local content><#recurse></#local>
+      ${content?markupString?chopLinebreak?noEsc}<#t>
+    </pre><#t>
   </@CantBeNestedIntoP>
 </#macro>
 

@@ -88,19 +88,15 @@ code {
 
 pre {
   display: block;
-  border: 0;
-  padding: 6px 12px;
 
-  margin: 0 0 9px;
+  /* To prevent the pre stretching the width of its parent, and become scrollable instead: */
+  width: 0;
+  min-width: 100%;
   overflow-x: auto;
 
-  word-break: normal;
-  white-space: pre;
-
-  @-moz-document url-prefix() {
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
+  border: 0;
+  padding: 6px 12px;
+  margin: 0 0 9px;
 }
 
 img {
