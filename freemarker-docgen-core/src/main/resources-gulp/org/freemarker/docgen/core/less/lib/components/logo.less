@@ -17,13 +17,22 @@
  * under the License.
  */
 .logo {
-  padding: 6px 0 0;
-  display: block;
+  text-align: center;
+  // We have a line of text under us, whose bottom looks further away from the header edge
+  padding: 3px 0 0 0;
+
+  @media (min-width: @screen-xs-min) {
+      flex: 0 0 auto;
+      padding: 0;
+  }
+
+  a {
+    display: inline-block;
+  }
 
   img {
+    display: inline-block;
     // @todo: externalize width and height
-    display: block;
-    margin: 0 auto;
     width: 204px;
     height: 19px;
   }

@@ -31,14 +31,22 @@
 
 .header-top {
   text-align: center;
-  padding: 12px 0;
+  padding-top: 13px;
+  padding-bottom: 13px;
 
   @media (min-width: @screen-xs-min) {
-    padding-bottom: 18px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
+  }
+
+  @media (min-width: @screen-sm-min) {
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
 }
 

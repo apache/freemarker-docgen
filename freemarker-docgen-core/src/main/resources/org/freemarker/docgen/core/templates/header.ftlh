@@ -27,9 +27,11 @@
       <div class="site-width header-top"><#t>
         <div id="hamburger-menu" role="button"></div><#t>
         <#if logo??>
-          <a class="logo" href="${logo.href}" role="banner"><#t>
-            <img itemprop="image" src="${logo.src}" alt="${logo.alt}"><#t>
-          </a><#t>
+          <div class="logo">
+            <a href="${logo.href}" role="banner"><#t>
+              <img itemprop="image" src="${logo.src}" alt="${logo.alt}"><#t>
+            </a><#t>
+          </div>
         </#if>
         <@nav.tabs /><#t>
         <#if secondaryTabs??>
