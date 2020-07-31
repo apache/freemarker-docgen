@@ -34,7 +34,7 @@
     <meta itemprop="url" content="${deployUrl}">
     <meta itemprop="name" content="${siteTitle}">
 
-    <@browserWarning />
+    <@oldBrowserWarning />
     <@header.header />
     <div class="main-content site-width">
       <div class="content-wrapper<#if disableJavaScript> no-toc</#if>">
@@ -103,12 +103,18 @@
 </#macro>
 
 
-<#macro browserWarning>
+<#macro oldBrowserWarning>
   <!--[if lte IE 9]>
-  <div style="background-color: #C00; color: #fff; padding: 12px 24px;">Please use a modern browser to view this website.</div>
+  <@oldBrowserWarning_inner forceDisplay=true />
   <![endif]--><#rt>
+  <@oldBrowserWarning_inner forceDisplay=false />
 </#macro>
 
+<#macro oldBrowserWarning_inner forceDisplay>
+  <div class="oldBrowserWarning"<#if forceDisplay> style="display: block"</#if>>
+    Unsupported web browser - Use a modern browser to view this website!
+  </div>
+</#macro>
 
 <#macro page>
   <!doctype html><#lt>

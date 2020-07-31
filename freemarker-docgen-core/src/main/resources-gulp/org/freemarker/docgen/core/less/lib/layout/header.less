@@ -105,3 +105,16 @@
     align-items: flex-end;
   }
 }
+
+.oldBrowserWarning {
+  display: none;
+  background-color: #C00;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 24px;
+
+  /* IE10-IE11 css: */
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+     display: block;
+  }
+}
