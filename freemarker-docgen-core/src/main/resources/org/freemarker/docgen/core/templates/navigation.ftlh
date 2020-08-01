@@ -62,23 +62,25 @@
     </#if>
     <#local curNode = curNode?parent>
   </#list>
-  <#if (path?size > 1)>
-    <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
-      <#list path as step>
-        <li class="step-${step?index}" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
-          <a class="label" itemprop="item" href="${CreateLinkFromNode(step)}"><#t>
-            <span itemprop="name"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
-          </a><#t>
+  <div class="breadcrumbs">
+    <#if (path?size > 1)>
+      <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
+        <#list path as step>
+          <li class="step-${step?index}" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
+            <a class="label" itemprop="item" href="${CreateLinkFromNode(step)}"><#t>
+              <span itemprop="name"><#recurse u.getRequiredTitleElement(step) using nodeHandlers></span><#t>
+            </a><#t>
+          </li><#t>
+        </#list>
+      </ul><#t>
+    <#else>
+      <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
+        <li class="step-0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
+          <span itemprop="name">Table of Contents</span><#t>
         </li><#t>
-      </#list>
-    </ul><#t>
-  <#else>
-    <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
-      <li class="step-0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><#t>
-        <span itemprop="name">Table of Contents</span><#t>
-      </li><#t>
-    </ul><#t>
-  </#if>
+      </ul><#t>
+    </#if>
+  </div>
 </#macro>
 
 
@@ -109,7 +111,7 @@
   <#if internalBookmarks?size != 0 || externalBookmarks?size != 0>
     <div class="bookmarks" title="Bookmarks"><#t>
         <span class="sr-only">Bookmarks:</span><#t>
-        <ul class="bookmark-list"><#t>
+        <ul><#t>
           <#local curHref = CreateLinkFromNode(.node)>
           <#list internalBookmarks?keys as k>
             <li><#t>

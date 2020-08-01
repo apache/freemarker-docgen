@@ -17,11 +17,13 @@
  * under the License.
  */
 .bookmarks {
-  text-align: right;
-  display: none;
+  overflow: hidden;
+  white-space: nowrap;
 
-  @media (min-width: @screen-md-min) {
-    display: block;
+  padding-top: @breadcrumb-row-padding-top;
+  font-size: @breadcrumb-row-font-size-xs;
+  @media (min-width: @screen-xs-min) {
+    font-size: @breadcrumb-row-font-size-sm;
   }
 
   &::before {
@@ -41,7 +43,6 @@
     margin: 0;
     padding: 0;
     display: inline-block;
-    font-size: 13px;
 
     li {
       display: inline-block;

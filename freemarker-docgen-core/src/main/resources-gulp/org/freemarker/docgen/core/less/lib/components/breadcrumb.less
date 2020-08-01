@@ -16,17 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.breadcrumb {
-  list-style-type: none;
-  margin: 0;
-  padding: 6px 0 0 0;
-  font-size: 12px;
-  display: block;
+.breadcrumbs {
+  padding-top: @breadcrumb-row-padding-top;
+  // Right padding is the spacing between .breadcrumbs and .bookmarks (this works as overflow is hidden)
+  padding-right: 1.5em;
   white-space: nowrap;
   overflow: hidden;
 
-  @media (min-width: @screen-sm-min) {
-    font-size: 13px;
+  font-size: @breadcrumb-row-font-size-xs;
+  @media (min-width: @screen-xs-min) {
+    font-size: @breadcrumb-row-font-size-sm;
+  }
+
+  ul {
+    display: inline-block;
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
   }
 
   li {
