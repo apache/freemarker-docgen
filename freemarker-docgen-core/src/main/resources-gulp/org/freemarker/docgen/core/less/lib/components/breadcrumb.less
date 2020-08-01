@@ -17,7 +17,11 @@
  * under the License.
  */
 .breadcrumbs {
-  padding-top: @breadcrumb-row-padding-top;
+  @media (min-width: @screen-xs-min) {
+    // For smaller screens increased .breadcrumb-row line height will make up for this
+    padding-top: @breadcrumb-row-padding-top;
+  }
+
   // Right padding is the spacing between .breadcrumbs and .bookmarks (this works as overflow is hidden)
   padding-right: 1.5em;
   white-space: nowrap;

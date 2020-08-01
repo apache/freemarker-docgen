@@ -91,18 +91,24 @@
 }
 
 .breadcrumb-row {
-  padding-top: 9px; // increase padding when search row doesn't exist
+  // Mobile view:
+  padding-top: 6px;
+  // Non-mobile view:
+  @media (min-width: @screen-xs-min) {
+    padding-top: 0; // increase padding when search row doesn't exist
+  }
+
   padding-bottom: 9px;
 
-  .search-row + & {
-    padding-top: 0;
-  }
+  // Mobile view has small font here
+  line-height: 2.5;
 
   @media (min-width: @screen-xs-min) {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     align-items: flex-end;
+    line-height: 1.5;
   }
 }
 

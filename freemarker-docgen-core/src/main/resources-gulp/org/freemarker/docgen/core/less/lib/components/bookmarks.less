@@ -20,7 +20,11 @@
   overflow: hidden;
   white-space: nowrap;
 
-  padding-top: @breadcrumb-row-padding-top;
+  @media (min-width: @screen-xs-min) {
+    // For smaller screens increased .breadcrumb-row line height will make up for this
+    padding-top: @breadcrumb-row-padding-top;
+  }
+
   font-size: @breadcrumb-row-font-size-xs;
   @media (min-width: @screen-xs-min) {
     font-size: @breadcrumb-row-font-size-sm;
