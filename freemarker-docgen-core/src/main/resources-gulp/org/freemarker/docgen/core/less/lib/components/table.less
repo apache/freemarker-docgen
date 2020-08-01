@@ -18,10 +18,13 @@
  */
 .table-responsive {
   min-height: .01%;
+
+  /* To prevent the the table stretching the width of its parent, and become scrollable instead: */
+  width: 0;
+  min-width: 100%;
   overflow-x: auto;
 
   @media (max-width: @screen-xs-max) {
-    width: 100%;
     margin-bottom: 15px;
     overflow-y: hidden;
     -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -36,14 +39,12 @@
   border: 1px solid #ddd;
 
   width: 100%;
-  max-width: 100%;
 
   th {
     font-weight: 500;
     text-align: left;
     background-color: #f9f9f9;
     border-bottom: 1px solid #ddd;
-    white-space: nowrap;
   }
 
   th,
@@ -53,17 +54,8 @@
     vertical-align: top;
   }
 
-  td {
-    // dont wrap whitespace for smaller screens
-    // since tables are going to scroll anyway
-    white-space: nowrap;
-
-    @media (min-width: @screen-md-min) {
-      white-space: normal;
-    }
-  }
-
   a {
+    // We don't want to break mid-word, as a-only cells might become 1 char wide...
     word-break: normal;
   }
 }
