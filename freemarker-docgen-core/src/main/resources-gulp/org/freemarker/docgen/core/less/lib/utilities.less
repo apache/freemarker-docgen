@@ -18,24 +18,17 @@
  */
 // determines the max-width of the site at various resolutions
 .site-width {
-  margin-left: auto;
-  margin-right: auto;
-
   padding-left: @gutter-width / 4 * 3; // 18px
   padding-right: @gutter-width / 4 * 3;
 
   @media (min-width: @screen-sm-min) {
     padding-left: @gutter-width;
     padding-right: @gutter-width;
-
-    width: @container-sm;
-  }
-
-  @media (min-width: @screen-md-min) {
-    width: @container-md;
   }
 
   @media (min-width: @screen-lg-min) {
+    margin-left: auto;
+    margin-right: auto;
     width: @container-lg;
   }
 }
