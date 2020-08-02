@@ -39,8 +39,11 @@
   }
 
   #table-of-contents-wrapper {
-    // Hide for typical mobile screens:
+    // Hide for typical mobile screens initially:
     display: none;
+    &.visible-hamburger-menu {
+      display: block;
+    }
 
     @media (min-width: @screen-xs-min) {
       display: block;
@@ -88,7 +91,6 @@
   .col-right {
     flex: 1;
     position: relative; // so we can position bottom pager
-
   }
 }
 

@@ -56,13 +56,9 @@
     if (node.classList.contains('page-menu-link')) {
       highlightNode(node.getAttribute('data-menu-target'));
     } else if (node.id == 'hamburger-menu') {
-      if (toc.style.display === "block") {
-        toc.style.display = "none";
-      } else {
-        toc.style.display = "block";
-      }
-    } else if (toc.style.display === "block" && !toc.contains(event.target)) {
-      toc.style.display = "none";
+      toc.classList.toggle("visible-hamburger-menu");
+    } else if (toc.classList.contains("visible-hamburger-menu") && !toc.contains(event.target)) {
+      toc.classList.remove("visible-hamburger-menu");
     }
   }
 
