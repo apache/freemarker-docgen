@@ -17,7 +17,7 @@
  * under the License.
  */
 
-@toc-hamburger-menu-font-size: 18px;
+@toc-hamburger-menu-font-size: 16px;
 @toc-xs-menu-font-size: 12px;
 @toc-sm-menu-font-size: 13px;
 
@@ -53,6 +53,15 @@
 
   ul {
     list-style-type: none;
+  }
+
+  li {
+    margin-top: @toc-sm-menu-font-size * 0.75;
+    margin-bottom: @toc-sm-menu-font-size * 0.75;
+    @media (min-width: @screen-xs-min) {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
   }
 }
 
