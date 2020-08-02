@@ -359,16 +359,20 @@
 
   <#switch role>
     <#case "output">
-      <#local codeType = "code-output">
+      <#local roleCssClass = "role-output">
+      <#local roleLabel = "Output">
       <#break>
     <#case "dataModel">
-      <#local codeType = "code-data-model">
+      <#local roleCssClass = "role-data-model">
+      <#local roleLabel = "Data Model">
       <#break>
     <#case "template">
-      <#local codeType = "code-template">
+      <#local roleCssClass = "role-template">
+      <#local roleLabel = "Template">
       <#break>
     <#case "unspecified">
-      <#local codeType = "code-unspecified">
+      <#local roleCssClass = "role-unspecified">
+      <#local roleLabel = "">
       <#break>
     <#case "metaTemplate">
       <pre class="metaTemplate"><#t>
@@ -376,15 +380,19 @@
       </pre><#lt>
       <#return>
     <#default>
-      <#local codeType = "code-default">
+      <#local roleCssClass = "role-default">
+      <#local roleLabel = "">
   </#switch>
 
   <@CantBeNestedIntoP>
-    <pre class="code-block ${codeType}"><@Anchor/><#t>
-      <#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-      <#local content><#recurse></#local>
-      ${content?markupString?chopLinebreak?noEsc}<#t>
-    </pre><#t>
+    <div class="code-block ${roleCssClass}">
+      <#if roleLabel != ''><div class="code-block-label">${roleLabel}</div></#if><#t>
+      <pre class="code-block-body"><@Anchor/><#t>
+        <#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
+        <#local content><#recurse></#local>
+        ${content?markupString?chopLinebreak?noEsc}<#t>
+      </pre><#t>
+    </div>
   </@CantBeNestedIntoP>
 </#macro>
 

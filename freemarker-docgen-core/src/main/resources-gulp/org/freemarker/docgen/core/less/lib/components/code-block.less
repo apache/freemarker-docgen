@@ -16,77 +16,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.code-label() {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+
+.code-block {
+  margin: 12px 0;
+
+  &.role-template {
+    .code-block-label { background-color: #e4e4e4; }
+    .code-block-body { background-color: #f4f4f4; }
+  }
+
+  &.role-data-model {
+    .code-block-label { background-color: #D2E2EF; }
+    .code-block-body { background-color: #ecf3f8; }
+  }
+
+  &.role-output {
+    .code-block-label { background-color: #D5EAD7; }
+    .code-block-body { background-color: #ECF8EE; }
+  }
+}
+
+.code-block-label {
   padding: 3px 9px;
   font-size: 10px;
   font-weight: bold;
-  font-family: @font-sans-serif;
   text-transform: uppercase;
   color: rgba(94, 94, 94, 0.8);
 }
 
-.code-block-with-label() {
-  padding-top: 23px;
-}
-
-.code-block {
+.code-block-body {
   border: 0;
-  position:relative;
+  position: relative;
   padding: 3px 6px 4px;
-  margin: 12px 0;
+  margin: 0;
   background-color: #f4f4f4;
 
   .callout & {
     background-color: transparent !important; 
     padding: 0 !important;
     margin: 0 !important;
-
-    &::after {
-      display: none !important;
-    }
   }
-  
-  &.code-template {
-    background-color: #f4f4f4;
-    .code-block-with-label();  
-  
-    &::after {
-      .code-label();
-      background-color: #e4e4e4;
-      content: "Template";
-    }
-  }
-  
-  &.code-data-model {
-    background-color: #ecf3f8;
-    .code-block-with-label();  
-  
-    &::after {
-      .code-label();
-      background-color: #D2E2EF;
-      content: "Data Model";
-    }
-  }
-  
-  &.code-output {
-    background-color: #ECF8EE;
-    .code-block-with-label();  
-  
-    &::after {
-      .code-label();
-      background-color: #D5EAD7;
-      content: "Output";
-    }
-  }
-  
-  /*
-  &.code-unspecified {
-    // Same as default for now
-  }
-  */
-  
 }
