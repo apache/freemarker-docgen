@@ -18,6 +18,7 @@
  */
 
 @toc-hamburger-menu-font-size: 16px;
+@toc-hamburger-menu-li-margin: 0.6em;
 @toc-xs-menu-font-size: 12px;
 @toc-sm-menu-font-size: 13px;
 
@@ -56,8 +57,8 @@
   }
 
   li {
-    margin-top: @toc-sm-menu-font-size * 0.75;
-    margin-bottom: @toc-sm-menu-font-size * 0.75;
+    margin-top: @toc-hamburger-menu-li-margin;
+    margin-bottom: @toc-hamburger-menu-li-margin;
     @media (min-width: @screen-xs-min) {
       margin-top: 0;
       margin-bottom: 0;
@@ -65,17 +66,15 @@
   }
 }
 
-@section-spacing: 12px;
-
-.section {
+li.section {
   border-bottom: 1px solid @border-gray;
 
-  margin-bottom: @section-spacing;
-  padding-bottom: @section-spacing;
+  padding-bottom: 0;
+  margin-bottom: @toc-hamburger-menu-li-margin;
 
-  @media (min-width: @screen-sm-min) {
-    margin-bottom: @section-spacing * 2;
-    padding-bottom: @section-spacing * 2;
+  @media (min-width: @screen-xs-min) {
+    padding-bottom: 1em;
+    margin-bottom: 1em;
   }
 
   &.last {
@@ -95,11 +94,8 @@
   display: block;
   line-height: 1;
 
-  margin-bottom: @section-spacing;
-
-  @media (min-width: @screen-sm-min) {
-    margin-bottom: @section-spacing * 2;
-  }
+  margin-top: 1em;
+  margin-bottom: 1em;
 
   a&:hover {
     color: @link-hover;
