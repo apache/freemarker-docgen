@@ -19,6 +19,7 @@
 package org.freemarker.docgen.maven;
 
 import java.io.File;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -55,6 +56,9 @@ public class TransformMojo extends AbstractMojo {
     @Parameter()
     private boolean printProgress = true;
 
+    @Parameter()
+    private Map<String, Object> customVariables;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Transform transform = new Transform();
@@ -76,6 +80,9 @@ public class TransformMojo extends AbstractMojo {
             transform.setOffline(offline);
         }
         transform.setPrintProgress(printProgress); // TODO Use Maven logging for this
+        if (customVariables != null) {
+            transform.setCustomVariables(customVariables);
+        }
         try {
             transform.execute();
         } catch (Exception e) {

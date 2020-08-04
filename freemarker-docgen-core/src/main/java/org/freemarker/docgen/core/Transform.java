@@ -143,6 +143,7 @@ public final class Transform {
     static final String SETTING_MAX_MAIN_TOF_DISPLAY_DEPTH
             = "maxMainTOFDisplayDepth";
     static final String SETTING_NUMBERED_SECTIONS = "numberedSections";
+    static final String SETTING_CUSTOM_VARIABLES = "customVariables";
 
     static final String SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE
             = "programlistingsRequireRole";
@@ -219,6 +220,7 @@ public final class Transform {
             = SETTING_MAX_TOF_DISPLAY_DEPTH;
     private static final String VAR_NUMBERED_SECTIONS
             = SETTING_NUMBERED_SECTIONS;
+    private static final String VAR_CUSTOM_VARIABLES = SETTING_CUSTOM_VARIABLES;
     private static final String VAR_INDEX_ENTRIES
             = "indexEntries";
     private static final String VAR_PAGE_TYPE = "pageType";
@@ -403,6 +405,8 @@ public final class Transform {
     private LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<String, String>();
     private LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
     private Map<String, Map<String, String>> footerSiteMap;
+
+    private Map<String, Object> customVariables = new HashMap<>();
 
     private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
@@ -594,6 +598,13 @@ public final class Transform {
                                 null, SETTING_SEO_META_KEYS);
                         seoMeta.put(k, v);
                     }
+                } else if (settingName.equals(SETTING_CUSTOM_VARIABLES)) {
+                    Map<String, Object> m = castSettingToMapWithStringKeys(
+                            cfgFile, settingName, settingValue);
+                    Map<String, Object> newCustomVariables = new HashMap<>(m);
+                    // Values set with setCustomVariables(Map) has precedence.
+                    newCustomVariables.putAll(customVariables);
+                    customVariables = newCustomVariables;
                 } else if (settingName.equals(SETTING_TABS)) {
                     Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
@@ -1029,6 +1040,8 @@ public final class Transform {
                     VAR_INTERNAL_BOOKMARDS, internalBookmarks);
             fmConfig.setSharedVariable(
                     VAR_ROOT_ELEMENT, doc.getDocumentElement());
+            fmConfig.setSharedVariable(
+                    VAR_CUSTOM_VARIABLES, customVariables);
 
             // Calculated data:
             {
@@ -2817,6 +2830,21 @@ public final class Transform {
 
     public void setGenerateEclipseToC(boolean eclipseToC) {
         this.generateEclipseTOC = eclipseToC;
+    }
+
+    public Map<String, Object> getCustomVariables() {
+        return customVariables;
+    }
+
+    /**
+     * Sets the {@link Map} of custom variables, that will be available in templates with variable name
+     * {@link #VAR_CUSTOM_VARIABLES}. When the Docgen settings file loaded ({@link #FILE_SETTINGS}) during
+     * {@link #execute()}, it adds further custom variables, but by creating a new {@link Map}, and not by modifying
+     * the parameter {@link Map}. In case the same custom variable is set in both places, the value of the variable in
+     * this map will win. So this method can be used to override variables set in the settings file.
+     */
+    public void setCustomVariables(Map<String, Object> customVariables) {
+        this.customVariables = customVariables;
     }
 
     // -------------------------------------------------------------------------

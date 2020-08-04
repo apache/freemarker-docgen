@@ -62,7 +62,7 @@
     </time><#t>
     <#local book = .node?root.*>
     <#if book.info.productname?hasContent>
-      , for ${book.info.productname}<#t>
+      , for <@u.printWithResolvedPlaceholders book.info.productname /><#t>
     </#if>
   </p>
 </#macro>

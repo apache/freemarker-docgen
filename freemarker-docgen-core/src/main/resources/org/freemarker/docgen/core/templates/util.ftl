@@ -118,3 +118,22 @@
 <#macro invisible1x1Img>
   <img src="docgen-resources/img/none.gif" width="1" height="1" alt="" hspace="0" vspace="0" border="0"/><#t>
 </#macro>
+
+<#macro printWithResolvedPlaceholders text>
+  <#if text?contains(r"[docgen.customVariables.")>
+    <#local s = text>
+    <#list text?matches(r"\[docgen\.customVariables\.(.+?)\]") as match>
+      <#local replaced = match?groups[0]>
+      <#local customVarName = match?groups[1]>
+      <#attempt>
+        <#local customVarValue = customVariables[customVarName]>
+      <#recover>
+        <#stop "Failed to resolve custom variable \"${customVarName}\" in text \"${replaced}\": ${.error}">
+      </#attempt>
+      <#local s = s?replace(replaced, customVarValue)>
+    </#list>
+    ${s}<#t>
+  <#else>
+    ${text}<#t>
+  </#if>
+</#macro>

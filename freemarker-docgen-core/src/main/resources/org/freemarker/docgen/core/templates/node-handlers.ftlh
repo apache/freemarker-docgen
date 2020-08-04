@@ -31,7 +31,9 @@
 >
 <#assign footnotes = []>
 
-<#macro @text>${.node}</#macro>
+<#macro @text>
+  <@u.printWithResolvedPlaceholders .node /><#t>
+</#macro>
 
 <#macro @element>
   <#stop "This DocBook element is not supported by the Docgen transformer, "
