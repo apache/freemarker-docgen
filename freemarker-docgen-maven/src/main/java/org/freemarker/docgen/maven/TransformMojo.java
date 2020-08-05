@@ -39,6 +39,9 @@ public class TransformMojo extends AbstractMojo {
     private File outputDirectory;
 
     @Parameter
+    private File customVariableFileDirectory;
+
+    @Parameter
     private Boolean showEditoralNotes;
 
     @Parameter
@@ -58,6 +61,18 @@ public class TransformMojo extends AbstractMojo {
 
     @Parameter()
     private Map<String, Object> customVariables;
+
+    @Parameter()
+    private Map<String, String> customVariablesFromFiles;
+
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @readonly
+     */
+    @Parameter(defaultValue = "${${project.base}}", readonly=true)
+    private String projectBaseDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -79,14 +94,22 @@ public class TransformMojo extends AbstractMojo {
         if (offline != null) {
             transform.setOffline(offline);
         }
-        transform.setPrintProgress(printProgress); // TODO Use Maven logging for this
-        if (customVariables != null) {
-            transform.setCustomVariables(customVariables);
+        if (customVariableFileDirectory != null) {
+            transform.setCustomVariableFileDirectory(customVariableFileDirectory);
         }
+        if (customVariables != null) {
+            transform.addCustomVariableOverrides(customVariables);
+        }
+        if (customVariablesFromFiles != null) {
+            transform.addCustomVariableOverridesFromFiles(customVariablesFromFiles);
+        }
+        transform.setPrintProgress(printProgress); // TODO Use Maven logging for this
+
         try {
             transform.execute();
         } catch (Exception e) {
             throw new MojoExecutionException("Error during document transformation", e);
         }
     }
+
 }

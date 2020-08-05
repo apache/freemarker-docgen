@@ -1111,6 +1111,8 @@ final class CJSONInterpreter {
                         return Boolean.TRUE; //!
                     } else if (s.equals("false")) {
                         return Boolean.FALSE; //!
+                    } else if (s.equals("null")) {
+                        return null; //!
                     }
                     c = s.charAt(0);
                     if ((c >= '0' && c <= '9') || c == '+' || c == '-') {

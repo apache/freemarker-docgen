@@ -33,6 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -135,6 +136,7 @@ public final class Transform {
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
     static final String SETTING_CONTENT_DIRECTORY = "contentDirectory";
+    static final String SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY = "customVariableFileDirectory";
     static final String SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK
             = "lowestPageTOCElementRank";
     static final String SETTING_LOWEST_FILE_ELEMENT_RANK
@@ -144,6 +146,7 @@ public final class Transform {
             = "maxMainTOFDisplayDepth";
     static final String SETTING_NUMBERED_SECTIONS = "numberedSections";
     static final String SETTING_CUSTOM_VARIABLES = "customVariables";
+    static final String SETTING_CUSTOM_VARIABLES_FROM_FILES = "customVariablesFromFiles";
 
     static final String SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE
             = "programlistingsRequireRole";
@@ -358,6 +361,8 @@ public final class Transform {
 
     private File contentDir;
 
+    private File customVariableFileDir;
+
     private List<Pattern> ignoredFilePathPatterns = new ArrayList<>();
 
     private Boolean offline;
@@ -406,7 +411,8 @@ public final class Transform {
     private LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
     private Map<String, Map<String, String>> footerSiteMap;
 
-    private Map<String, Object> customVariables = new HashMap<>();
+    private Map<String, Object> customVariableOverrides = new HashMap<>();
+    private Map<String, Object> customVariablesFromSettingsFile = new HashMap<>();
 
     private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
@@ -599,12 +605,15 @@ public final class Transform {
                         seoMeta.put(k, v);
                     }
                 } else if (settingName.equals(SETTING_CUSTOM_VARIABLES)) {
+                    customVariablesFromSettingsFile.putAll(
+                            castSettingToMapWithStringKeys(cfgFile, settingName, settingValue));
+                } else if (settingName.equals(SETTING_CUSTOM_VARIABLES_FROM_FILES)) {
                     Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
-                    Map<String, Object> newCustomVariables = new HashMap<>(m);
-                    // Values set with setCustomVariables(Map) has precedence.
-                    newCustomVariables.putAll(customVariables);
-                    customVariables = newCustomVariables;
+                    for (Entry<String, Object> ent : m.entrySet()) {
+                        String value = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
+                        customVariablesFromSettingsFile.put(ent.getKey(), new FileContentPlaceholder(value));
+                    }
                 } else if (settingName.equals(SETTING_TABS)) {
                     Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
@@ -756,6 +765,15 @@ public final class Transform {
                         throw newCfgFileException(cfgFile, settingName,
                                 "It's not an existing directory: "
                                 + contentDir.getAbsolutePath());
+                    }
+                } else if (settingName.equals(SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY)) {
+                    String s = castSettingToString(
+                            cfgFile, settingName, settingValue);
+                    customVariableFileDir = new File(srcDir, s);
+                    if (!customVariableFileDir.isDirectory()) {
+                        throw newCfgFileException(cfgFile, settingName,
+                                "It's not an existing directory: "
+                                        + customVariableFileDir.getAbsolutePath());
                     }
                 } else if (settingName.equals(SETTING_LOWEST_FILE_ELEMENT_RANK)
                         || settingName.equals(
@@ -1041,7 +1059,7 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     VAR_ROOT_ELEMENT, doc.getDocumentElement());
             fmConfig.setSharedVariable(
-                    VAR_CUSTOM_VARIABLES, customVariables);
+                    VAR_CUSTOM_VARIABLES, computeCustomVariables());
 
             // Calculated data:
             {
@@ -1215,6 +1233,55 @@ public final class Transform {
                 + htmlFileCounter + " HTML-s + "
                 + bookSpecStaticFileCounter + " custom statics + commons"
                 + (generateEclipseTOC ? " + Eclipse ToC" : ""));
+    }
+
+    private Map<String, Object> computeCustomVariables() throws DocgenException {
+        for (String varName : customVariableOverrides.keySet()) {
+            if (!customVariablesFromSettingsFile.containsKey(varName)) {
+                throw new DocgenException("Attempt to set custom variable " + StringUtil.jQuote(varName)
+                        + ", when it was not set in the settings file (" + FILE_SETTINGS + ").");
+            }
+        }
+
+        Map<String, Object> customVariables = new HashMap<>();
+        customVariables.putAll(customVariablesFromSettingsFile);
+        customVariables.putAll(customVariableOverrides);
+
+        for (Entry<String, Object> entry : customVariables.entrySet()) {
+            Object value = entry.getValue();
+            if (value instanceof FileContentPlaceholder) {
+                Path varContentPath = Paths.get(((FileContentPlaceholder) value).path);
+                Path absVarContentPath;
+                if (varContentPath.isAbsolute()) {
+                    absVarContentPath = varContentPath;
+                } else {
+                    if (customVariableFileDir == null) {
+                        throw new DocgenException("Can't resolve custom variable file "
+                                + StringUtil.jQuote(varContentPath.toString()) + ", as the "
+                                + SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY + " setting wasn't set.");
+                    }
+                    absVarContentPath = customVariableFileDir.toPath().resolve(varContentPath);
+                }
+
+                String varValue;
+                try {
+                    varValue = new String(Files.readAllBytes(absVarContentPath), StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                    throw new DocgenException("Can't read the file that stores the value of custom variable "
+                        + StringUtil.jQuote(entry.getKey()) + ": " + absVarContentPath);
+                }
+                entry.setValue(varValue);
+            }
+        }
+
+        for (Entry<String, Object> entry : customVariables.entrySet()) {
+            if (entry.getValue() == null) {
+                throw new DocgenException("The custom variable " + StringUtil.jQuote(entry.getKey())
+                        + " was set to null, which is not allowed. Probably you are supposed to override its value.");
+            }
+        }
+
+        return customVariables;
     }
 
     private void resolveLogoHref(Logo logo) throws DocgenException {
@@ -2765,6 +2832,14 @@ public final class Transform {
         this.srcDir = srcDir;
     }
 
+    public File getCustomVariableFileDirectory() {
+        return customVariableFileDir;
+    }
+
+    public void setCustomVariableFileDirectory(File customVariableFileDir) {
+        this.customVariableFileDir = customVariableFileDir;
+    }
+
     public Boolean getOffline() {
         return offline;
     }
@@ -2832,19 +2907,20 @@ public final class Transform {
         this.generateEclipseTOC = eclipseToC;
     }
 
-    public Map<String, Object> getCustomVariables() {
-        return customVariables;
+    /**
+     * Adds to the {@link Map} of custom variables, that will be available in templates with variable name
+     * {@link #VAR_CUSTOM_VARIABLES}. You can only set variables that are also set in ({@link #FILE_SETTINGS}) (even
+     * if you {@code null}), or else {@link #execute()} will throw exception. The values set here has precedence over
+     * the values coming from the settings file.
+     */
+    public void addCustomVariableOverrides(Map<String, Object> customVariables) {
+        this.customVariableOverrides.putAll(customVariables);
     }
 
-    /**
-     * Sets the {@link Map} of custom variables, that will be available in templates with variable name
-     * {@link #VAR_CUSTOM_VARIABLES}. When the Docgen settings file loaded ({@link #FILE_SETTINGS}) during
-     * {@link #execute()}, it adds further custom variables, but by creating a new {@link Map}, and not by modifying
-     * the parameter {@link Map}. In case the same custom variable is set in both places, the value of the variable in
-     * this map will win. So this method can be used to override variables set in the settings file.
-     */
-    public void setCustomVariables(Map<String, Object> customVariables) {
-        this.customVariables = customVariables;
+    public void addCustomVariableOverridesFromFiles(Map<String, String> customVariablesFromFiles) {
+        for (Entry<String, String> entry : customVariablesFromFiles.entrySet()) {
+            customVariableOverrides.put(entry.getKey(), new FileContentPlaceholder(entry.getValue()));
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -2968,6 +3044,14 @@ public final class Transform {
                     0,
                     DocumentStructureRank.SECTION1.toString().length() - 1)
                     + level;
+        }
+    }
+
+    private class FileContentPlaceholder {
+        private final String path;
+
+        public FileContentPlaceholder(String path) {
+            this.path = path;
         }
     }
 
