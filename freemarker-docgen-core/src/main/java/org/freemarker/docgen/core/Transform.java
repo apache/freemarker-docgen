@@ -33,7 +33,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,7 +135,6 @@ public final class Transform {
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
     static final String SETTING_CONTENT_DIRECTORY = "contentDirectory";
-    static final String SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY = "customVariableFileDirectory";
     static final String SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK
             = "lowestPageTOCElementRank";
     static final String SETTING_LOWEST_FILE_ELEMENT_RANK
@@ -146,7 +144,7 @@ public final class Transform {
             = "maxMainTOFDisplayDepth";
     static final String SETTING_NUMBERED_SECTIONS = "numberedSections";
     static final String SETTING_CUSTOM_VARIABLES = "customVariables";
-    static final String SETTING_CUSTOM_VARIABLES_FROM_FILES = "customVariablesFromFiles";
+    static final String SETTING_INSERTABLE_FILES = "insertableFiles";
 
     static final String SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE
             = "programlistingsRequireRole";
@@ -223,7 +221,7 @@ public final class Transform {
             = SETTING_MAX_TOF_DISPLAY_DEPTH;
     private static final String VAR_NUMBERED_SECTIONS
             = SETTING_NUMBERED_SECTIONS;
-    private static final String VAR_CUSTOM_VARIABLES = SETTING_CUSTOM_VARIABLES;
+    static final String VAR_CUSTOM_VARIABLES = SETTING_CUSTOM_VARIABLES;
     private static final String VAR_INDEX_ENTRIES
             = "indexEntries";
     private static final String VAR_PAGE_TYPE = "pageType";
@@ -407,12 +405,15 @@ public final class Transform {
 
     private boolean printProgress;
 
-    private LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<>();
     private LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
     private Map<String, Map<String, String>> footerSiteMap;
 
-    private Map<String, Object> customVariableOverrides = new HashMap<>();
     private Map<String, Object> customVariablesFromSettingsFile = new HashMap<>();
+    private Map<String, Object> customVariableOverrides = new HashMap<>();
+
+    private Map<String, String> insertableFilesFromSettingsFile = new HashMap<>();
+    private Map<String, String> insertableFilesOverrides = new HashMap<>();
 
     private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
@@ -447,6 +448,7 @@ public final class Transform {
     private Map<String, Element> elementsById;
     private List<TOCNode> tocNodes;
     private List<String> indexEntries;
+    private Map<String, Path> insertableFiles;
     private Configuration fmConfig;
 
     // -------------------------------------------------------------------------
@@ -607,12 +609,16 @@ public final class Transform {
                 } else if (settingName.equals(SETTING_CUSTOM_VARIABLES)) {
                     customVariablesFromSettingsFile.putAll(
                             castSettingToMapWithStringKeys(cfgFile, settingName, settingValue));
-                } else if (settingName.equals(SETTING_CUSTOM_VARIABLES_FROM_FILES)) {
+                } else if (settingName.equals(SETTING_INSERTABLE_FILES)) {
                     Map<String, Object> m = castSettingToMapWithStringKeys(
                             cfgFile, settingName, settingValue);
                     for (Entry<String, Object> ent : m.entrySet()) {
                         String value = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
-                        customVariablesFromSettingsFile.put(ent.getKey(), new FileContentPlaceholder(value));
+                        if (insertableFilesFromSettingsFile.put(ent.getKey(), value) != null) {
+                            throw new DocgenException(
+                                    "Duplicate key " + StringUtil.jQuote(ent.getKey()) + " in "
+                                            + SETTING_INSERTABLE_FILES + ".");
+                        }
                     }
                 } else if (settingName.equals(SETTING_TABS)) {
                     Map<String, Object> m = castSettingToMapWithStringKeys(
@@ -765,15 +771,6 @@ public final class Transform {
                         throw newCfgFileException(cfgFile, settingName,
                                 "It's not an existing directory: "
                                 + contentDir.getAbsolutePath());
-                    }
-                } else if (settingName.equals(SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY)) {
-                    String s = castSettingToString(
-                            cfgFile, settingName, settingValue);
-                    customVariableFileDir = new File(srcDir, s);
-                    if (!customVariableFileDir.isDirectory()) {
-                        throw newCfgFileException(cfgFile, settingName,
-                                "It's not an existing directory: "
-                                        + customVariableFileDir.getAbsolutePath());
                     }
                 } else if (settingName.equals(SETTING_LOWEST_FILE_ELEMENT_RANK)
                         || settingName.equals(
@@ -1003,6 +1000,8 @@ public final class Transform {
             }
         }
 
+        insertableFiles = computeInsertableFiles();
+
         // - Setup common data-model variables:
         try {
             // Settings:
@@ -1060,6 +1059,10 @@ public final class Transform {
                     VAR_ROOT_ELEMENT, doc.getDocumentElement());
             fmConfig.setSharedVariable(
                     VAR_CUSTOM_VARIABLES, computeCustomVariables());
+
+            fmConfig.setSharedVariable(
+                    "printTextWithDocgenSubstitutions",
+                    new PrintTextWithDocgenSubstitutionsDirective(this));
 
             // Calculated data:
             {
@@ -1162,6 +1165,8 @@ public final class Transform {
                     }
                 } catch (freemarker.core.StopException e) {
                     throw new DocgenException(e.getMessage());
+                } catch (DocgenSubstitutionTemplateException e) {
+                    throw new DocgenException("Docgen substitution in document text failed; see cause exception", e);
                 } catch (TemplateException e) {
                     throw new BugException(e);
                 }
@@ -1248,33 +1253,6 @@ public final class Transform {
         customVariables.putAll(customVariableOverrides);
 
         for (Entry<String, Object> entry : customVariables.entrySet()) {
-            Object value = entry.getValue();
-            if (value instanceof FileContentPlaceholder) {
-                Path varContentPath = Paths.get(((FileContentPlaceholder) value).path);
-                Path absVarContentPath;
-                if (varContentPath.isAbsolute()) {
-                    absVarContentPath = varContentPath;
-                } else {
-                    if (customVariableFileDir == null) {
-                        throw new DocgenException("Can't resolve custom variable file "
-                                + StringUtil.jQuote(varContentPath.toString()) + ", as the "
-                                + SETTING_CUSTOM_VARIABLE_FILE_DIRECTORY + " setting wasn't set.");
-                    }
-                    absVarContentPath = customVariableFileDir.toPath().resolve(varContentPath);
-                }
-
-                String varValue;
-                try {
-                    varValue = new String(Files.readAllBytes(absVarContentPath), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    throw new DocgenException("Can't read the file that stores the value of custom variable "
-                        + StringUtil.jQuote(entry.getKey()) + ": " + absVarContentPath);
-                }
-                entry.setValue(varValue);
-            }
-        }
-
-        for (Entry<String, Object> entry : customVariables.entrySet()) {
             if (entry.getValue() == null) {
                 throw new DocgenException("The custom variable " + StringUtil.jQuote(entry.getKey())
                         + " was set to null, which is not allowed. Probably you are supposed to override its value.");
@@ -1282,6 +1260,62 @@ public final class Transform {
         }
 
         return customVariables;
+    }
+
+    private Map<String, Path> computeInsertableFiles() throws DocgenException {
+        for (String varName : insertableFilesOverrides.keySet()) {
+            if (!insertableFilesFromSettingsFile.containsKey(varName)) {
+                throw new DocgenException("Attempt to set insertable path with symbolic name "
+                        + StringUtil.jQuote(varName)
+                        + ", when same was not set in the settings file (" + FILE_SETTINGS + ").");
+            }
+        }
+
+        Map<String, String> unresolvedInsertableFiles = new HashMap<>();
+        unresolvedInsertableFiles.putAll(insertableFilesFromSettingsFile);
+        unresolvedInsertableFiles.putAll(insertableFilesOverrides);
+
+        for (Entry<String, String> entry : unresolvedInsertableFiles.entrySet()) {
+            if (entry.getValue() == null) {
+                throw new DocgenException("The insertable path with symbolic name "
+                        + StringUtil.jQuote(entry.getKey()) + " was set to path null, which is not allowed. "
+                        + "Probably you are supposed to override its path.");
+            }
+        }
+
+        Map<String, Path> insertableFiles = new HashMap<>();
+        for (Entry<String, String> entry : unresolvedInsertableFiles.entrySet()) {
+            String symbolicName = entry.getKey();
+            String unresolvedPath = entry.getValue();
+
+            Path path;
+            if (unresolvedPath.endsWith("/**") || unresolvedPath.endsWith("\\**")) {
+                path = srcDir.toPath().resolve(unresolvedPath.substring(0, unresolvedPath.length() - 3));
+                if (!Files.isDirectory(path)) {
+                    throw new DocgenException(
+                            "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
+                            + " points to a directory that doesn't exist: " + StringUtil.jQuote(path));
+                }
+            } else {
+                path = srcDir.toPath().resolve(unresolvedPath);
+                if (!Files.isRegularFile(path)) {
+                    if (Files.isDirectory(path)) {
+                        throw new DocgenException(
+                                "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
+                                + " points to a directory, not a file: " + StringUtil.jQuote(path) + "."
+                                + " If you want to point to a directory, end the path with \"/**\".");
+                    } else {
+                        throw new DocgenException(
+                                "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
+                                        + " points to a file that doesn't exist: " + StringUtil.jQuote(path));
+                    }
+                }
+            }
+
+            insertableFiles.put(symbolicName, path);
+        }
+
+        return insertableFiles;
     }
 
     private void resolveLogoHref(Logo logo) throws DocgenException {
@@ -1474,7 +1508,7 @@ public final class Transform {
 
     private String castSettingValueMapValueToString(File cfgFile,
             String settingName, Object mapEntryValue) throws DocgenException {
-        if (!(mapEntryValue instanceof String)) {
+        if (mapEntryValue != null && !(mapEntryValue instanceof String)) {
             throw newCfgFileException(cfgFile, settingName,
                     "The values in the key-value pairs of this map must be "
                     + "strings, but some of them is a "
@@ -2813,6 +2847,12 @@ public final class Transform {
 
     // -------------------------------------------------------------------------
 
+    Map<String, Path> getInsertableFiles() {
+        return insertableFiles;
+    }
+
+    // -------------------------------------------------------------------------
+
     public File getDestinationDirectory() {
         return destDir;
     }
@@ -2917,10 +2957,8 @@ public final class Transform {
         this.customVariableOverrides.putAll(customVariables);
     }
 
-    public void addCustomVariableOverridesFromFiles(Map<String, String> customVariablesFromFiles) {
-        for (Entry<String, String> entry : customVariablesFromFiles.entrySet()) {
-            customVariableOverrides.put(entry.getKey(), new FileContentPlaceholder(entry.getValue()));
-        }
+    public void addInsertableFileOverrides(Map<String, String> insertableFilesOverrides) {
+        this.insertableFilesOverrides.putAll(insertableFilesOverrides);
     }
 
     // -------------------------------------------------------------------------
@@ -3044,14 +3082,6 @@ public final class Transform {
                     0,
                     DocumentStructureRank.SECTION1.toString().length() - 1)
                     + level;
-        }
-    }
-
-    private class FileContentPlaceholder {
-        private final String path;
-
-        public FileContentPlaceholder(String path) {
-            this.path = path;
         }
     }
 

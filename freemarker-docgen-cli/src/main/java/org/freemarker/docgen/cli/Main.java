@@ -20,6 +20,7 @@ package org.freemarker.docgen.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.TimeZone;
 
 import org.freemarker.docgen.core.DocgenException;
@@ -30,6 +31,9 @@ import org.xml.sax.SAXException;
  * Command-line "interface" to {@link Transform}.
  */
 public final class Main {
+
+    private static final String CUSTOM_VARIABLES_DOT = "customVariables.";
+    private static final String INSERTABLE_FILES_DOT = "insertableFiles.";
 
     // Can't be instantiated
     private Main() {
@@ -64,6 +68,16 @@ public final class Main {
                     tr.setTimeZone(TimeZone.getTimeZone(value));
                 } else if (name.equals("generateEclipseToC")) {
                     tr.setGenerateEclipseToC(parseBoolean(value));
+                } else if (name.startsWith(CUSTOM_VARIABLES_DOT)) {
+                    tr.addCustomVariableOverrides(
+                            Collections.singletonMap(
+                                    name.substring(CUSTOM_VARIABLES_DOT.length()),
+                                    value));
+                } else if (name.startsWith(INSERTABLE_FILES_DOT)) {
+                    tr.addInsertableFileOverrides(
+                            Collections.singletonMap(
+                                    name.substring(INSERTABLE_FILES_DOT.length()),
+                                    value));
                 } else {
                     throw new CommandLineExitException(-1, "Unsupported option: " + name);
                 }

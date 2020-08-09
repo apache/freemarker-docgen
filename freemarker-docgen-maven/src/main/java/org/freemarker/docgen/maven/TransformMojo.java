@@ -63,15 +63,9 @@ public class TransformMojo extends AbstractMojo {
     private Map<String, Object> customVariables;
 
     @Parameter()
-    private Map<String, String> customVariablesFromFiles;
+    private Map<String, String> insertableFiles;
 
-    /**
-     * The maven project.
-     *
-     * @parameter expression="${project}"
-     * @readonly
-     */
-    @Parameter(defaultValue = "${${project.base}}", readonly=true)
+    @Parameter(defaultValue = "${project.base}", readonly=true)
     private String projectBaseDirectory;
 
     @Override
@@ -100,8 +94,8 @@ public class TransformMojo extends AbstractMojo {
         if (customVariables != null) {
             transform.addCustomVariableOverrides(customVariables);
         }
-        if (customVariablesFromFiles != null) {
-            transform.addCustomVariableOverridesFromFiles(customVariablesFromFiles);
+        if (insertableFiles != null) {
+            transform.addInsertableFileOverrides(insertableFiles);
         }
         transform.setPrintProgress(printProgress); // TODO Use Maven logging for this
 

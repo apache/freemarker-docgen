@@ -32,7 +32,7 @@
 <#assign footnotes = []>
 
 <#macro @text>
-  <@u.printWithResolvedPlaceholders .node /><#t>
+  <@printTextWithDocgenSubstitutions text=.node /><#t>
 </#macro>
 
 <#macro @element>
