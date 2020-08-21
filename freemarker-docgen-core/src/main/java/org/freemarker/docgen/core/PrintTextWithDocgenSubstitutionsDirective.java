@@ -209,8 +209,13 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                         + " where <symbolicName> is in " + transform.getInsertableFiles().keySet() + ".");
             }
             String symbolicName = symbolicNameStep.substring(1);
-            Path symbolicNamePath = transform.getInsertableFiles().get(symbolicName)
-                    .toAbsolutePath().normalize();
+            Path symbolicNamePath = transform.getInsertableFiles().get(symbolicName);
+            if (symbolicNamePath == null) {
+                throw newErrorInDocgenTag("Symbolic insertable file name "
+                        + StringUtil.jQuote(symbolicName) + " is not amongst the defined names: "
+                        + transform.getInsertableFiles().keySet());
+            }
+            symbolicNamePath = symbolicNamePath.toAbsolutePath().normalize();
             Path resolvedFilePath = slashIndex != -1
                     ? symbolicNamePath.resolve(pathArg.substring(slashIndex + 1))
                     : symbolicNamePath;
