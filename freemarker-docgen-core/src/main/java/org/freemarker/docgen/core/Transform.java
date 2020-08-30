@@ -21,12 +21,9 @@ package org.freemarker.docgen.core;
 import static org.freemarker.docgen.core.DocBook5Constants.*;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -1113,14 +1110,10 @@ public final class Transform {
         {
             logger.info("Generating ToC JSON...");
             Template template = fmConfig.getTemplate(FILE_TOC_JSON_TEMPLATE);
-            try (Writer wr = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream(
-                                    new File(destDir, FILE_TOC_JSON_OUTPUT)),
-                            UTF_8))) {
+            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_TOC_JSON_OUTPUT))) {
                 try {
                     SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-                        dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                    dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
                     template.process(dataModel, wr, null, NodeModel.wrap(doc));
                 } catch (TemplateException e) {
                     throw new BugException("Failed to generate ToC JSON "
@@ -1133,14 +1126,10 @@ public final class Transform {
         {
             logger.info("Generating Sitemap XML...");
             Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
-            try (Writer wr = new BufferedWriter(
-                        new OutputStreamWriter(
-                                        new FileOutputStream(
-                                                        new File(destDir, FILE_SITEMAP_XML_OUTPUT)),
-                                        UTF_8))) {
+            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_SITEMAP_XML_OUTPUT))) {
                 try {
                     SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-                            dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                    dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
                     template.process(dataModel, wr, null, NodeModel.wrap(doc));
                 } catch (TemplateException e) {
                     throw new BugException("Failed to generate Sitemap XML"
@@ -1214,11 +1203,7 @@ public final class Transform {
 
             logger.info("Generating Eclipse ToC...");
             Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
-            try (Writer wr = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream(
-                                    new File(destDir, FILE_ECLIPSE_TOC_OUTPUT)),
-                            UTF_8))) {
+            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_ECLIPSE_TOC_OUTPUT))) {
                 try {
                     SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
                     if (eclipseLinkTo != null) {
@@ -2641,16 +2626,11 @@ public final class Transform {
             throws TemplateException, IOException {
         Template template = fmConfig.getTemplate("page.ftlh");
         File outputFile = new File(destDir, fileName);
-        FileOutputStream fos = new FileOutputStream(outputFile);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, UTF_8);
-        Writer writer = new BufferedWriter(osw, 2048);
-        try {
+        try (Writer writer = FileUtil.newFileWriter(outputFile)) {
             template.process(
                     dataModel,
                     writer, null,
                     NodeModel.wrap(currentFileTOCNode.getElement()));
-        } finally {
-            writer.close();
         }
     }
 

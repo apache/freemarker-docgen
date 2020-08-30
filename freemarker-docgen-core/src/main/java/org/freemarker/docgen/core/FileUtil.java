@@ -26,7 +26,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
@@ -346,5 +349,8 @@ final class FileUtil {
         return path.length() > 0 && path.charAt(path.length() - 1) == File.separatorChar
                 ? path : path + File.separatorChar;
     }
-    
+
+    public static Writer newFileWriter(File outputFile) throws IOException {
+        return Files.newBufferedWriter(outputFile.toPath(), StandardCharsets.UTF_8);
+    }
 }
