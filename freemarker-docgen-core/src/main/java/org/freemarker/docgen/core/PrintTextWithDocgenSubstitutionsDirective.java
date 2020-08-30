@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -136,10 +138,23 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                 } else if (INSERT_FILE.equals(subvarName)) {
                     skipWS();
                     String pathArg = fetchRequiredString();
+                    String charsetArg = null;
+                    if (skipWS()) {
+                        String paramName = fetchOptionalVariableName();
+                        skipRequiredToken("=");
+                        String paramValue = fetchRequiredString();
+                        if (paramName.equals("charset")) {
+                            charsetArg = paramValue;
+                        } else {
+                            throw new TemplateException(
+                                    "Unsupported " + StringUtil.jQuote(INSERT_FILE)
+                                            +  " parameter " + StringUtil.jQuote(paramName) + ".", env);
+                        }
+                    }
                     skipRequiredToken(DOCGEN_TAG_END);
                     lastUnprintedIdx = cursor;
 
-                    insertFile(pathArg);
+                    insertFile(pathArg, charsetArg);
                 } else {
                     throw new TemplateException(
                             "Unsupported docgen subvariable " + StringUtil.jQuote(subvarName) + ".", env);
@@ -201,7 +216,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
-        private void insertFile(String pathArg) throws TemplateException, IOException {
+        private void insertFile(String pathArg, String charsetArg) throws TemplateException, IOException {
             int slashIndex = pathArg.indexOf("/");
             String symbolicNameStep = slashIndex != -1 ? pathArg.substring(0, slashIndex) : pathArg;
             if (!symbolicNameStep.startsWith("@") || symbolicNameStep.length() < 2) {
@@ -228,8 +243,20 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             if (!Files.isRegularFile(resolvedFilePath)) {
                 throw newErrorInDocgenTag("Not an existing file: " + resolvedFilePath);
             }
+
+            Charset charset;
+            if (charsetArg != null) {
+                try {
+                    charset = Charset.forName(charsetArg);
+                } catch (UnsupportedCharsetException e) {
+                    throw newErrorInDocgenTag("Unsupported charset: " + charsetArg);
+                }
+            } else {
+                charset = StandardCharsets.UTF_8;
+            }
+
             try (InputStream in = Files.newInputStream(resolvedFilePath)) {
-                String fileContent = IOUtils.toString(in, StandardCharsets.UTF_8);
+                String fileContent = IOUtils.toString(in, charset);
                 String fileExt = FilenameUtils.getExtension(resolvedFilePath.getFileName().toString());
                 if (fileExt != null && fileExt.toLowerCase().startsWith("ftl")) {
                     fileContent = removeFTLCopyrightComment(fileContent);
@@ -258,14 +285,17 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             return -1;
         }
 
-        private void skipWS() {
+        private boolean skipWS() {
+            boolean found = false;
             while (cursor < text.length()) {
                 if (Character.isWhitespace(text.charAt(cursor))) {
                     cursor++;
+                    found = true;
                 } else {
                     break;
                 }
             }
+            return found;
         }
 
         private void skipRequiredToken(String token) throws TemplateException {
