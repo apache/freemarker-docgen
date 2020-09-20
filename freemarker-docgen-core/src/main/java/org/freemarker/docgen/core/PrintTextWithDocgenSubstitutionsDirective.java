@@ -29,11 +29,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import freemarker.core.Environment;
 import freemarker.core.HTMLOutputFormat;
@@ -139,12 +146,24 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     skipWS();
                     String pathArg = fetchRequiredString();
                     String charsetArg = null;
-                    if (skipWS()) {
+                    String fromArg = null;
+                    String toArg = null;
+                    Set<String> paramNamesSeen = new HashSet<>();
+                    while (skipWS()) {
                         String paramName = fetchOptionalVariableName();
                         skipRequiredToken("=");
-                        String paramValue = fetchRequiredString();
+                        String paramValue = StringEscapeUtils.unescapeXml(fetchRequiredString());
+                        if (!paramNamesSeen.add(paramName)) {
+                            throw new TemplateException(
+                                    "Duplicate " + StringUtil.jQuote(INSERT_FILE)
+                                            +  " parameter " + StringUtil.jQuote(paramName) + ".", env);
+                        }
                         if (paramName.equals("charset")) {
                             charsetArg = paramValue;
+                        } else if (paramName.equals("from")) {
+                            fromArg = paramValue;
+                        } else if (paramName.equals("to")) {
+                            toArg = paramValue;
                         } else {
                             throw new TemplateException(
                                     "Unsupported " + StringUtil.jQuote(INSERT_FILE)
@@ -154,7 +173,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     skipRequiredToken(DOCGEN_TAG_END);
                     lastUnprintedIdx = cursor;
 
-                    insertFile(pathArg, charsetArg);
+                    insertFile(pathArg, charsetArg, fromArg, toArg);
                 } else {
                     throw new TemplateException(
                             "Unsupported docgen subvariable " + StringUtil.jQuote(subvarName) + ".", env);
@@ -216,7 +235,8 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
-        private void insertFile(String pathArg, String charsetArg) throws TemplateException, IOException {
+        private void insertFile(String pathArg, String charsetArg, String fromArg, String toArg)
+                throws TemplateException, IOException {
             int slashIndex = pathArg.indexOf("/");
             String symbolicNameStep = slashIndex != -1 ? pathArg.substring(0, slashIndex) : pathArg;
             if (!symbolicNameStep.startsWith("@") || symbolicNameStep.length() < 2) {
@@ -261,6 +281,67 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                 if (fileExt != null && fileExt.toLowerCase().startsWith("ftl")) {
                     fileContent = removeFTLCopyrightComment(fileContent);
                 }
+
+                if (fromArg != null) {
+                    boolean optional;
+                    String fromArgCleaned;
+                    if (fromArg.startsWith("?")) {
+                        optional = true;
+                        fromArgCleaned = fromArg.substring(1);
+                    } else {
+                        optional = false;
+                        fromArgCleaned = fromArg;
+                    }
+                    Pattern from;
+                    try {
+                        from = Pattern.compile(fromArgCleaned);
+                    } catch (PatternSyntaxException e) {
+                        throw newErrorInDocgenTag("Invalid regular expression: " + fromArgCleaned);
+                    }
+                    Matcher matcher = from.matcher(fileContent);
+                    if (matcher.find()) {
+                        String remaining = fileContent.substring(matcher.start());
+                        fileContent = "[\u2026]"
+                                + (remaining.startsWith("\n") || remaining.startsWith("\r") ? "" : "\n")
+                                + remaining;
+                    } else {
+                        if (!optional) {
+                            throw newErrorInDocgenTag(
+                                    "Regular expression has no match in the file content: " + fromArg);
+                        }
+                    }
+                }
+
+                if (toArg != null) {
+                    boolean optional;
+                    String toArgCleaned;
+                    if (toArg.startsWith("?")) {
+                        optional = true;
+                        toArgCleaned = toArg.substring(1);
+                    } else {
+                        optional = false;
+                        toArgCleaned = toArg;
+                    }
+                    Pattern from;
+                    try {
+                        from = Pattern.compile(toArgCleaned);
+                    } catch (PatternSyntaxException e) {
+                        throw newErrorInDocgenTag("Invalid regular expression: " + toArgCleaned);
+                    }
+                    Matcher matcher = from.matcher(fileContent);
+                    if (matcher.find()) {
+                        String remaining = fileContent.substring(0, matcher.start());
+                        fileContent = remaining
+                                + (remaining.endsWith("\n") || remaining.endsWith("\r") ? "" : "\n")
+                                + "[\u2026]";
+                    } else {
+                        if (!optional) {
+                            throw newErrorInDocgenTag(
+                                    "Regular expression has no match in the file content: " + fromArg);
+                        }
+                    }
+                }
+
                 HTMLOutputFormat.INSTANCE.output(fileContent, out);
             }
         }
