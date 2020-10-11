@@ -128,7 +128,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     lastDocgenTagStart = cursor;
                 }
 
-                out.write(text, lastUnprintedIdx, cursor - lastUnprintedIdx);
+                HTMLOutputFormat.INSTANCE.output(text.substring(lastUnprintedIdx, cursor), out);
                 lastUnprintedIdx = cursor;
 
                 cursor += DOCGEN_TAG_START.length();
@@ -180,7 +180,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                 }
 
             }
-            out.write(text, lastUnprintedIdx, text.length() - lastUnprintedIdx);
+            HTMLOutputFormat.INSTANCE.output(text.substring(lastUnprintedIdx, text.length()), out);
         }
 
         private void insertCustomVariable(String customVarName) throws TemplateException, IOException {
