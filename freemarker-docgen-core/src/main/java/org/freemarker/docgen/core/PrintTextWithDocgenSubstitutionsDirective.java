@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,6 +149,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     String charsetArg = null;
                     String fromArg = null;
                     String toArg = null;
+                    String toIfPresentArg = null;
                     Set<String> paramNamesSeen = new HashSet<>();
                     while (skipWS()) {
                         String paramName = fetchOptionalVariableName();
@@ -164,6 +166,8 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                             fromArg = paramValue;
                         } else if (paramName.equals("to")) {
                             toArg = paramValue;
+                        } else if (paramName.equals("toIfPresent")) {
+                            toIfPresentArg = paramValue;
                         } else {
                             throw new TemplateException(
                                     "Unsupported " + StringUtil.jQuote(INSERT_FILE)
@@ -173,7 +177,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     skipRequiredToken(DOCGEN_TAG_END);
                     lastUnprintedIdx = cursor;
 
-                    insertFile(pathArg, charsetArg, fromArg, toArg);
+                    insertFile(pathArg, charsetArg, fromArg, toArg, toIfPresentArg);
                 } else {
                     throw new TemplateException(
                             "Unsupported docgen subvariable " + StringUtil.jQuote(subvarName) + ".", env);
@@ -235,7 +239,8 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
-        private void insertFile(String pathArg, String charsetArg, String fromArg, String toArg)
+        private void insertFile(String pathArg, String charsetArg, String fromArg,
+                String toArg, String toIfPresentArg)
                 throws TemplateException, IOException {
             int slashIndex = pathArg.indexOf("/");
             String symbolicNameStep = slashIndex != -1 ? pathArg.substring(0, slashIndex) : pathArg;
@@ -312,32 +317,39 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     }
                 }
 
+                String toStr;
+                boolean toPresenceOptional;
                 if (toArg != null) {
-                    boolean optional;
-                    String toArgCleaned;
-                    if (toArg.startsWith("?")) {
-                        optional = true;
-                        toArgCleaned = toArg.substring(1);
-                    } else {
-                        optional = false;
-                        toArgCleaned = toArg;
+                    if (toIfPresentArg != null) {
+                        throw newErrorInDocgenTag(
+                                "Can't use both \"to\" and \"toIfPresent\" argument.");
                     }
-                    Pattern from;
+                    toStr = toArg;
+                    toPresenceOptional = false;
+                } else if (toIfPresentArg != null) {
+                    toStr = toIfPresentArg;
+                    toPresenceOptional = true;
+                } else {
+                    toStr = null;
+                    toPresenceOptional = false;
+                }
+                if (toStr != null) {
+                    Pattern to;
                     try {
-                        from = Pattern.compile(toArgCleaned);
+                        to = Pattern.compile(toStr);
                     } catch (PatternSyntaxException e) {
-                        throw newErrorInDocgenTag("Invalid regular expression: " + toArgCleaned);
+                        throw newErrorInDocgenTag("Invalid regular expression: " + toStr);
                     }
-                    Matcher matcher = from.matcher(fileContent);
+                    Matcher matcher = to.matcher(fileContent);
                     if (matcher.find()) {
                         String remaining = fileContent.substring(0, matcher.start());
                         fileContent = remaining
                                 + (remaining.endsWith("\n") || remaining.endsWith("\r") ? "" : "\n")
                                 + "[\u2026]";
                     } else {
-                        if (!optional) {
+                        if (!toPresenceOptional) {
                             throw newErrorInDocgenTag(
-                                    "Regular expression has no match in the file content: " + fromArg);
+                                    "Regular expression has no match in the file content: " + toStr);
                         }
                     }
                 }
