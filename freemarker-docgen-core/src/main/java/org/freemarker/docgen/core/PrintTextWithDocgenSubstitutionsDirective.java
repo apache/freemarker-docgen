@@ -299,7 +299,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     }
                     Pattern from;
                     try {
-                        from = Pattern.compile(fromArgCleaned);
+                        from = Pattern.compile(fromArgCleaned, Pattern.MULTILINE);
                     } catch (PatternSyntaxException e) {
                         throw newErrorInDocgenTag("Invalid regular expression: " + fromArgCleaned);
                     }
@@ -336,7 +336,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                 if (toStr != null) {
                     Pattern to;
                     try {
-                        to = Pattern.compile(toStr);
+                        to = Pattern.compile(toStr, Pattern.MULTILINE);
                     } catch (PatternSyntaxException e) {
                         throw newErrorInDocgenTag("Invalid regular expression: " + toStr);
                     }
@@ -441,15 +441,22 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
 
         private String fetchOptionalString() throws TemplateException {
             char quoteChar = charAt(cursor);
+            boolean rawString = quoteChar == 'r';
+            if (rawString) {
+                if (cursor + 1 < text.length()) {
+                    quoteChar = charAt(cursor + 1);
+                }
+            }
             if (quoteChar != '"' && quoteChar != '\'') {
                 return null;
             }
-            cursor++;
+            cursor += rawString ? 2 : 1;
             int stringStartIdx = cursor;
             while (cursor < text.length() && charAt(cursor) != quoteChar) {
-                if (charAt(cursor) == '\\') {
+                if (!rawString && charAt(cursor) == '\\') {
                     throw new DocgenSubstitutionTemplateException(
-                            "Backslash is currently not supported in string literal in Docgen tags.", env);
+                            "Backslash is currently not supported in string literal in Docgen tags, "
+                                    + "except in raw strings (like r\"regular\\s+expression\").", env);
                 }
                 cursor++;
             }
