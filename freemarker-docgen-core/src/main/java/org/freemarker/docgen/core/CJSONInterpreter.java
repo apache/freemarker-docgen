@@ -329,22 +329,23 @@ final class CJSONInterpreter {
         }
     }
 
-    /**
-     * Same as <code>evalAsMap(textFromUTF8File, null, false, null)</code>.
-     * The file must use UTF-8 encoding. Initial BOM is allowed.
-     * @throws IOException 
-     * @see #evalAsMap(String, EvaluationEnvironment, boolean, String)
-     */
     public static Map<String, Object> evalAsMap(File f)
             throws EvaluationException, IOException {
+        return evalAsMap(f, null, false);
+    }
+
+    /**
+     * Same as <code>evalAsMap(textFromUTF8File, null, false, null)</code>.
+     * Loads the file with {@link #loadCJSONFile}.
+     * @see #evalAsMap(String, EvaluationEnvironment, boolean, String)
+     */
+    public static Map<String, Object> evalAsMap(File f, EvaluationEnvironment ee, boolean forceStringValues)
+            throws EvaluationException, IOException {
         String s;
-        InputStream in = new FileInputStream(f);
-        try {
+        try (InputStream in = new FileInputStream(f)) {
             s = loadCJSONFile(in, f.getAbsolutePath());
-        } finally {
-            in.close();
         }
-        return evalAsMap(s, f.getAbsolutePath());
+        return evalAsMap(s, ee, forceStringValues, f.getAbsolutePath());
     }
     
     /**

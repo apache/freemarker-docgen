@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
@@ -59,10 +58,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -158,6 +154,19 @@ public final class Transform {
     static final String SETTING_NUMBERED_SECTIONS = "numberedSections";
     static final String SETTING_CUSTOM_VARIABLES = "customVariables";
     static final String SETTING_INSERTABLE_FILES = "insertableFiles";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS = "insertableOutputCommands";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY = "class";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY = "prependedArguments";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY = "workDirectory";
+    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS;
+    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS;
+    static {
+        SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS = new LinkedHashSet<>();
+        SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS = new LinkedHashSet<>();
+        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY);
+    }
 
     static final String SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE
             = "programlistingsRequireRole";
@@ -428,6 +437,8 @@ public final class Transform {
     private final Map<String, String> insertableFilesFromSettingsFile = new HashMap<>();
     private final Map<String, String> insertableFilesOverrides = new HashMap<>();
 
+    private final Map<String, InsertableOutputCommandProperties> insertableOutputCommands = new HashMap<>();
+
     private final LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
     private final Map<String, Map<String, String>> secondaryTabs = new LinkedHashMap<>();
@@ -537,10 +548,9 @@ public final class Transform {
         if (cfgFile.exists()) {
             Map<String, Object> cfg;
             try {
-                cfg = CJSONInterpreter.evalAsMap(cfgFile);
+                cfg = CJSONInterpreter.evalAsMap(cfgFile, new DocgenCJSONEvaluationEnvironment(), false);
             } catch (CJSONInterpreter.EvaluationException e) {
-                throw new DocgenException(e.getMessage(),
-                        e.getCause());
+                throw new DocgenException(e.getMessage(), e.getCause());
             }
 
             for (Entry<String, Object> cfgEnt : cfg.entrySet()) {
@@ -607,6 +617,36 @@ public final class Transform {
                     insertableFilesFromSettingsFile.putAll(
                             // Allow null values in the Map, as the caller can override them.
                             castSettingToMap(settingName, settingValue, String.class, String.class, true));
+                } else if (topSettingName.equals(SETTING_INSERTABLE_OUTPUT_COMMANDS)) {
+                    Map<String, Map<String, Object>> m = castSetting(
+                            settingName, settingValue,
+                            Map.class,
+                            new MapEntryType(String.class, Map.class),
+                            new MapEntryType(
+                                    String.class, SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS, SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS,
+                                    Object.class, false));
+                    for (Entry<String, Map<String, Object>> ent : m.entrySet()) {
+                        String commandKey = ent.getKey();
+                        Map<String, Object> outputCmdProps = ent.getValue();
+                        InsertableOutputCommandProperties commandProps = new InsertableOutputCommandProperties(
+                                castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY),
+                                        String.class
+                                ),
+                                castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY),
+                                        List.class
+                                ),
+                                Paths.get(castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY),
+                                        String.class
+                                ))
+                        );
+                        insertableOutputCommands.put(commandKey, commandProps);
+                    }
                 } else if (topSettingName.equals(SETTING_TABS)) {
                     tabs.putAll(
                             castSettingToMap(settingName, settingValue, String.class, String.class));
@@ -1151,8 +1191,8 @@ public final class Transform {
     private Map<String, Object> computeCustomVariables() throws DocgenException {
         for (String varName : customVariableOverrides.keySet()) {
             if (!customVariablesFromSettingsFile.containsKey(varName)) {
-                throw new DocgenException("Attempt to set custom variable " + StringUtil.jQuote(varName)
-                        + ", when it was not set in the settings file (" + FILE_SETTINGS + ").");
+                throw new DocgenException("Attempt to override custom variable " + StringUtil.jQuote(varName)
+                        + ", when it was not set in the settings file (" + cfgFile + ").");
             }
         }
 
@@ -2500,7 +2540,11 @@ public final class Transform {
         return insertableFiles;
     }
 
-    // -------------------------------------------------------------------------
+    public Map<String, InsertableOutputCommandProperties> getInsertableOutputCommands() {
+        return insertableOutputCommands;
+    }
+
+// -------------------------------------------------------------------------
 
     public File getDestinationDirectory() {
         return destDir;
@@ -2731,6 +2775,87 @@ public final class Transform {
                     0,
                     DocumentStructureRank.SECTION1.toString().length() - 1)
                     + level;
+        }
+    }
+
+    static class InsertableOutputCommandProperties {
+        private final String mainClassName;
+        private final List<String> prependedArguments;
+        private final Path workDirectory;
+
+        public InsertableOutputCommandProperties(String mainClassName, List<String> prependedArguments, Path workDirectory) {
+            this.mainClassName = mainClassName;
+            this.prependedArguments = prependedArguments;
+            this.workDirectory = workDirectory;
+        }
+
+        @Override
+        public String toString() {
+            return "InsertableOutputCommandProperties{"
+                    + "mainClassName='" + mainClassName + '\''
+                    + ", prependedArguments=" + prependedArguments
+                    + ", workDirectory=" + workDirectory + '}';
+        }
+    }
+
+    @FunctionalInterface
+    interface CJSONFunction {
+        Object run(Transform context, CJSONInterpreter.FunctionCall fc);
+    }
+
+    private static final Map<String, CJSONFunction> CJSON_FUNCTIONS = ImmutableMap.of(
+            "getCustomVariable",
+            (ctx, fc) -> {
+                List<Object> params = fc.getParams();
+                if (params.size() != 1) {
+                    throw new DocgenException(
+                            "CJSON function " + fc.getName() + "(name) "
+                                    + "should have 1 arguments, but had " + params.size() + ".");
+                }
+
+                Object varName = params.get(0);
+                if (!(varName instanceof String)) {
+                    throw new DocgenException(
+                            "CJSON function " + fc.getName() + "(name) "
+                                    + "argument should be a string, but was a(n) "
+                                    + CJSONInterpreter.cjsonTypeNameOfValue(varName) + ".");
+                }
+
+                Object result = ctx.customVariableOverrides.get(varName);
+                if (result == null) {
+                    result = ctx.customVariablesFromSettingsFile.get(varName);
+                }
+                if (result == null) {
+                    throw new DocgenException(
+                            "The custom variable " + StringUtil.jQuote(varName) + " is not set (or was set to null).");
+                }
+                return result;
+            },
+            "concat",
+            (ctx, fc) -> {
+                return fc.getParams().stream()
+                        .filter(it -> it != null)
+                        .map(Object::toString)
+                        .collect(Collectors.joining());
+            }
+    );
+
+    class DocgenCJSONEvaluationEnvironment implements CJSONInterpreter.EvaluationEnvironment {
+        @Override
+        public Object evalFunctionCall(CJSONInterpreter.FunctionCall fc, CJSONInterpreter ip) {
+            String name = fc.getName();
+            CJSONFunction f = CJSON_FUNCTIONS.get(name);
+            if (f == null) {
+                throw new DocgenException("Unknown CJSON function: " + name
+                        + "\nSupported functions are: " + String.join(", ", CJSON_FUNCTIONS.keySet()));
+            }
+            return f.run(Transform.this, fc);
+        }
+
+        @Override
+        public Object notify(CJSONInterpreter.EvaluationEvent event, CJSONInterpreter ip, String name, Object extra) throws
+                Exception {
+            return null;
         }
     }
 

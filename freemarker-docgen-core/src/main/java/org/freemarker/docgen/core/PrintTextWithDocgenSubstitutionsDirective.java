@@ -21,19 +21,16 @@ package org.freemarker.docgen.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +62,9 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
     private static final String PARAM_TEXT = "text";
     private static final String DOCGEN_TAG_START = "[docgen";
     private static final String DOCGEN_TAG_END = "]";
+    private static final String DOCGEN_END_TAG_START = "[/docgen";
     private static final String INSERT_FILE = "insertFile";
+    private static final String INSERT_OUTPUT = "insertOutput";
 
     private final Transform transform;
 
@@ -144,40 +143,13 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
 
                     insertCustomVariable(customVarName);
                 } else if (INSERT_FILE.equals(subvarName)) {
-                    skipWS();
-                    String pathArg = fetchRequiredString();
-                    String charsetArg = null;
-                    String fromArg = null;
-                    String toArg = null;
-                    String toIfPresentArg = null;
-                    Set<String> paramNamesSeen = new HashSet<>();
-                    while (skipWS()) {
-                        String paramName = fetchOptionalVariableName();
-                        skipRequiredToken("=");
-                        String paramValue = StringEscapeUtils.unescapeXml(fetchRequiredString());
-                        if (!paramNamesSeen.add(paramName)) {
-                            throw new TemplateException(
-                                    "Duplicate " + StringUtil.jQuote(INSERT_FILE)
-                                            +  " parameter " + StringUtil.jQuote(paramName) + ".", env);
-                        }
-                        if (paramName.equals("charset")) {
-                            charsetArg = paramValue;
-                        } else if (paramName.equals("from")) {
-                            fromArg = paramValue;
-                        } else if (paramName.equals("to")) {
-                            toArg = paramValue;
-                        } else if (paramName.equals("toIfPresent")) {
-                            toIfPresentArg = paramValue;
-                        } else {
-                            throw new TemplateException(
-                                    "Unsupported " + StringUtil.jQuote(INSERT_FILE)
-                                            +  " parameter " + StringUtil.jQuote(paramName) + ".", env);
-                        }
-                    }
-                    skipRequiredToken(DOCGEN_TAG_END);
+                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, true, true, false);
                     lastUnprintedIdx = cursor;
-
-                    insertFile(pathArg, charsetArg, fromArg, toArg, toIfPresentArg);
+                    insertFile(args);
+                } else if (INSERT_OUTPUT.equals(subvarName)) {
+                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, false, false, true);
+                    lastUnprintedIdx = cursor;
+                    insertOutput(args);
                 } else {
                     throw new TemplateException(
                             "Unsupported docgen subvariable " + StringUtil.jQuote(subvarName) + ".", env);
@@ -239,11 +211,9 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
-        private void insertFile(String pathArg, String charsetArg, String fromArg,
-                String toArg, String toIfPresentArg)
-                throws TemplateException, IOException {
-            int slashIndex = pathArg.indexOf("/");
-            String symbolicNameStep = slashIndex != -1 ? pathArg.substring(0, slashIndex) : pathArg;
+        private void insertFile(InsertDirectiveArgs args) throws TemplateException, IOException {
+            int slashIndex = args.path.indexOf("/");
+            String symbolicNameStep = slashIndex != -1 ? args.path.substring(0, slashIndex) : args.path;
             if (!symbolicNameStep.startsWith("@") || symbolicNameStep.length() < 2) {
                 throw newErrorInDocgenTag("Path argument must start with @<symbolicName>/, "
                         + " where <symbolicName> is in " + transform.getInsertableFiles().keySet() + ".");
@@ -257,7 +227,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
             symbolicNamePath = symbolicNamePath.toAbsolutePath().normalize();
             Path resolvedFilePath = slashIndex != -1
-                    ? symbolicNamePath.resolve(pathArg.substring(slashIndex + 1))
+                    ? symbolicNamePath.resolve(args.path.substring(slashIndex + 1))
                     : symbolicNamePath;
             resolvedFilePath = resolvedFilePath.normalize();
             if (!resolvedFilePath.startsWith(symbolicNamePath)) {
@@ -270,11 +240,11 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
 
             Charset charset;
-            if (charsetArg != null) {
+            if (args.charset != null) {
                 try {
-                    charset = Charset.forName(charsetArg);
+                    charset = Charset.forName(args.charset);
                 } catch (UnsupportedCharsetException e) {
-                    throw newErrorInDocgenTag("Unsupported charset: " + charsetArg);
+                    throw newErrorInDocgenTag("Unsupported charset: " + args.charset);
                 }
             } else {
                 charset = StandardCharsets.UTF_8;
@@ -287,75 +257,56 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     fileContent = removeFTLCopyrightComment(fileContent);
                 }
 
-                if (fromArg != null) {
-                    boolean optional;
-                    String fromArgCleaned;
-                    if (fromArg.startsWith("?")) {
-                        optional = true;
-                        fromArgCleaned = fromArg.substring(1);
-                    } else {
-                        optional = false;
-                        fromArgCleaned = fromArg;
-                    }
-                    Pattern from;
-                    try {
-                        from = Pattern.compile(fromArgCleaned, Pattern.MULTILINE);
-                    } catch (PatternSyntaxException e) {
-                        throw newErrorInDocgenTag("Invalid regular expression: " + fromArgCleaned);
-                    }
-                    Matcher matcher = from.matcher(fileContent);
+                if (args.from != null) {
+                    Matcher matcher = args.from.matcher(fileContent);
                     if (matcher.find()) {
                         String remaining = fileContent.substring(matcher.start());
                         fileContent = "[\u2026]"
                                 + (remaining.startsWith("\n") || remaining.startsWith("\r") ? "" : "\n")
                                 + remaining;
-                    } else {
-                        if (!optional) {
-                            throw newErrorInDocgenTag(
-                                    "Regular expression has no match in the file content: " + fromArg);
-                        }
+                    } else if (!args.fromOptional) {
+                        throw newErrorInDocgenTag(
+                                "\"from\" regular expression has no match in the file content: " + args.from);
                     }
                 }
 
-                String toStr;
-                boolean toPresenceOptional;
-                if (toArg != null) {
-                    if (toIfPresentArg != null) {
-                        throw newErrorInDocgenTag(
-                                "Can't use both \"to\" and \"toIfPresent\" argument.");
-                    }
-                    toStr = toArg;
-                    toPresenceOptional = false;
-                } else if (toIfPresentArg != null) {
-                    toStr = toIfPresentArg;
-                    toPresenceOptional = true;
-                } else {
-                    toStr = null;
-                    toPresenceOptional = false;
-                }
-                if (toStr != null) {
-                    Pattern to;
-                    try {
-                        to = Pattern.compile(toStr, Pattern.MULTILINE);
-                    } catch (PatternSyntaxException e) {
-                        throw newErrorInDocgenTag("Invalid regular expression: " + toStr);
-                    }
-                    Matcher matcher = to.matcher(fileContent);
+                if (args.to != null) {
+                    Matcher matcher = args.to.matcher(fileContent);
                     if (matcher.find()) {
                         String remaining = fileContent.substring(0, matcher.start());
                         fileContent = remaining
                                 + (remaining.endsWith("\n") || remaining.endsWith("\r") ? "" : "\n")
                                 + "[\u2026]";
-                    } else {
-                        if (!toPresenceOptional) {
-                            throw newErrorInDocgenTag(
-                                    "Regular expression has no match in the file content: " + toStr);
-                        }
+                    } else if (!args.toOptional) {
+                        throw newErrorInDocgenTag(
+                                "\"to\" regular expression has no match in the file content: " + args.to);
                     }
                 }
 
                 HTMLOutputFormat.INSTANCE.output(fileContent, out);
             }
+        }
+
+        private void insertOutput(InsertDirectiveArgs args) throws TemplateException, IOException {
+            List<String> splitCmdLine = BashCommandLineArgsParser.parse(args.body);
+            if (splitCmdLine.isEmpty()) {
+                throw newErrorInDocgenTag("Command to execute was empty");
+            }
+            String cmdKey = splitCmdLine.get(0);
+            List<String> cmdArgs = splitCmdLine.subList(1, splitCmdLine.size());
+            Map<String, Transform.InsertableOutputCommandProperties> cmdPropsMap =
+                    transform.getInsertableOutputCommands();
+            Transform.InsertableOutputCommandProperties cmdProps = cmdPropsMap.get(cmdKey);
+            if (cmdProps == null) {
+                throw newErrorInDocgenTag(
+                        "The " + Transform.SETTING_INSERTABLE_OUTPUT_COMMANDS
+                                + " configuration setting doesn't have entry with key " + StringUtil.jQuote(cmdKey)
+                                + ". "
+                                + (cmdPropsMap.isEmpty()
+                                        ? "That setting is empty."
+                                        : "It has these keys: " + String.join(", ", cmdPropsMap.keySet())));
+            }
+            HTMLOutputFormat.INSTANCE.output("!!T\n" + cmdProps + "\n" + cmdArgs, out);
         }
 
         private TemplateException newFormattingFailedException(String customVarName, TemplateValueFormatException e) {
@@ -365,8 +316,8 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     e, env);
         }
 
-        private int findNextDocgenTagStart(int lastUnprintedIdx) {
-            int startIdx = text.indexOf(DOCGEN_TAG_START, lastUnprintedIdx);
+        private int findNextDocgenTagStart(int fromIndex) {
+            int startIdx = text.indexOf(DOCGEN_TAG_START, fromIndex);
             if (startIdx == -1) {
                 return -1;
             }
@@ -376,6 +327,25 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                 return startIdx;
             }
             return -1;
+        }
+
+        private int findNextDocgenEndTag(int fromIndex) {
+            int startIdx = text.indexOf(DOCGEN_END_TAG_START, fromIndex);
+            if (startIdx == -1) {
+                return -1;
+            }
+            int afterTagStartIdx = startIdx + DOCGEN_END_TAG_START.length();
+            if (afterTagStartIdx < text.length()
+                    && !Character.isJavaIdentifierPart(text.charAt(afterTagStartIdx))) {
+                return startIdx;
+            }
+            return -1;
+        }
+
+        private void skipRequiredWS() throws DocgenTagException {
+            if (!skipWS()) {
+                throw newUnexpectedTokenException("whitespace", env);
+            }
         }
 
         private boolean skipWS() {
@@ -454,36 +424,139 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             int stringStartIdx = cursor;
             while (cursor < text.length() && charAt(cursor) != quoteChar) {
                 if (!rawString && charAt(cursor) == '\\') {
-                    throw new DocgenSubstitutionTemplateException(
+                    throw new DocgenTagException(
                             "Backslash is currently not supported in string literal in Docgen tags, "
                                     + "except in raw strings (like r\"regular\\s+expression\").", env);
                 }
                 cursor++;
             }
             if (charAt(cursor) != quoteChar) {
-                throw new DocgenSubstitutionTemplateException("Unclosed string literal in a Docgen tag.", env);
+                throw new DocgenTagException("Unclosed string literal in a Docgen tag.", env);
             }
             String result = text.substring(stringStartIdx, cursor);
             cursor++;
             return result;
         }
 
+        private boolean fetchRequiredBoolean() throws TemplateException {
+            Boolean result = fetchOptionalBoolean();
+            if (result == null) {
+                throw newUnexpectedTokenException("boolean", env);
+            }
+            return result;
+        }
+
+        private Boolean fetchOptionalBoolean() throws DocgenTagException {
+            String name = fetchOptionalVariableName();
+            if (name == null) {
+                return null;
+            }
+            if (name.equals("true")) {
+                return true;
+            } else if (name.equals("false")) {
+                return false;
+            } else {
+                throw new DocgenTagException("true or false", env);
+            }
+        }
+
+
         private char charAt(int index) {
             return index < text.length() ? text.charAt(index) : 0;
         }
 
-        private TemplateException newUnexpectedTokenException(String expectedTokenDesc, Environment env) {
-            return new DocgenSubstitutionTemplateException(
+        private DocgenTagException newUnexpectedTokenException(String expectedTokenDesc, Environment env) {
+            return new DocgenTagException(
                     "Expected " + expectedTokenDesc + " after this: " + text.substring(lastDocgenTagStart, cursor),
                     env);
         }
 
         private TemplateException newErrorInDocgenTag(String errorDetail) {
-            return new DocgenSubstitutionTemplateException(
+            return new DocgenTagException(
                     "\nError in docgen tag: " + text.substring(lastDocgenTagStart, cursor) + "\n" + errorDetail,
                     env);
 
         }
+
+        private InsertDirectiveArgs fetchInsertDirectiveArgs(
+                String subvarName, boolean hasPath, boolean allowCharsetArg, boolean hasBodyArg) throws
+                TemplateException {
+            InsertDirectiveArgs args = new InsertDirectiveArgs();
+            args.toOptional = true;
+
+            if (hasPath) {
+                skipWS();
+                args.path = fetchRequiredString();
+            }
+
+            Set<String> paramNamesSeen = new HashSet<>();
+            String paramName;
+            while (skipWS() && (paramName = fetchOptionalVariableName()) != null) {
+                skipRequiredToken("=");
+                if (!paramNamesSeen.add(paramName)) {
+                    throw new DocgenTagException(
+                            "Duplicate docgen." + subvarName +  " parameter " + StringUtil.jQuote(paramName) + ".",
+                            env);
+                }
+                if (allowCharsetArg && paramName.equals("charset")) {
+                    args.charset = StringEscapeUtils.unescapeXml(fetchRequiredString());
+                } else if (paramName.equals("from")) {
+                    args.from = parseRegularExpressionParam(paramName, StringEscapeUtils.unescapeXml(fetchRequiredString()));
+                } else if (paramName.equals("to")) {
+                    args.to = parseRegularExpressionParam(paramName, StringEscapeUtils.unescapeXml(fetchRequiredString()));
+                } else if (paramName.equals("fromOptional")) {
+                    args.fromOptional = fetchRequiredBoolean();
+                } else if (paramName.equals("toOptional")) {
+                    args.toOptional = fetchRequiredBoolean();
+                } else {
+                    throw new DocgenTagException(
+                            "Unsupported docgen." + subvarName +  " parameter " + StringUtil.jQuote(paramName) + ".",
+                            env);
+                }
+            }
+
+            skipRequiredToken(DOCGEN_TAG_END);
+            int indexAfterStartTag = cursor;
+
+            if (hasBodyArg) {
+                int endTagIndex = findNextDocgenEndTag(cursor);
+                if (endTagIndex == -1) {
+                    throw new DocgenTagException(
+                            "Missing docgen end-tag after " + DOCGEN_TAG_START + "." + subvarName + " ...]", env);
+                }
+                lastDocgenTagStart = endTagIndex;
+
+                args.body = StringEscapeUtils.unescapeXml(text.substring(indexAfterStartTag, endTagIndex));
+
+                cursor = endTagIndex + DOCGEN_END_TAG_START.length();
+                skipRequiredToken(".");
+                String endSubvarName = fetchRequiredVariableName();
+                if (!endSubvarName.equals(subvarName)) {
+                    throw new DocgenTagException(
+                            "End-tag " + DOCGEN_END_TAG_START + "." + endSubvarName + "] doesn't match "
+                                    + DOCGEN_TAG_START + "." + subvarName + " ...] tag.", env);
+                }
+                skipRequiredToken("]");
+            }
+
+            args.indexAfterDirective = cursor;
+
+            return args;
+        }
+
+        private Pattern parseRegularExpressionParam(String paramName, String paramValue) throws TemplateException {
+            Objects.requireNonNull(paramName);
+            Objects.requireNonNull(paramValue);
+            Pattern parsedParamValue;
+            try {
+                parsedParamValue = Pattern.compile(paramValue, Pattern.MULTILINE);
+            } catch (PatternSyntaxException e) {
+                throw newErrorInDocgenTag("Invalid regular expression for parameter \"" +
+                        paramName + "\": " + paramValue);
+            }
+            return parsedParamValue;
+        }
+
     }
 
     public static String removeFTLCopyrightComment(String ftl) {
@@ -532,6 +605,17 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         }
 
         return ftl.substring(0, commentFirstIdx) + ftl.substring(commentLastIdx + afterCommentNLChars + 1);
+    }
+
+    static class InsertDirectiveArgs {
+        private String path;
+        private String charset;
+        private Pattern from;
+        private boolean fromOptional;
+        private Pattern to;
+        private boolean toOptional;
+        private String body;
+        private int indexAfterDirective;
     }
 
 }
