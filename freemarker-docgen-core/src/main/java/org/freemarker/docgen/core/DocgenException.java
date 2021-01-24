@@ -21,7 +21,7 @@ package org.freemarker.docgen.core;
 /**
  * Exception that is docgen-specific. 
  */
-public class DocgenException extends Exception {
+public class DocgenException extends RuntimeException {
     
     public DocgenException(String message) {
         super(message);

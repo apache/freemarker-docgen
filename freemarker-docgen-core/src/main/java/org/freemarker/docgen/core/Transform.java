@@ -19,6 +19,7 @@
 package org.freemarker.docgen.core;
 
 import static org.freemarker.docgen.core.DocBook5Constants.*;
+import static org.freemarker.docgen.core.SettingUtils.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,17 +45,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -117,6 +126,13 @@ public final class Transform {
     static final String SETTING_LOGO_KEY_SRC = "src";
     static final String SETTING_LOGO_KEY_ALT = "alt";
     static final String SETTING_LOGO_KEY_HREF = "href";
+    static final Set<String> SETTING_LOGO_MAP_KEYS;
+    static {
+        SETTING_LOGO_MAP_KEYS = new LinkedHashSet<>();
+        SETTING_LOGO_MAP_KEYS.add(SETTING_LOGO_KEY_SRC);
+        SETTING_LOGO_MAP_KEYS.add(SETTING_LOGO_KEY_ALT);
+        SETTING_LOGO_MAP_KEYS.add(SETTING_LOGO_KEY_HREF);
+    }
     static final String SETTING_SIDE_TOC_LOGOS = "sideTOCLogos";
     static final String SETTING_TABS = "tabs";
     static final String SETTING_SECONDARY_TABS = "secondaryTabs";
@@ -316,7 +332,7 @@ public final class Transform {
     /** Elements for which an id attribute automatically added if missing */
     private static final Set<String> GUARANTEED_ID_ELEMENTS;
     static {
-        Set<String> idAttElems = new HashSet<String>();
+        Set<String> idAttElems = new HashSet<>();
 
         for (String elemName : DOCUMENT_STRUCTURE_ELEMENTS) {
             idAttElems.add(elemName);
@@ -335,7 +351,7 @@ public final class Transform {
      */
     private static final Set<String> PREFACE_LIKE_ELEMENTS;
     static {
-        Set<String> sinlgeFileElems = new HashSet<String>();
+        Set<String> sinlgeFileElems = new HashSet<>();
 
         sinlgeFileElems.add(E_PREFACE);
 
@@ -349,6 +365,8 @@ public final class Transform {
 
     // -------------------------------------------------------------------------
     // Settings:
+
+    private File cfgFile;
 
     private File destDir;
 
@@ -370,11 +388,9 @@ public final class Transform {
     private Set<String> removeNodesWhenOnline;
 
     /** Element types for which a new output file is created  */
-    private DocumentStructureRank lowestFileElemenRank
-            = DocumentStructureRank.SECTION1;
+    private DocumentStructureRank lowestFileElemenRank = DocumentStructureRank.SECTION1;
 
-    private DocumentStructureRank lowestPageTOCElemenRank
-            = DocumentStructureRank.SECTION3;
+    private DocumentStructureRank lowestPageTOCElemenRank = DocumentStructureRank.SECTION3;
 
     private int maxTOFDisplayDepth = Integer.MAX_VALUE;
 
@@ -402,24 +418,24 @@ public final class Transform {
 
     private boolean printProgress;
 
-    private LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<>();
-    private LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
-    private Map<String, Map<String, String>> footerSiteMap;
+    private final LinkedHashMap<String, String> internalBookmarks = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> externalBookmarks = new LinkedHashMap<>();
+    private Map<String, Map<String, String>> footerSiteMap = new LinkedHashMap<>();;
 
-    private Map<String, Object> customVariablesFromSettingsFile = new HashMap<>();
-    private Map<String, Object> customVariableOverrides = new HashMap<>();
+    private final Map<String, Object> customVariablesFromSettingsFile = new HashMap<>();
+    private final Map<String, Object> customVariableOverrides = new HashMap<>();
 
-    private Map<String, String> insertableFilesFromSettingsFile = new HashMap<>();
-    private Map<String, String> insertableFilesOverrides = new HashMap<>();
+    private final Map<String, String> insertableFilesFromSettingsFile = new HashMap<>();
+    private final Map<String, String> insertableFilesOverrides = new HashMap<>();
 
-    private LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> tabs = new LinkedHashMap<>();
 
-    private Map<String, Map<String, String>> secondaryTabs;
-    private Map<String, Map<String, String>> socialLinks;
+    private final Map<String, Map<String, String>> secondaryTabs = new LinkedHashMap<>();
+    private final Map<String, Map<String, String>> socialLinks = new LinkedHashMap<>();
 
     private Logo logo;
 
-    private List<Logo> sideTOCLogos;
+    private final List<Logo> sideTOCLogos = new ArrayList<>();
 
     private String copyrightHolder;
     private String copyrightHolderSite;
@@ -428,20 +444,20 @@ public final class Transform {
     private String copyrightComment;
     private String copyrightJavaComment;
 
-    private Map<String, Map<String, String>> seoMeta;
+    private final Map<String, Map<String, String>> seoMeta = new LinkedHashMap();
 
-    private DocgenValidationOptions validationOps
-            = new DocgenValidationOptions();
+    private DocgenValidationOptions validationOps = new DocgenValidationOptions();
+
+    String eclipseLinkTo;
 
     // -------------------------------------------------------------------------
     // Global transformation state:
 
     private boolean executed;
 
-    private Map<String, String> olinks = new HashMap<String, String>();
+    private Map<String, String> olinks = new HashMap<>();
     private Map<String, List<NodeModel>> primaryIndexTermLookup;
-    private Map<String, SortedMap<String, List<NodeModel>>>
-            secondaryIndexTermLookup;
+    private Map<String, SortedMap<String, List<NodeModel>>> secondaryIndexTermLookup;
     private Map<String, Element> elementsById;
     private List<TOCNode> tocNodes;
     private List<String> indexEntries;
@@ -458,12 +474,14 @@ public final class Transform {
 
     private DocgenLogger logger = new DocgenLogger() {
 
+        @Override
         public void info(String message) {
             if (printProgress) {
                 System.out.println(message);
             }
         }
 
+        @Override
         public void warning(String message) {
             if (printProgress) {
                 System.out.println("Warning:" + message);
@@ -514,9 +532,8 @@ public final class Transform {
         // Load configuration file:
 
         File templatesDir = null;
-        String eclipseLinkTo = null;
 
-        File cfgFile = new File(srcDir, FILE_SETTINGS);
+        cfgFile = new File(srcDir, FILE_SETTINGS);
         if (cfgFile.exists()) {
             Map<String, Object> cfg;
             try {
@@ -527,181 +544,128 @@ public final class Transform {
             }
 
             for (Entry<String, Object> cfgEnt : cfg.entrySet()) {
-                final String settingName = cfgEnt.getKey();
+                final String topSettingName = cfgEnt.getKey();
+                final SettingName settingName = SettingName.topLevel(cfgFile, topSettingName);
                 final Object settingValue = cfgEnt.getValue();
 
-                if (settingName.equals(SETTING_IGNORED_FILES)) {
-                    List<String> patterns = castSettingToStringList(cfgFile, settingName, settingValue);
-                    for (String pattern : patterns) {
-                        ignoredFilePathPatterns.add(FileUtil.globToRegexp(pattern));
-                    }
-                } else if (settingName.equals(SETTING_OLINKS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String name = ent.getKey();
-                        String target = castSettingValueMapValueToString(
-                                cfgFile, settingName, ent.getValue());
-                        olinks.put(name, target);
-                    }
-                } else if (settingName.equals(SETTING_INTERNAL_BOOKMARKS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String name = ent.getKey();
-                        String target = castSettingValueMapValueToString(
-                                cfgFile, settingName, ent.getValue());
-                        internalBookmarks.put(name, target);
-                    }
+                if (topSettingName.equals(SETTING_IGNORED_FILES)) {
+                    castSettingToList(settingName, settingValue, String.class).forEach(
+                            pattern -> ignoredFilePathPatterns.add(FileUtil.globToRegexp(pattern)));
+                } else if (topSettingName.equals(SETTING_OLINKS)) {
+                    olinks.putAll(
+                            castSettingToMap(settingName, settingValue, String.class, String.class));
+                } else if (topSettingName.equals(SETTING_INTERNAL_BOOKMARKS)) {
+                    internalBookmarks.putAll(
+                            castSettingToMap(settingName, settingValue, String.class, String.class));
                     // Book-mark targets will be checked later, when the XML
                     // document is already loaded.
-                } else if (settingName.equals(SETTING_EXTERNAL_BOOKMARKS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String name = ent.getKey();
-                        String target = castSettingValueMapValueToString(
-                                cfgFile, settingName, ent.getValue());
-                        externalBookmarks.put(name, target);
-                    }
-                } else if (settingName.equals(SETTING_LOGO)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    logo = castMapToLogo(cfgFile, settingName, m);
-                } else if (settingName.equals(SETTING_SIDE_TOC_LOGOS)) {
-                    List<Map<String, Object>> listOfMaps
-                            = castSettingToListOfMapsWithStringKeys(cfgFile, settingName, settingValue);
-                    sideTOCLogos = new ArrayList<>();
+                } else if (topSettingName.equals(SETTING_EXTERNAL_BOOKMARKS)) {
+                    externalBookmarks.putAll(
+                            castSettingToMap(settingName, settingValue, String.class, String.class));
+                } else if (topSettingName.equals(SETTING_LOGO)) {
+                    logo = castMapToLogo(settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_SIDE_TOC_LOGOS)) {
+                    List<Map<String, Object>> listOfMaps = castSetting(
+                            settingName, settingValue,
+                            List.class,
+                            new ListItemType(Map.class),
+                            new MapEntryType<>(String.class, Object.class));
                     for (int i = 0; i < listOfMaps.size(); i++) {
-                        Map<String, Object> map = listOfMaps.get(i);
-                        sideTOCLogos.add(castMapToLogo(cfgFile, settingName + "[" + i + "]", map));
+                        sideTOCLogos.add(castMapToLogo(settingName.subKey(i), listOfMaps.get(i)));
                     }
-                } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER)) {
-                    copyrightHolder = castSettingToString(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_COPYRIGHT_HOLDER_SITE)) {
-                    copyrightHolderSite = castSettingToString(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
-                    copyrightStartYear = castSettingToInt(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_COPYRIGHT_SUFFIX)) {
-                    copyrightSuffix = castSettingToString(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_COPYRIGHT_COMMENT_FILE)) {
-                    copyrightComment = StringUtil.chomp(getFileContentForSetting(cfgFile, settingName, settingValue));
+                } else if (topSettingName.equals(SETTING_COPYRIGHT_HOLDER)) {
+                    copyrightHolder = castSetting(settingName, settingValue, String.class);
+                } else if (topSettingName.equals(SETTING_COPYRIGHT_HOLDER_SITE)) {
+                    copyrightHolderSite = castSetting(settingName, settingValue, String.class);
+                } else if (topSettingName.equals(SETTING_COPYRIGHT_START_YEAR)) {
+                    copyrightStartYear = castSetting(settingName, settingValue, Integer.class);
+                } else if (topSettingName.equals(SETTING_COPYRIGHT_SUFFIX)) {
+                    copyrightSuffix = castSetting(settingName, settingValue, String.class);
+                } else if (topSettingName.equals(SETTING_COPYRIGHT_COMMENT_FILE)) {
+                    copyrightComment =
+                            StringUtil.chomp(getFileContentForSetting(settingName, settingValue));
                     String eol = TextUtil.detectEOL(copyrightComment, "\n");
                     StringBuilder sb = new StringBuilder("/*").append(eol);
                     new BufferedReader(new StringReader(copyrightComment)).lines()
                             .forEach(s -> sb.append(" * ").append(s).append(eol));
                     sb.append(" */");
                     copyrightJavaComment = sb.toString();
-                } else if (settingName.equals(SETTING_SEO_META)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    seoMeta = new LinkedHashMap<>();
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String k = ent.getKey();
-                        Map<String, String> v = castSettingValueMapValueToMapOfStringString(
-                                cfgFile, settingName, ent.getValue(),
-                                null, SETTING_SEO_META_KEYS);
-                        seoMeta.put(k, v);
-                    }
-                } else if (settingName.equals(SETTING_CUSTOM_VARIABLES)) {
+                } else if (topSettingName.equals(SETTING_SEO_META)) {
+                    this.seoMeta.putAll(
+                            castSetting(
+                                    settingName, settingValue,
+                                    Map.class,
+                                    new MapEntryType<>(String.class, Map.class),
+                                    new MapEntryType<>(
+                                            String.class, Collections.emptySet(), SETTING_SEO_META_KEYS,
+                                            String.class)));
+                } else if (topSettingName.equals(SETTING_CUSTOM_VARIABLES)) {
                     customVariablesFromSettingsFile.putAll(
-                            castSettingToMapWithStringKeys(cfgFile, settingName, settingValue));
-                } else if (settingName.equals(SETTING_INSERTABLE_FILES)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String value = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
-                        if (insertableFilesFromSettingsFile.put(ent.getKey(), value) != null) {
-                            throw new DocgenException(
-                                    "Duplicate key " + StringUtil.jQuote(ent.getKey()) + " in "
-                                            + SETTING_INSERTABLE_FILES + ".");
-                        }
-                    }
-                } else if (settingName.equals(SETTING_TABS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String k = ent.getKey();
-                        String v = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
-                        tabs.put(k, v);
-                    }
-                } else if (settingName.equals(SETTING_SECONDARY_TABS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    secondaryTabs = new LinkedHashMap<>();
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String k = ent.getKey();
-                        Map<String, String> v = castSettingValueMapValueToMapOfStringString(
-                                cfgFile, settingName, ent.getValue(),
-                                COMMON_LINK_KEYS, null);
-                        secondaryTabs.put(k, v);
-                    }
-                } else if (settingName.equals(SETTING_SOCIAL_LINKS)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    socialLinks = new LinkedHashMap<>();
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String entName = ent.getKey();
-                        Map<String, String> entValue = castSettingValueMapValueToMapOfStringString(
-                                cfgFile, settingName, ent.getValue(),
-                                COMMON_LINK_KEYS, null);
-                        socialLinks.put(entName, entValue);
-                    }
-                } else if (settingName.equals(SETTING_FOOTER_SITEMAP)) {
-                    // TODO Check value in more details
-                    footerSiteMap = (Map) castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                }else if (settingName.equals(SETTING_VALIDATION)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, SETTING_VALIDATION, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String name = ent.getKey();
-                        if (name.equals(
-                                SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE)) {
-                            validationOps.setProgramlistingRequiresRole(
-                                    caseSettingToBoolean(
-                                            cfgFile,
-                                            settingName + "." + name,
-                                            ent.getValue()));
-                        } else if (name.equals(
-                                SETTING_VALIDATION_PROGRAMLISTINGS_REQ_LANG)) {
-                            validationOps.setProgramlistingRequiresLanguage(
-                                    caseSettingToBoolean(
-                                            cfgFile,
-                                            settingName + "." + name,
-                                            ent.getValue()));
-                        } else if (name.equals(
-                                SETTING_VALIDATION_OUTPUT_FILES_CAN_USE_AUTOID)
+                            // Allow null values in the Map, as the caller can override them.
+                            castSettingToMap(settingName, settingValue, String.class, Object.class, true));
+                } else if (topSettingName.equals(SETTING_INSERTABLE_FILES)) {
+                    insertableFilesFromSettingsFile.putAll(
+                            // Allow null values in the Map, as the caller can override them.
+                            castSettingToMap(settingName, settingValue, String.class, String.class, true));
+                } else if (topSettingName.equals(SETTING_TABS)) {
+                    tabs.putAll(
+                            castSettingToMap(settingName, settingValue, String.class, String.class));
+                } else if (topSettingName.equals(SETTING_SECONDARY_TABS)) {
+                    secondaryTabs.putAll(
+                            castSetting(
+                                    settingName, settingValue,
+                                    Map.class,
+                                    new MapEntryType(String.class, Map.class),
+                                    new MapEntryType(String.class, COMMON_LINK_KEYS, String.class)));
+                } else if (topSettingName.equals(SETTING_SOCIAL_LINKS)) {
+                    socialLinks.putAll(
+                            castSetting(
+                                    settingName, settingValue,
+                                    Map.class,
+                                    new MapEntryType(String.class, Map.class),
+                                    new MapEntryType(String.class, COMMON_LINK_KEYS, String.class)));
+                } else if (topSettingName.equals(SETTING_FOOTER_SITEMAP)) {
+                    footerSiteMap.putAll(
+                            castSetting(
+                                    settingName, settingValue,
+                                    Map.class,
+                                    new MapEntryType(String.class, Map.class),
+                                    new MapEntryType(String.class, String.class)));
+                }else if (topSettingName.equals(SETTING_VALIDATION)) {
+                    castSettingToMap(settingName, settingValue, String.class, Object.class)
+                            .forEach((name, value) -> {
+                                if (name.equals(
+                                        SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE)) {
+                                    validationOps.setProgramlistingRequiresRole(
+                                            castSetting(settingName.subKey(name), value, Boolean.class));
+                                } else if (name.equals(
+                                        SETTING_VALIDATION_PROGRAMLISTINGS_REQ_LANG)) {
+                                    validationOps.setProgramlistingRequiresLanguage(
+                                            castSetting(settingName.subKey(name), value, Boolean.class));
+                                } else if (name.equals(
+                                        SETTING_VALIDATION_OUTPUT_FILES_CAN_USE_AUTOID)
                                 ) {
-                            validationOps.setOutputFilesCanUseAutoID(
-                                    caseSettingToBoolean(
-                                            cfgFile,
-                                            settingName + "." + name,
-                                            ent.getValue()));
-                        } else if (name.equals(
-                                SETTING_VALIDATION_MAXIMUM_PROGRAMLISTING_WIDTH)
+                                    validationOps.setOutputFilesCanUseAutoID(
+                                            castSetting(settingName.subKey(name), value, Boolean.class));
+                                } else if (name.equals(
+                                        SETTING_VALIDATION_MAXIMUM_PROGRAMLISTING_WIDTH)
                                 ) {
-                            validationOps.setMaximumProgramlistingWidth(
-                                    castSettingToInt(
-                                            cfgFile,
-                                            settingName + "." + name,
-                                            ent.getValue()));
-                        } else {
-                            throw newCfgFileException(
-                                    cfgFile, SETTING_VALIDATION,
-                                    "Unknown validation option: " + name);
-                        }
-                    }
-                } else if (settingName.equals(SETTING_OFFLINE)) {
+                                    validationOps.setMaximumProgramlistingWidth(
+                                            castSetting(settingName.subKey(name), value, Integer.class));
+                                } else {
+                                    throw newCfgFileException(settingName.subKey(name), "Unknown validation option: " + name);
+                                }
+                            });
+                } else if (topSettingName.equals(SETTING_OFFLINE)) {
                     if (offline == null) {  // Ignore if the caller has already set this
-                        offline = caseSettingToBoolean(cfgFile, settingName, settingValue);
+                        offline = castSetting(settingName, settingValue, Boolean.class);
                     }
-                } else if (settingName.equals(SETTING_SIMPLE_NAVIGATION_MODE)) {
-                    simpleNavigationMode = caseSettingToBoolean(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_DEPLOY_URL)) {
-                    deployUrl = castSettingToString(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
-                    onlineTrackerHTML = getFileContentForSetting(cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_SIMPLE_NAVIGATION_MODE)) {
+                    simpleNavigationMode = castSetting(settingName, settingValue, Boolean.class);
+                } else if (topSettingName.equals(SETTING_DEPLOY_URL)) {
+                    deployUrl = castSetting(settingName, settingValue, String.class);
+                } else if (topSettingName.equals(SETTING_ONLINE_TRACKER_HTML)) {
+                    onlineTrackerHTML = getFileContentForSetting(settingName, settingValue);
                     if (onlineTrackerHTML.startsWith("<!--")) {
                         int commentEnd = onlineTrackerHTML.indexOf("-->");
                         if (commentEnd != -1) {
@@ -715,66 +679,49 @@ public final class Transform {
                     String eol = TextUtil.detectEOL(onlineTrackerHTML, "\n");
                     onlineTrackerHTML = onlineTrackerHTML.trim();
                     onlineTrackerHTML += eol;
-                } else if (settingName.equals(SETTING_COOKIE_CONSENT_SCRIPT_URL)) {
-                    cookieConstentScriptURL = castSettingToString(cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
-                    removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<String>(
-                            castSettingToStringList(cfgFile, settingName, settingValue)));
-                } else if (settingName.equals(SETTING_ECLIPSE)) {
-                    Map<String, Object> m = castSettingToMapWithStringKeys(
-                            cfgFile, settingName, settingValue);
-                    for (Entry<String, Object> ent : m.entrySet()) {
-                        String name = ent.getKey();
-                        if (name.equals(SETTING_ECLIPSE_LINK_TO)) {
-                            String value = castSettingToString(
-                                    cfgFile,
-                                    settingName + "." + name,
-                                    ent.getValue());
-                            eclipseLinkTo = value;
-                        } else {
-                            throw newCfgFileException(
-                                    cfgFile, settingName,
-                                    "Unknown Eclipse option: " + name);
-                        }
-                    }
-                } else if (settingName.equals(SETTING_LOCALE)) {
-                    String s = castSettingToString(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_COOKIE_CONSENT_SCRIPT_URL)) {
+                    cookieConstentScriptURL = castSetting(settingName, settingValue, String.class);
+                } else if (topSettingName.equals(SETTING_REMOVE_NODES_WHEN_ONLINE)) {
+                    removeNodesWhenOnline = Collections.unmodifiableSet(new HashSet<>(
+                            castSettingToList(settingName, settingValue, String.class)));
+                } else if (topSettingName.equals(SETTING_ECLIPSE)) {
+                    castSettingToMap(settingName, settingValue, String.class, Object.class)
+                            .forEach((name, value) -> {
+                                if (name.equals(SETTING_ECLIPSE_LINK_TO)) {
+                                    eclipseLinkTo = castSetting(
+                                            settingName.subKey(name), value, String.class);
+                                } else {
+                                    throw newCfgFileException(settingName, "Unknown Eclipse option: " + name);
+                                }
+                            });
+                } else if (topSettingName.equals(SETTING_LOCALE)) {
+                    String s = castSetting(settingName, settingValue, String.class);
                     locale = StringUtil.deduceLocale(s);
-                } else if (settingName.equals(SETTING_TIME_ZONE)) {
-                    String s = castSettingToString(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_TIME_ZONE)) {
+                    String s = castSetting(settingName, settingValue, String.class);
                     timeZone = TimeZone.getTimeZone(s);
-                } else if (settingName.equals(SETTING_GENERATE_ECLIPSE_TOC)) {
-                    generateEclipseTOC = caseSettingToBoolean(
-                            cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_SHOW_EDITORAL_NOTES)) {
-                    showEditoralNotes = caseSettingToBoolean(
-                            cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_SHOW_XXE_LOGO)) {
-                    showXXELogo = caseSettingToBoolean(
-                            cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_SEARCH_KEY)) {
-                    searchKey = castSettingToString(
-                            cfgFile, settingName, settingValue);
-                }else if (settingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
-                    disableJavaScript = caseSettingToBoolean(
-                            cfgFile, settingName, settingValue);
-                } else if (settingName.equals(SETTING_CONTENT_DIRECTORY)) {
-                    String s = castSettingToString(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_GENERATE_ECLIPSE_TOC)) {
+                    generateEclipseTOC = castSetting(settingName, settingValue, Boolean.class);
+                } else if (topSettingName.equals(SETTING_SHOW_EDITORAL_NOTES)) {
+                    showEditoralNotes = castSetting(settingName, settingValue, Boolean.class);
+                } else if (topSettingName.equals(SETTING_SHOW_XXE_LOGO)) {
+                    showXXELogo = castSetting(settingName, settingValue, Boolean.class);
+                } else if (topSettingName.equals(SETTING_SEARCH_KEY)) {
+                    searchKey = castSetting(settingName, settingValue, String.class);
+                }else if (topSettingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
+                    disableJavaScript = castSetting(settingName, settingValue, Boolean.class);
+                } else if (topSettingName.equals(SETTING_CONTENT_DIRECTORY)) {
+                    String s = castSetting(settingName, settingValue, String.class);
                     contentDir = new File(srcDir, s);
                     if (!contentDir.isDirectory()) {
-                        throw newCfgFileException(cfgFile, settingName,
-                                "It's not an existing directory: "
-                                + contentDir.getAbsolutePath());
+                        throw newCfgFileException(
+                                settingName,
+                                "It's not an existing directory: " + contentDir.getAbsolutePath());
                     }
-                } else if (settingName.equals(SETTING_LOWEST_FILE_ELEMENT_RANK)
-                        || settingName.equals(
-                                SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK)) {
+                } else if (topSettingName.equals(SETTING_LOWEST_FILE_ELEMENT_RANK)
+                        || topSettingName.equals(SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK)) {
                     DocumentStructureRank rank;
-                    String strRank = castSettingToString(
-                            cfgFile, settingName, settingValue);
+                    String strRank = castSetting(settingName, settingValue, String.class);
                     try {
                         rank = DocumentStructureRank.valueOf(
                                 strRank.toUpperCase());
@@ -789,44 +736,30 @@ public final class Transform {
                         } else {
                             msg = "Unknown rank: " + strRank;
                         }
-                        throw newCfgFileException(cfgFile, settingName,
-                                msg);
+                        throw newCfgFileException(settingName, msg);
                     }
 
-                    if (settingName.equals(
-                            SETTING_LOWEST_FILE_ELEMENT_RANK)) {
+                    if (topSettingName.equals(SETTING_LOWEST_FILE_ELEMENT_RANK)) {
                         lowestFileElemenRank = rank;
-                    } else if (settingName.equals(
-                            SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK)) {
+                    } else if (topSettingName.equals(SETTING_LOWEST_PAGE_TOC_ELEMENT_RANK)) {
                         lowestPageTOCElemenRank = rank;
                     } else {
                         throw new BugException("Unexpected setting name.");
                     }
-                } else if (settingName.equals(SETTING_MAX_TOF_DISPLAY_DEPTH)) {
-                    maxTOFDisplayDepth = castSettingToInt(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_MAX_TOF_DISPLAY_DEPTH)) {
+                    maxTOFDisplayDepth = castSetting(settingName, settingValue, Integer.class);
                     if (maxTOFDisplayDepth < 1) {
-                        throw newCfgFileException(cfgFile, settingName,
-                                "Value must be at least 1.");
+                        throw newCfgFileException(settingName, "Value must be at least 1.");
                     }
-                } else if (settingName.equals(
-                        SETTING_MAX_MAIN_TOF_DISPLAY_DEPTH)) {
-                    maxMainTOFDisplayDepth = castSettingToInt(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_MAX_MAIN_TOF_DISPLAY_DEPTH)) {
+                    maxMainTOFDisplayDepth = castSetting(settingName, settingValue, Integer.class);
                     if (maxTOFDisplayDepth < 1) {
-                        throw newCfgFileException(cfgFile, settingName,
-                                "Value must be at least 1.");
+                        throw newCfgFileException(settingName, "Value must be at least 1.");
                     }
-                } else if (settingName.equals(SETTING_NUMBERED_SECTIONS)) {
-                    numberedSections = caseSettingToBoolean(
-                            cfgFile, settingName, settingValue);
+                } else if (topSettingName.equals(SETTING_NUMBERED_SECTIONS)) {
+                    numberedSections = castSetting(settingName, settingValue, Boolean.class);
                 } else {
-                    throw newCfgFileException(cfgFile, "Unknown setting: \""
-                            + settingName
-                            + "\". (Hint: See the list of available "
-                            + "settings in the Java API documentation of "
-                            + Transform.class.getName() + ". Also, note that "
-                            + "setting names are case-sensitive.)");
+                    throw newCfgFileException(settingName, "Unknown setting name.");
                 }
             } // for each cfg settings
 
@@ -879,12 +812,11 @@ public final class Transform {
 
         // Initialize state fields
 
-        primaryIndexTermLookup = new HashMap<String, List<NodeModel>>();
-        secondaryIndexTermLookup
-                = new HashMap<String, SortedMap<String, List<NodeModel>>>();
-        elementsById = new HashMap<String, Element>();
-        tocNodes = new ArrayList<TOCNode>();
-        indexEntries = new ArrayList<String>();
+        primaryIndexTermLookup = new HashMap<>();
+        secondaryIndexTermLookup = new HashMap<>();
+        elementsById = new HashMap<>();
+        tocNodes = new ArrayList<>();
+        indexEntries = new ArrayList<>();
 
         // Setup FreeMarker:
 
@@ -948,35 +880,27 @@ public final class Transform {
                 tabEnt.setValue(resolveDocgenURL(SETTING_TABS, tabEnt.getValue()));
             }
         }
-        if (secondaryTabs != null) {
-            for (Map<String, String> tab : secondaryTabs.values()) {
-                tab.put("href", resolveDocgenURL(SETTING_SECONDARY_TABS, tab.get("href")));
-            }
+        for (Map<String, String> secondaryTab : secondaryTabs.values()) {
+            secondaryTab.put("href", resolveDocgenURL(SETTING_SECONDARY_TABS, secondaryTab.get("href")));
         }
         if (externalBookmarks != null) {
             for (Entry<String, String> bookmarkEnt : externalBookmarks.entrySet()) {
                 bookmarkEnt.setValue(resolveDocgenURL(SETTING_EXTERNAL_BOOKMARKS, bookmarkEnt.getValue()));
             }
         }
-        if (socialLinks != null) {
-            for (Map<String, String> tab : socialLinks.values()) {
-                tab.put("href", resolveDocgenURL(SETTING_SOCIAL_LINKS, tab.get("href")));
-            }
+        for (Map<String, String> tab : socialLinks.values()) {
+            tab.put("href", resolveDocgenURL(SETTING_SOCIAL_LINKS, tab.get("href")));
         }
-        if (footerSiteMap != null) {
-            for (Map<String, String> links : footerSiteMap.values()) {
-                for (Map.Entry<String, String> link : links.entrySet()) {
-                    link.setValue(resolveDocgenURL(SETTING_FOOTER_SITEMAP, link.getValue()));
-                }
+        for (Map<String, String> links : footerSiteMap.values()) {
+            for (Map.Entry<String, String> link : links.entrySet()) {
+                link.setValue(resolveDocgenURL(SETTING_FOOTER_SITEMAP, link.getValue()));
             }
         }
         if (logo != null) {
             resolveLogoHref(logo);
         }
-        if (sideTOCLogos != null) {
-            for (Logo logo : sideTOCLogos) {
-                resolveLogoHref(logo);
-            }
+        for (Logo logo : sideTOCLogos) {
+            resolveLogoHref(logo);
         }
 
         // - Create destination directory:
@@ -990,10 +914,9 @@ public final class Transform {
         for (Entry<String, String> ent : internalBookmarks.entrySet()) {
             String id = ent.getValue();
             if (!elementsById.containsKey(id)) {
-                throw newCfgFileException(cfgFile,
-                        SETTING_INTERNAL_BOOKMARKS,
-                        "No element with id \"" + id
-                        + "\" exists in the book.");
+                throw newCfgFileException(
+                        SettingName.topLevel(cfgFile, SETTING_INTERNAL_BOOKMARKS),
+                        "No element with id \"" + id + "\" exists in the book.");
             }
         }
 
@@ -1154,8 +1077,8 @@ public final class Transform {
                     }
                 } catch (freemarker.core.StopException e) {
                     throw new DocgenException(e.getMessage());
-                } catch (DocgenSubstitutionTemplateException e) {
-                    throw new DocgenException("Docgen substitution in document text failed; see cause exception", e);
+                } catch (DocgenTagException e) {
+                    throw new DocgenException("Docgen tag evaluation in document text failed; see cause exception", e);
                 } catch (TemplateException e) {
                     throw new BugException(e);
                 }
@@ -1338,286 +1261,37 @@ public final class Transform {
         }
     }
 
-    private DocgenException newCfgFileException(
-            File cfgFile, String settingName, String desc) {
-        settingName = settingName.replace(".", "\" per \"");
-        return newCfgFileException(cfgFile, "Wrong value for setting \""
-                + settingName + "\": " + desc);
+    private static Logo castMapToLogo(SettingName settingName, Object settingValue) {
+        Map<String, String> logoMap = castSetting(
+                settingName,
+                settingValue, false,
+                Map.class,
+                new MapEntryType(String.class, SETTING_LOGO_MAP_KEYS, String.class));
+        return new Logo(
+                logoMap.get(SETTING_LOGO_KEY_SRC),
+                logoMap.get(SETTING_LOGO_KEY_ALT),
+                logoMap.get(SETTING_LOGO_KEY_HREF));
     }
 
-    private DocgenException newCfgFileException(File cfgFile, String desc) {
-        return newCfgFileException(cfgFile, desc, (Throwable) null);
-    }
-
-    private DocgenException newCfgFileException(File cfgFile, String desc,
-            Throwable cause) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Wrong configuration");
-        if (cfgFile != null) {
-            sb.append(" file \"");
-            sb.append(cfgFile.getAbsolutePath());
-            sb.append("\"");
-        }
-        sb.append(": ");
-        sb.append(desc);
-        return new DocgenException(sb.toString(), cause);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> castSettingToMapWithStringKeys(
-            File cfgFile, String settingName, Object settingValue)
-            throws DocgenException {
-        if (!(settingValue instanceof Map)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a map (like { key1: value1, key2: value2 }), but "
-                    + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
-                    + ".");
-        }
-        for (Object key : ((Map<?, ?>) settingValue).keySet()) {
-            if (!(key instanceof String)) {
-                throw newCfgFileException(
-                        cfgFile, settingName,
-                        "All keys should be String-s, but one of them is a(n) "
-                        + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
-            }
-        }
-        return (Map<String, Object>) settingValue;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> castSettingToStringList(
-            File cfgFile, String settingName, Object settingValue)
-            throws DocgenException {
-        List<?> settingValueAsList = castSettingToList(cfgFile, settingName, settingValue);
-        for (int i = 0; i < settingValueAsList.size(); i++) {
-            Object listItem = settingValueAsList.get(i);
-            if (!(listItem instanceof String)) {
-                throw newCfgFileException(
-                        cfgFile, settingName,
-                        "Should be a list of String-s (like [\"value1\", \"value2\", ... \"valueN\"]), but at index "
-                        + i +" (0-based) there's a " + CJSONInterpreter.cjsonTypeOf(listItem)
-                        + ".");
-            }
-        }
-        return (List<String>) settingValue;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Map<String, Object>> castSettingToListOfMapsWithStringKeys(
-            File cfgFile, String settingName, Object settingValue)
-            throws DocgenException {
-        List<?> settingValueAsList = castSettingToList(cfgFile, settingName, settingValue);
-        for (int i = 0; i < settingValueAsList.size(); i++) {
-            castSettingToMapWithStringKeys(cfgFile, settingName + "[" + i + "]", settingValueAsList.get(i));
-        }
-        return (List) settingValue;
-    }
-
-    private List<?> castSettingToList(File cfgFile, String settingName, Object settingValue) throws DocgenException {
-        if (!(settingValue instanceof List)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a list (like [value1, value2, ... valueN]), but "
-                    + "it's a " + CJSONInterpreter.cjsonTypeOf(settingValue)
-                    + ".");
-        }
-        return (List<?>) settingValue;
-    }
-
-    private String castSettingToString(File cfgFile,
-            String settingName, Object settingValue) throws DocgenException {
-        if (!(settingValue instanceof String)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a string, but it's a "
-                    + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
-        }
-        return (String) settingValue;
-    }
-
-    private boolean caseSettingToBoolean(File cfgFile,
-            String settingName, Object settingValue) throws DocgenException {
-        if (!(settingValue instanceof Boolean)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a boolean (i.e., true or false), but it's a "
-                    + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
-        }
-        return (Boolean) settingValue;
-    }
-
-    private int castSettingToInt(File cfgFile,
-            String settingName, Object settingValue)
-            throws DocgenException {
-
-        if (!(settingValue instanceof Number)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be an number, but it's a "
-                    + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
-        }
-        if (!(settingValue instanceof Integer)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be an integer number (32 bits max), but it's: "
-                    + settingValue);
-        }
-        return ((Integer) settingValue).intValue();
-    }
-
-    /* Unused at the moment
-    @SuppressWarnings("unchecked")
-    private List<String> castSettingToListOfStrings(File cfgFile,
-            String settingName, Object settingValue) throws DocgenException {
-        if (!(settingValue instanceof List)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a list, but it's a "
-                    + CJSONInterpreter.cjsonTypeOf(settingValue) + ".");
-        }
-        List ls = (List) settingValue;
-
-        for (Object i : ls) {
-            if (!(i instanceof String)) {
-            throw newCfgFileException(
-                    cfgFile, settingName,
-                    "Should be a list of strings, but one if the list items "
-                    + "is a " + CJSONInterpreter.cjsonTypeOf(i) + ".");
-            }
-        }
-
-        return ls;
-    }
-    */
-
-    private String castSettingValueMapValueToString(File cfgFile,
-            String settingName, Object mapEntryValue) throws DocgenException {
-        if (mapEntryValue != null && !(mapEntryValue instanceof String)) {
-            throw newCfgFileException(cfgFile, settingName,
-                    "The values in the key-value pairs of this map must be "
-                    + "strings, but some of them is a "
-                    + CJSONInterpreter.cjsonTypeOf(mapEntryValue) + ".");
-        }
-        return (String) mapEntryValue;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, String> castSettingValueMapValueToMapOfStringString(File cfgFile,
-            String settingName, Object mapEntryValue, Set<String> requiredKeys, Set<String> optionalKeys)
-            throws DocgenException {
-        if (!(mapEntryValue instanceof Map)) {
-            throw newCfgFileException(cfgFile, settingName,
-                    "The values in the key-value pairs of this map must be "
-                    + "Map-s, but some of them is a "
-                    + CJSONInterpreter.cjsonTypeOf(mapEntryValue) + ".");
-        }
-
-        if (requiredKeys == null) requiredKeys = Collections.emptySet();
-        if (optionalKeys == null) optionalKeys = Collections.emptySet();
-
-        Map<?, ?> mapEntryValueAsMap = (Map<?, ?>) mapEntryValue;
-        for (Entry<?, ?> valueEnt : mapEntryValueAsMap.entrySet()) {
-            Object key = valueEnt.getKey();
-            if (!(key instanceof String)) {
-                throw newCfgFileException(cfgFile, settingName,
-                        "The values in the key-value pairs of this map must be "
-                        + "Map<String, String>-s, but some of the keys is a "
-                        + CJSONInterpreter.cjsonTypeOf(mapEntryValue) + ".");
-            }
-            if (!(valueEnt.getValue() instanceof String)) {
-                throw newCfgFileException(cfgFile, settingName,
-                        "The values in the key-value pairs of this map must be "
-                                + "Map<String, String>-s, but some of the values is a "
-                        + CJSONInterpreter.cjsonTypeOf(valueEnt.getValue()) + ".");
-            }
-            if (!requiredKeys.contains(key) && !optionalKeys.contains(key)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Unsupported key: ");
-                sb.append(StringUtil.jQuote(key));
-                sb.append(". Supported keys are: ");
-                boolean isFirst = true;
-                for (String supportedKey : requiredKeys) {
-                    if (!isFirst) {
-                        sb.append(", ");
-                    } else {
-                        isFirst = false;
-                    }
-                    sb.append(StringUtil.jQuote(supportedKey));
-                }
-                for (String supportedKey : optionalKeys) {
-                    if (!isFirst) {
-                        sb.append(", ");
-                    } else {
-                        isFirst = false;
-                    }
-                    sb.append(StringUtil.jQuote(supportedKey));
-                }
-                throw newCfgFileException(cfgFile, settingName, sb.toString());
-            }
-        }
-        for (String requiredKey : requiredKeys) {
-            if (!mapEntryValueAsMap.containsKey(requiredKey)) {
-                throw newCfgFileException(cfgFile, settingName,
-                        "Missing map key from nested Map: " + requiredKey);
-            }
-        }
-        return (Map<String, String>) mapEntryValue;
-    }
-
-    private Logo castMapToLogo(File cfgFile, final String settingName, Map<String, Object> map)
-            throws DocgenException {
-        Logo logo = new Logo();
-        for (Entry<String, Object> ent : map.entrySet()) {
-            String key = ent.getKey();
-            String value = castSettingValueMapValueToString(cfgFile, settingName, ent.getValue());
-            switch (key) {
-            case SETTING_LOGO_KEY_SRC:
-                logo.setSrc(value);
-                break;
-            case SETTING_LOGO_KEY_ALT:
-                logo.setAlt(value);
-                break;
-            case SETTING_LOGO_KEY_HREF:
-                logo.setHref(value);
-                break;
-            default:
-                throw newCfgFileException(cfgFile, SETTING_LOGO, "Unknown logo option: " + StringUtil.jQuote(key));
-            }
-        }
-
-        if (logo.getSrc() == null) {
-            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_SRC);
-        }
-        if (logo.getAlt() == null) {
-            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_ALT);
-        }
-        if (logo.getHref() == null) {
-            throw newCfgFileException(cfgFile, SETTING_LOGO, "Missing logo option: " + SETTING_LOGO_KEY_HREF);
-        }
-
-        return logo;
-    }
-
-    private String getFileContentForSetting(File cfgFile,
-            String settingName, Object settingValue) throws DocgenException {
-        String settingValueStr = castSettingToString(cfgFile, settingName, settingValue);
+    private String getFileContentForSetting(SettingName settingName, Object settingValue) {
+        String settingValueStr = castSetting(settingName, settingValue, String.class);
         File f = new File(getSourceDirectory(), settingValueStr);
         if (!f.exists()) {
             throw newCfgFileException(
-                    cfgFile, settingName,
+                    settingName,
                     "File not found: " + f.toPath());
         }
         try {
             return FileUtil.loadString(f, UTF_8);
         } catch (IOException e) {
             throw newCfgFileException(
-                    cfgFile, "Error while reading file for setting \"" + settingName + "\": " + f.toPath(),
+                    settingName,
+                    "Error while reading file: " + f.toPath(),
                     e);
         }
     }
 
-    private void copyCommonStatic(String staticFileName) throws IOException, DocgenException {
+    private void copyCommonStatic(String staticFileName) throws IOException {
         String resourcePath = "statics/" + staticFileName;
         try (InputStream in = Transform.class.getResourceAsStream(resourcePath)) {
             if (in == null) {
@@ -1737,7 +1411,7 @@ public final class Transform {
         preprocessDOM_misc_inner(doc,
                 new PreprocessDOMMisc_GlobalState(),
                 new PreprocessDOMMisc_ParentSectState());
-        indexEntries = new ArrayList<String>(primaryIndexTermLookup.keySet());
+        indexEntries = new ArrayList<>(primaryIndexTermLookup.keySet());
         Collections.sort(indexEntries, Collator.getInstance(locale));
     }
 
@@ -1898,10 +1572,10 @@ public final class Transform {
         }
     }
 
-    private void preprocessDOM_applyRemoveNodesWhenOnlineSetting(Document doc) throws DocgenException {
+    private void preprocessDOM_applyRemoveNodesWhenOnlineSetting(Document doc) {
         if (offline || removeNodesWhenOnline == null || removeNodesWhenOnline.isEmpty()) return;
 
-        HashSet<String> idsToRemoveLeft = new HashSet<String>(removeNodesWhenOnline);
+        HashSet<String> idsToRemoveLeft = new HashSet<>(removeNodesWhenOnline);
         preprocessDOM_applyRemoveNodesWhenOnlineSetting_inner(
                 doc.getDocumentElement(), idsToRemoveLeft);
         if (!idsToRemoveLeft.isEmpty()) {
@@ -1936,8 +1610,7 @@ public final class Transform {
      * Annotates the document structure nodes with so called ranks.
      * About ranks see: {@link #setting_lowestFileElementRank}.
      */
-    private void preprocessDOM_addRanks(Document doc)
-            throws DocgenException {
+    private void preprocessDOM_addRanks(Document doc) {
         Element root = doc.getDocumentElement();
         String rootName = root.getLocalName();
         if (rootName.equals(E_BOOK)) {
@@ -1954,9 +1627,7 @@ public final class Transform {
         }
     }
 
-    private void preprocessDOM_addRanks_underBookRank(
-            Element root) throws DocgenException {
-
+    private void preprocessDOM_addRanks_underBookRank(Element root) {
         // Find the common rank:
         DocumentStructureRank commonRank = null;
         for (Element child : XMLUtil.childrenElementsOf(root)) {
@@ -2003,8 +1674,7 @@ public final class Transform {
         }
     }
 
-    private void preprocessDOM_addRanks_underTruePart(
-            Node parent) throws DocgenException {
+    private void preprocessDOM_addRanks_underTruePart(Node parent) {
         for (Element child : XMLUtil.childrenElementsOf(parent)) {
             if (DOCUMENT_STRUCTURE_ELEMENTS.contains(child.getLocalName())) {
                 child.setAttribute(
@@ -2016,7 +1686,7 @@ public final class Transform {
     }
 
     private void preprocessDOM_addRanks_underChapterRankOrDeeper(
-            Element parent, int underSectionRank) throws DocgenException {
+            Element parent, int underSectionRank) {
         for (Element child : XMLUtil.childrenElementsOf(parent)) {
             if (DOCUMENT_STRUCTURE_ELEMENTS.contains(child.getLocalName())) {
                 if (child.getLocalName().equals(E_SIMPLESECT)) {
@@ -2047,7 +1717,7 @@ public final class Transform {
         }
     }
 
-    private void preprocessDOM_buildTOC(Document doc) throws DocgenException {
+    private void preprocessDOM_buildTOC(Document doc) {
         preprocessDOM_buildTOC_inner(doc, 0, null);
         if (tocNodes.size() > 0) {
             preprocessDOM_buildTOC_checkEnsureHasIndexHhml(tocNodes);
@@ -2092,8 +1762,7 @@ public final class Transform {
               + "\" setting. Maybe it's incompatible with the structure of "
               + "this document.)";
 
-    private void preprocessDOM_buildTOC_checkTOCTopology(TOCNode tocNode)
-    throws DocgenException {
+    private void preprocessDOM_buildTOC_checkTOCTopology(TOCNode tocNode) {
         // Check parent-child relation:
         TOCNode parent = tocNode.getParent();
         if (parent != null && !parent.getElement().isSameNode(
@@ -2190,8 +1859,7 @@ public final class Transform {
               + "\" setting. Maybe it's incompatible with the structure of "
               + "this document.)";
 
-    private void preprocessDOM_buildTOC_checkFileTopology(TOCNode tocNode)
-            throws DocgenException {
+    private void preprocessDOM_buildTOC_checkFileTopology(TOCNode tocNode) {
         TOCNode firstChild  = tocNode.getFirstChild();
         if (firstChild != null) {
             boolean firstIsFileElement = firstChild.isFileElement();
@@ -2229,8 +1897,7 @@ public final class Transform {
     }
 
     private TOCNode preprocessDOM_buildTOC_inner(Node node,
-            final int sectionLevel, TOCNode parentTOCNode)
-            throws DocgenException {
+            final int sectionLevel, TOCNode parentTOCNode) {
         TOCNode curTOCNode = null;
         int newSectionLevel = sectionLevel;
 
@@ -2316,7 +1983,7 @@ public final class Transform {
         return curTOCNode;
     }
 
-    private String getExternalLinkTOCNodeURLOrNull(Element elem) throws DocgenException {
+    private String getExternalLinkTOCNodeURLOrNull(Element elem) {
         if (elem.getParentNode() instanceof Document) {
             // The document element is never an external link ToC node.
             return null;
@@ -2365,7 +2032,7 @@ public final class Transform {
      * @param tocNodes
      * @throws DocgenException
      */
-    private void preprocessDOM_buildTOC_checkEnsureHasIndexHhml(List<TOCNode> tocNodes) throws DocgenException {
+    private void preprocessDOM_buildTOC_checkEnsureHasIndexHhml(List<TOCNode> tocNodes) {
         for (TOCNode tocNode : tocNodes) {
             if (tocNode.getOutputFileName() != null && tocNode.getOutputFileName().equals(FILE_INDEX_HTML)) {
                 return;
@@ -2468,13 +2135,13 @@ public final class Transform {
 
         String primaryText = primary.getFirstChild().getNodeValue().trim();
         if (!primaryIndexTermLookup.containsKey(primaryText)) {
-            primaryIndexTermLookup.put(primaryText, new ArrayList<NodeModel>());
+            primaryIndexTermLookup.put(primaryText, new ArrayList<>());
         }
 
         if (secondary != null) {
             if (!secondaryIndexTermLookup.containsKey(primaryText)) {
                 secondaryIndexTermLookup.put(
-                        primaryText, new TreeMap<String, List<NodeModel>>());
+                        primaryText, new TreeMap<>());
             }
             Map<String, List<NodeModel>> m = secondaryIndexTermLookup.get(
                     primaryText);
@@ -2482,7 +2149,7 @@ public final class Transform {
                     .trim();
             List<NodeModel> nodes = m.get(secondaryText);
             if (nodes == null) {
-                nodes = new ArrayList<NodeModel>();
+                nodes = new ArrayList<>();
                 m.put(secondaryText, nodes);
             }
             nodes.add(NodeModel.wrap(node));
@@ -2670,8 +2337,7 @@ public final class Transform {
         return false;
     }
 
-    private String createElementLinkURL(final Element elem)
-            throws DocgenException {
+    private String createElementLinkURL(final Element elem) {
         if (elem.hasAttribute(A_DOCGEN_NOT_ADDRESSABLE)) {
             return null;
         }
@@ -2747,6 +2413,7 @@ public final class Transform {
 
     private TemplateMethodModelEx createLinkFromID = new TemplateMethodModelEx() {
 
+        @Override
         public Object exec(@SuppressWarnings("rawtypes") final List args)
                 throws TemplateModelException {
             if (args.size() != 1) {
@@ -2765,7 +2432,7 @@ public final class Transform {
 
     };
 
-    private String createLinkFromId(String id) throws DocgenException {
+    private String createLinkFromId(String id) {
         if (elementsById == null) {
             throw new IllegalStateException("Can't resolve ID as elementsById is still null: " + id);
         }
@@ -2781,6 +2448,7 @@ public final class Transform {
     private TemplateMethodModelEx createLinkFromNode
             = new TemplateMethodModelEx() {
 
+        @Override
         public Object exec(@SuppressWarnings("rawtypes") final List args)
                 throws TemplateModelException {
 
@@ -2817,6 +2485,7 @@ public final class Transform {
 
     private TemplateMethodModelEx nodeFromID = new TemplateMethodModelEx() {
 
+        @Override
         public Object exec(@SuppressWarnings("rawtypes") List args)
                 throws TemplateModelException {
             Node node = elementsById.get(getArgString(args, 0));

@@ -25,15 +25,15 @@
     <div class="site-footer"><#t>
       <#-- keep site-width inside so background extends -->
       <div class="site-width"><#t>
-        <#if footerSiteMap?? || socialLinks?? || showXXELogo>
+        <#if footerSiteMap?hasContent || socialLinks?hasContent || showXXELogo>
           <div class="footer-top"><#t>
             <div class="col-left sitemap"><#t>
-              <#if footerSiteMap??>
+              <#if footerSiteMap?hasContent>
                 <@siteMap columns=footerSiteMap /><#t>
               </#if>
             </div><#t>
             <div class="col-right"><#t>
-              <#if socialLinks??>
+              <#if socialLinks?hasContent>
                 <@social links=socialLinks />
               </#if>
               <#if showXXELogo>

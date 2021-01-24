@@ -37,7 +37,7 @@
 
 <#macro @element>
   <#stop "This DocBook element is not supported by the Docgen transformer, "
-      + "or wasn't expected where it occured: "
+      + "or wasn't expected where it occurred: "
       + .node?nodeName>
 </#macro>
 

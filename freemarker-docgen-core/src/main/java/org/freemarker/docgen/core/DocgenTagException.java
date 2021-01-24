@@ -19,33 +19,19 @@
 
 package org.freemarker.docgen.core;
 
-/** Model for a logo shown */
-public class Logo {
+import freemarker.core.Environment;
+import freemarker.template.TemplateException;
 
-    private final String src;
-    private String href;
-    private final String alt;
-
-    public Logo(String src, String href, String alt) {
-        this.src = src;
-        this.href = href;
-        this.alt = alt;
+/**
+ * Exception thrown by docgen tag-s that are inside the XML text. As such, it's treated as the mistake of the document
+ * author (as opposed to an internal error).
+ */
+public class DocgenTagException extends TemplateException {
+    public DocgenTagException(String description, Environment env) {
+        super(description, env);
     }
 
-    public String getSrc() {
-        return src;
+    public DocgenTagException(String description, Throwable cause, Environment env) {
+        super(description, cause, env);
     }
-    
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public String getAlt() {
-        return alt;
-    }
-
 }

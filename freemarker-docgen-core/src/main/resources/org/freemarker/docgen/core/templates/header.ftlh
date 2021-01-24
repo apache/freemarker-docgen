@@ -22,7 +22,7 @@
 <#import "google.ftlh" as google>
 
 <#macro header>
-  <#if logo?? || tabs?? || secondaryTabs??>
+  <#if logo?? || tabs?hasContent || secondaryTabs?hasContent>
     <div class="header-top-bg"><#t>
       <div class="site-width header-top"><#t>
         <div id="hamburger-menu" role="button"></div><#t>
@@ -34,7 +34,7 @@
           </div>
         </#if>
         <@nav.tabs /><#t>
-        <#if secondaryTabs??>
+        <#if secondaryTabs?hasContent>
           <ul class="secondary-tabs"><#t>
             <#list secondaryTabs as tabTitle, tab>
               <li><#t>

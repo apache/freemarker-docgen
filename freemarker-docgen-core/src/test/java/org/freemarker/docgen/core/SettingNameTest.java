@@ -19,33 +19,14 @@
 
 package org.freemarker.docgen.core;
 
-/** Model for a logo shown */
-public class Logo {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private final String src;
-    private String href;
-    private final String alt;
+import org.junit.jupiter.api.Test;
 
-    public Logo(String src, String href, String alt) {
-        this.src = src;
-        this.href = href;
-        this.alt = alt;
+public class SettingNameTest {
+    @Test
+    public void toStringTest() {
+        assertEquals("a", SettingName.topLevel(null, "a").toString());
+        assertEquals("a.b[1]", SettingName.topLevel(null, "a").subKey("b").subKey(1).toString());
     }
-
-    public String getSrc() {
-        return src;
-    }
-    
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public String getAlt() {
-        return alt;
-    }
-
 }

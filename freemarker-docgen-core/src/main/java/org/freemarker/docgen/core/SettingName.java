@@ -1,0 +1,82 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.freemarker.docgen.core;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+final class SettingName {
+    private final File parentFile;
+    private final SettingName parent;
+    private final Object key;
+
+    public SettingName(File parentFile, SettingName parent, Object key) {
+        this.parentFile = parentFile;
+        this.parent = parent;
+        this.key = key;
+    }
+
+    static SettingName topLevel(File parentFile, String simpleName) {
+        return new SettingName(parentFile, null, simpleName);
+    }
+
+    SettingName subKey(Object key) {
+        return new SettingName(null, this, key);
+    }
+
+    SettingName subKey(Object... keys) {
+        return new SettingName(null,this, subKey(Arrays.asList(keys)));
+    }
+
+    SettingName subKey(List<Object> keys) {
+        SettingName result = this;
+        for (Object key : keys) {
+            result = new SettingName(null, result, key);
+        }
+        return result;
+    }
+
+    Optional<File> getContainingFile() {
+        return parent != null ? parent.getContainingFile() : Optional.ofNullable(parentFile);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        appendName(sb);
+        return sb.toString();
+    }
+
+    private void appendName(StringBuilder sb) {
+        if (parent != null) {
+            parent.appendName(sb);
+        }
+        if (key instanceof String) {
+            if (sb.length() != 0) {
+                sb.append('.');
+            }
+            sb.append(key);
+        } else {
+            sb.append('[').append(key).append(']');
+        }
+    }
+}

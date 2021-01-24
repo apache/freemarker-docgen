@@ -483,27 +483,33 @@ final class CJSONInterpreter {
     /**
      * Returns the type-name of a value according to the CJSON language.
      */
-    public static String cjsonTypeOf(Object value) {
-        if (value instanceof String) {
+    public static String cjsonTypeNameOfValue(Object value) {
+        return cjsonTypeNameForClass(value != null ? value.getClass() : null);
+    }
+
+    public static String cjsonTypeNameForClass(Class<?> cl) {
+        if (String.class.isAssignableFrom(cl)) {
             return "string";
-        } else if (value instanceof Number) {
-            return "number";
-        } else if (value instanceof Boolean) {
+        } else if (Integer.class.isAssignableFrom(cl)) {
+            return "int";
+        } else if (Long.class.isAssignableFrom(cl)) {
+            return "long";
+        } else if (Double.class.isAssignableFrom(cl)) {
+            return "double";
+        } else if (BigDecimal.class.isAssignableFrom(cl)) {
+            return "big-decimal";
+        } else if (Boolean.class.isAssignableFrom(cl)) {
             return "boolean";
-        } else if (value instanceof List<?>) {
+        } else if (List.class.isAssignableFrom(cl)) {
             return "list";
-        } else if (value instanceof LinkedHashMap<?, ?>) {
+        } else if (LinkedHashMap.class.isAssignableFrom(cl)) {
+            return "map (order keeping)";
+        } else if (Map.class.isAssignableFrom(cl)) {
             return "map";
-        } else if (value instanceof Map<?, ?>) {
-            return "map (unordered)";
-        } else if (value instanceof FunctionCall) {
+        } else if (FunctionCall.class.isAssignableFrom(cl)) {
             return "function call";
         } else {
-            if (value != null) {
-                return value.getClass().getName();
-            } else {
-                return "null";
-            }
+            return cl != null ? cl.getName() : "null";
         }
     }
 
@@ -643,7 +649,7 @@ final class CJSONInterpreter {
                     if (keyFunc != o1) {
                         throw newError(
                                 "The key must be a String, but it is a(n) "
-                                + cjsonTypeOf(o1) + ".", keyP);
+                                + cjsonTypeNameOfValue(o1) + ".", keyP);
                     } else {
                         throw newError(
                                 "You can't use the function here, "
@@ -733,7 +739,7 @@ final class CJSONInterpreter {
                         throw newError(
                                 "This expression should be either a string "
                                 + "or a map, but it is a(n) "
-                                + cjsonTypeOf(o1) + ".", keyP);
+                                + cjsonTypeNameOfValue(o1) + ".", keyP);
                     }
                 } else {
                     if (o1 instanceof Map) {
@@ -748,7 +754,7 @@ final class CJSONInterpreter {
                         } else {
                             throw newError(
                                     "Function doesn't evalute to a map, but "
-                                    + "to " + cjsonTypeOf(o1)
+                                    + "to " + cjsonTypeNameOfValue(o1)
                                     + ", so it can't be merged into the map.",
                                     keyP);
                         }
