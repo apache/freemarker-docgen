@@ -1309,8 +1309,8 @@ public final class Transform {
                 new MapEntryType(String.class, SETTING_LOGO_MAP_KEYS, String.class));
         return new Logo(
                 logoMap.get(SETTING_LOGO_KEY_SRC),
-                logoMap.get(SETTING_LOGO_KEY_ALT),
-                logoMap.get(SETTING_LOGO_KEY_HREF));
+                logoMap.get(SETTING_LOGO_KEY_HREF),
+                logoMap.get(SETTING_LOGO_KEY_ALT));
     }
 
     private String getFileContentForSetting(SettingName settingName, Object settingValue) {
