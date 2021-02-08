@@ -667,7 +667,7 @@ public final class Transform {
                                         new DefaultValue<>(Collections.emptyList()),
                                         List.class
                                 ),
-                                Optional.ofNullable(
+                                Optional.<String>ofNullable(
                                         castSetting(
                                                 settingName.subKey(commandKey,
                                                         SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY),
