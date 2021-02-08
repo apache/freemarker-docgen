@@ -338,7 +338,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                             if (wdSubst == null) {
                                 return cmdArg;
                             }
-                            return cmdArg.replace(DOCGEN_WD_TAG, wdSubst.toAbsolutePath().normalize().toString());
+                            return cmdArg.replace(DOCGEN_WD_TAG, wdSubst.toString());
                         })
                         .collect(Collectors.toList());
 

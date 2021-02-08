@@ -675,7 +675,7 @@ public final class Transform {
                                                         SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY), DefaultValue.NULL,
                                                 String.class
                                         )
-                                ).map(Paths::get).orElse(null)
+                                ).map((String it) -> Paths.get(it).toAbsolutePath().normalize()).orElse(null)
                         );
                         insertableOutputCommands.put(commandKey, commandProps);
                     }
