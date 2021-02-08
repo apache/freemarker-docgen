@@ -672,10 +672,11 @@ public final class Transform {
                                                 settingName.subKey(commandKey,
                                                         SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY),
                                                 outputCmdProps.get(
-                                                        SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY), DefaultValue.NULL,
+                                                        SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY),
+                                                DefaultValue.NULL,
                                                 String.class
                                         )
-                                ).map((String it) -> Paths.get(it).toAbsolutePath().normalize()).orElse(null)
+                                ).map((String it) -> Paths.get(it).toAbsolutePath().normalize()).orElse((Path) null)
                         );
                         insertableOutputCommands.put(commandKey, commandProps);
                     }
