@@ -668,7 +668,7 @@ public final class Transform {
                                         List.class
                                 ),
                                 Optional.<String>ofNullable(
-                                        castSetting(
+                                        SettingUtils.<String>castSetting(
                                                 settingName.subKey(commandKey,
                                                         SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY),
                                                 outputCmdProps.get(
