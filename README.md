@@ -1,5 +1,8 @@
 # Docgen
 
+[![Build Status](https://travis-ci.com/apache/freemarker-docgen.svg?branch=master)](https://travis-ci.com/github/apache/freemarker-docgen)
+
+
 ## About
 
 Apache FreeMarker Docgen is an *internal* project under the Apache FreeMarker TLP,
