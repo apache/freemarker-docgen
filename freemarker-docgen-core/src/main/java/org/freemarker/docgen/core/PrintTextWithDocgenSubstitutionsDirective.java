@@ -19,14 +19,23 @@
 
 package org.freemarker.docgen.core;
 
+import static org.freemarker.docgen.core.PrintTextWithDocgenSubstitutionsDirective.InsertDirectiveType.*;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +44,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.text.StringEscapeUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import freemarker.core.Environment;
 import freemarker.core.HTMLOutputFormat;
@@ -63,8 +76,17 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
     private static final String DOCGEN_TAG_START = "[docgen";
     private static final String DOCGEN_TAG_END = "]";
     private static final String DOCGEN_END_TAG_START = "[/docgen";
-    private static final String INSERT_FILE = "insertFile";
-    private static final String INSERT_OUTPUT = "insertOutput";
+
+    enum InsertDirectiveType {
+        INSERT_FILE("insertFile"),
+        INSERT_OUTPUT("insertOutput");
+
+        private final String directiveName;
+
+        InsertDirectiveType(String directiveName) {
+            this.directiveName = directiveName;
+        }
+    }
 
     private final Transform transform;
 
@@ -105,6 +127,9 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         new DocgenSubstitutionInterpreter(text, env).execute();
     }
 
+    private static final String DOCGEN_WD_TAG = "[docgen:wd]";
+    private static final Pattern DOCGEN_WD_TAG_AND_SLASH_PATTERN = Pattern.compile(Pattern.quote(DOCGEN_WD_TAG) +  "/?");
+
     private class DocgenSubstitutionInterpreter {
         private final String text;
         private final Environment env;
@@ -142,12 +167,12 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     lastUnprintedIdx = cursor;
 
                     insertCustomVariable(customVarName);
-                } else if (INSERT_FILE.equals(subvarName)) {
-                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, true, true, false);
+                } else if (INSERT_FILE.directiveName.equals(subvarName)) {
+                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, INSERT_FILE);
                     lastUnprintedIdx = cursor;
                     insertFile(args);
-                } else if (INSERT_OUTPUT.equals(subvarName)) {
-                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, false, false, true);
+                } else if (INSERT_OUTPUT.directiveName.equals(subvarName)) {
+                    InsertDirectiveArgs args = fetchInsertDirectiveArgs(subvarName, INSERT_OUTPUT);
                     lastUnprintedIdx = cursor;
                     insertOutput(args);
                 } else {
@@ -257,43 +282,22 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     fileContent = removeFTLCopyrightComment(fileContent);
                 }
 
-                if (args.from != null) {
-                    Matcher matcher = args.from.matcher(fileContent);
-                    if (matcher.find()) {
-                        String remaining = fileContent.substring(matcher.start());
-                        fileContent = "[\u2026]"
-                                + (remaining.startsWith("\n") || remaining.startsWith("\r") ? "" : "\n")
-                                + remaining;
-                    } else if (!args.fromOptional) {
-                        throw newErrorInDocgenTag(
-                                "\"from\" regular expression has no match in the file content: " + args.from);
-                    }
-                }
-
-                if (args.to != null) {
-                    Matcher matcher = args.to.matcher(fileContent);
-                    if (matcher.find()) {
-                        String remaining = fileContent.substring(0, matcher.start());
-                        fileContent = remaining
-                                + (remaining.endsWith("\n") || remaining.endsWith("\r") ? "" : "\n")
-                                + "[\u2026]";
-                    } else if (!args.toOptional) {
-                        throw newErrorInDocgenTag(
-                                "\"to\" regular expression has no match in the file content: " + args.to);
-                    }
-                }
-
-                HTMLOutputFormat.INSTANCE.output(fileContent, out);
+                cutAndInsertContent(args, fileContent);
             }
         }
 
         private void insertOutput(InsertDirectiveArgs args) throws TemplateException, IOException {
+            if (args.printCommand) {
+                out.write("> ");
+                out.write(DOCGEN_WD_TAG_AND_SLASH_PATTERN.matcher(StringUtil.chomp(args.body)).replaceAll(""));
+                out.write("\n");
+            }
+
             List<String> splitCmdLine = BashCommandLineArgsParser.parse(args.body);
             if (splitCmdLine.isEmpty()) {
                 throw newErrorInDocgenTag("Command to execute was empty");
             }
             String cmdKey = splitCmdLine.get(0);
-            List<String> cmdArgs = splitCmdLine.subList(1, splitCmdLine.size());
             Map<String, Transform.InsertableOutputCommandProperties> cmdPropsMap =
                     transform.getInsertableOutputCommands();
             Transform.InsertableOutputCommandProperties cmdProps = cmdPropsMap.get(cmdKey);
@@ -306,14 +310,134 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                                         ? "That setting is empty."
                                         : "It has these keys: " + String.join(", ", cmdPropsMap.keySet())));
             }
-            HTMLOutputFormat.INSTANCE.output("!!T\n" + cmdProps + "\n" + cmdArgs, out);
+
+            Method mainMethod = getMainMethod(cmdKey, cmdProps);
+
+            StringWriter stdOutCapturer;
+            PrintStream prevOut = System.out;
+            Map<String, String> prevSystemProperties = new HashMap<>();
+            try {
+                stdOutCapturer = new StringWriter();
+                PrintStream stdOutCapturerPrintStream = new PrintStream(
+                        new WriterOutputStream(stdOutCapturer, Charset.defaultCharset()));
+                System.setOut(stdOutCapturerPrintStream);
+
+                cmdProps.getSystemProperties().forEach((k, v) -> {
+                    String prevValue = setOrClearSystemProperty(k, v);
+                    prevSystemProperties.put(k, prevValue);
+                });
+
+                List<String> rawCmdArgs = splitCmdLine.subList(1, splitCmdLine.size());
+                List<String> cmdArgs = ImmutableList.<String>builder()
+                        .addAll(cmdProps.getPrependedArguments())
+                        .addAll(rawCmdArgs)
+                        .addAll(cmdProps.getAppendedArguments())
+                        .build().stream()
+                        .map(cmdArg -> {
+                            Path wdSubst = cmdProps.getWdSubstitution();
+                            if (wdSubst == null) {
+                                return cmdArg;
+                            }
+                            return cmdArg.replace(DOCGEN_WD_TAG, wdSubst.toAbsolutePath().toString());
+                        })
+                        .collect(Collectors.toList());
+
+                Object returnValue;
+                try {
+                    returnValue = mainMethod.invoke(null, (Object) cmdArgs.toArray(new String[0]));
+                } catch (Exception e) {
+                    throw newErrorInDocgenTag("Error when executing command with "
+                                    + cmdProps.getMainClassName() + "." + cmdProps.getMainMethodName()
+                                    + ", and arguments " + cmdArgs + ".",
+                            e);
+                }
+                if (returnValue instanceof Integer && ((Integer) returnValue) != 0) {
+                    throw newErrorInDocgenTag(
+                            "Command execution has returned with non-0 exit code " + returnValue
+                                    + ", from " + cmdProps.getMainClassName() + "." + cmdProps.getMainMethodName()
+                                    + ", called with arguments " + cmdArgs + ".");
+                }
+
+                stdOutCapturerPrintStream.flush();
+            } finally {
+                prevSystemProperties.forEach(PrintTextWithDocgenSubstitutionsDirective::setOrClearSystemProperty);
+                System.setOut(prevOut);
+            }
+            cutAndInsertContent(args, stdOutCapturer.toString());
         }
 
-        private TemplateException newFormattingFailedException(String customVarName, TemplateValueFormatException e) {
-            return new TemplateException(
-                    "Formatting failed for Docgen custom variable "
-                            + StringUtil.jQuote(customVarName),
-                    e, env);
+        private void cutAndInsertContent(InsertDirectiveArgs args, String content)
+                throws TemplateException, IOException {
+            if (args.from != null) {
+                Matcher matcher = args.from.matcher(content);
+                if (matcher.find()) {
+                    String remaining = content.substring(matcher.start());
+                    content = "[\u2026]"
+                            + (remaining.startsWith("\n") || remaining.startsWith("\r") ? "" : "\n")
+                            + remaining;
+                } else if (!args.fromOptional) {
+                    throw newErrorInDocgenTag(
+                            "\"from\" regular expression has no match in the file content: " + args.from);
+                }
+            }
+
+            if (args.to != null) {
+                Matcher matcher = args.to.matcher(content);
+                if (matcher.find()) {
+                    String remaining = content.substring(0, matcher.start());
+                    content = remaining
+                            + (remaining.endsWith("\n") || remaining.endsWith("\r") ? "" : "\n")
+                            + "[\u2026]";
+                } else if (!args.toOptional) {
+                    throw newErrorInDocgenTag(
+                            "\"to\" regular expression has no match in the file content: " + args.to);
+                }
+            }
+
+            HTMLOutputFormat.INSTANCE.output(content, out);
+        }
+
+        private Method getMainMethod(String cmdKey, Transform.InsertableOutputCommandProperties cmdProps) throws
+                TemplateException {
+            String mainClassName = cmdProps.getMainClassName();
+            Class<?> mainClass;
+            try {
+                mainClass = Transform.class.getClassLoader().loadClass(mainClassName);
+            } catch (Exception e) {
+                throw newErrorInDocgenTag(
+                        "The main class referred by "
+                                + Transform.SETTING_INSERTABLE_OUTPUT_COMMANDS + "[" + StringUtil.jQuote(cmdKey) + "], "
+                                + StringUtil.jQuote(mainClassName) + ", couldn't be loaded",
+                        e);
+            }
+
+            String mainMethodName = cmdProps.getMainMethodName();
+            Method mainMethod;
+            try {
+                mainMethod = mainClass.getMethod(mainMethodName, String[].class);
+            } catch (Exception e) {
+                throw newErrorInDocgenTag(
+                        "Couldn't get " + mainMethodName + "(String[]) method from class "
+                                + mainClassName + ".",
+                        e);
+            }
+            if ((mainMethod.getModifiers() & Modifier.STATIC) == 0) {
+                throw newErrorInDocgenTag(
+                        mainMethodName + "(String[]) method from class "
+                                + mainClassName + " must be static.");
+            }
+            if ((mainMethod.getModifiers() & Modifier.PUBLIC) == 0) {
+                throw newErrorInDocgenTag(
+                        mainMethodName + "(String[]) method from class "
+                                + mainClassName + " must be public.");
+            }
+            Class<?> returnType = mainMethod.getReturnType();
+            if (returnType != void.class && returnType != int.class) {
+                throw newErrorInDocgenTag(
+                        mainMethodName + "(String[]) method from class "
+                                + mainClassName + " must return void or int, but return type was " + returnType);
+            }
+            return mainMethod;
         }
 
         private int findNextDocgenTagStart(int fromIndex) {
@@ -460,7 +584,6 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
-
         private char charAt(int index) {
             return index < text.length() ? text.charAt(index) : 0;
         }
@@ -472,19 +595,30 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         }
 
         private TemplateException newErrorInDocgenTag(String errorDetail) {
-            return new DocgenTagException(
-                    "\nError in docgen tag: " + text.substring(lastDocgenTagStart, cursor) + "\n" + errorDetail,
-                    env);
+            return newErrorInDocgenTag(errorDetail, null);
+        }
 
+        private TemplateException newErrorInDocgenTag(String errorDetail, Throwable cause) {
+            return new DocgenTagException(
+                    "\nError in docgen tag: " + text.substring(lastDocgenTagStart, cursor) + "\n" + errorDetail
+                            + (cause != null ? "\nSee cause exception for more!" : ""),
+                    cause,
+                    env);
+        }
+
+        private TemplateException newFormattingFailedException(String customVarName, TemplateValueFormatException e) {
+            return new TemplateException(
+                    "Formatting failed for Docgen custom variable " + StringUtil.jQuote(customVarName),
+                    e, env);
         }
 
         private InsertDirectiveArgs fetchInsertDirectiveArgs(
-                String subvarName, boolean hasPath, boolean allowCharsetArg, boolean hasBodyArg) throws
+                String subvarName, InsertDirectiveType insertDirectiveType) throws
                 TemplateException {
             InsertDirectiveArgs args = new InsertDirectiveArgs();
             args.toOptional = true;
 
-            if (hasPath) {
+            if (insertDirectiveType == INSERT_FILE) {
                 skipWS();
                 args.path = fetchRequiredString();
             }
@@ -498,7 +632,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                             "Duplicate docgen." + subvarName +  " parameter " + StringUtil.jQuote(paramName) + ".",
                             env);
                 }
-                if (allowCharsetArg && paramName.equals("charset")) {
+                if (insertDirectiveType == INSERT_FILE && paramName.equals("charset")) {
                     args.charset = StringEscapeUtils.unescapeXml(fetchRequiredString());
                 } else if (paramName.equals("from")) {
                     args.from = parseRegularExpressionParam(paramName, StringEscapeUtils.unescapeXml(fetchRequiredString()));
@@ -508,6 +642,9 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     args.fromOptional = fetchRequiredBoolean();
                 } else if (paramName.equals("toOptional")) {
                     args.toOptional = fetchRequiredBoolean();
+                } else if (insertDirectiveType == INSERT_OUTPUT
+                        && paramName.equals("printCommand")) {
+                    args.printCommand = fetchRequiredBoolean();
                 } else {
                     throw new DocgenTagException(
                             "Unsupported docgen." + subvarName +  " parameter " + StringUtil.jQuote(paramName) + ".",
@@ -518,7 +655,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             skipRequiredToken(DOCGEN_TAG_END);
             int indexAfterStartTag = cursor;
 
-            if (hasBodyArg) {
+            if (insertDirectiveType == INSERT_OUTPUT) {
                 int endTagIndex = findNextDocgenEndTag(cursor);
                 if (endTagIndex == -1) {
                     throw new DocgenTagException(
@@ -557,6 +694,10 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             return parsedParamValue;
         }
 
+    }
+
+    private static String setOrClearSystemProperty(String k, String v) {
+        return v != null ? System.setProperty(k, v) : System.clearProperty(k);
     }
 
     public static String removeFTLCopyrightComment(String ftl) {
@@ -616,6 +757,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         private boolean toOptional;
         private String body;
         private int indexAfterDirective;
+        private boolean printCommand;
     }
 
 }

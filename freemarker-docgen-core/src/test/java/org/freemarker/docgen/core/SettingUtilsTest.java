@@ -49,7 +49,7 @@ public class SettingUtilsTest {
             ImmutableList<ImmutableList<?>> originalValue = ImmutableList.of(ImmutableList.of(), ImmutableList.of(1));
             Object value = castSetting(
                     SETTING_NAME,
-                    originalValue, true,
+                    originalValue, DefaultValue.NULL,
                     List.class,
                     new ListItemType(List.class),
                     new ListItemType(Integer.class)
@@ -73,7 +73,7 @@ public class SettingUtilsTest {
 
     @Test
     public void testOptional() {
-        assertNull(castSetting(SETTING_NAME, null, true, Integer.class));
+        assertNull(castSetting(SETTING_NAME, null, DefaultValue.NULL, Integer.class));
         try {
             castSetting(SETTING_NAME, null, Integer.class);
             fail();

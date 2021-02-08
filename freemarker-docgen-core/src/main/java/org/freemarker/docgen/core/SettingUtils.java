@@ -76,13 +76,13 @@ final class SettingUtils {
             Object settingValue, Class<T> elementClass) {
         return castSetting(
                 settingName, settingValue,
-                false,
+                null,
                 List.class, new ListItemType(elementClass)
         );
     }
 
     static <T> T castSetting(SettingName settingName, Object settingValue, Class<T> valueType) {
-        return castSetting(settingName, settingValue, false, valueType);
+        return castSetting(settingName, settingValue, null, valueType);
     }
 
     /**
@@ -91,23 +91,25 @@ final class SettingUtils {
     static <T> T castSetting(
             SettingName settingName, Object settingValue, Class<T> valueType,
             ContainedValueType... containedValueTypes) {
-        return castSetting(settingName, settingValue, false, valueType, containedValueTypes);
+        return castSetting(settingName, settingValue, null, valueType, containedValueTypes);
     }
 
     /**
      * @param valueType
      *      The expected type of the value (on the top-level, if it's a container)
+     * @param defaultValue
+     *      {@code null} if the setting is required or can't have {@code null} value. Non-null otherwise.
      * @param containedValueTypes
      *      The expected type of the contained values, and of the values contained inside them, and so on. (This is
      *      separate from {@code valueType} because Java can't match s generic return type with the type of the first
      */
     static <T> T castSetting(
             SettingName settingName, Object settingValue,
-            boolean optional,
+            DefaultValue<T> defaultValue,
             Class<T> valueType, ContainedValueType... containedValueTypes) {
         if (settingValue == null) {
-            if (optional) {
-                return null;
+            if (defaultValue != null) {
+                return defaultValue.get();
             }
             throw newNullSettingValueException(settingName);
         }

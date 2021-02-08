@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
@@ -155,17 +156,24 @@ public final class Transform {
     static final String SETTING_CUSTOM_VARIABLES = "customVariables";
     static final String SETTING_INSERTABLE_FILES = "insertableFiles";
     static final String SETTING_INSERTABLE_OUTPUT_COMMANDS = "insertableOutputCommands";
-    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY = "class";
-    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY = "prependedArguments";
-    static final String SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY = "workDirectory";
-    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS;
-    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS;
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_CLASS_KEY = "mainClass";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_METHOD_KEY = "mainMethod";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_SYSTEM_PROPERTIES_KEY = "systemProperties";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_PREPENDED_ARGUMENTS_KEY = "prependedArguments";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_APPENDED_ARGUMENTS_KEY = "appendedArguments";
+    static final String SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY = "docgenWdReplacedWith";
+    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS;
+    static final Set<String> SETTING_INSERTABLE_OUTPUT_COMMANDS_REQUIRED_KEYS;
     static {
-        SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS = new LinkedHashSet<>();
-        SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY);
-        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS = new LinkedHashSet<>();
-        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY);
-        SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_REQUIRED_KEYS = new LinkedHashSet<>();
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_REQUIRED_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_CLASS_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_REQUIRED_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_METHOD_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS = new LinkedHashSet<>();
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMANDS_SYSTEM_PROPERTIES_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMANDS_PREPENDED_ARGUMENTS_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS.add(SETTING_INSERTABLE_OUTPUT_COMMANDS_APPENDED_ARGUMENTS_KEY);
+        SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS.add(
+                SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY);
     }
 
     static final String SETTING_VALIDATION_PROGRAMLISTINGS_REQ_ROLE
@@ -623,27 +631,51 @@ public final class Transform {
                             Map.class,
                             new MapEntryType(String.class, Map.class),
                             new MapEntryType(
-                                    String.class, SETTING_INSERTABLE_OUTPUT_COMMADS_REQUIRED_KEYS, SETTING_INSERTABLE_OUTPUT_COMMADS_OPTIONAL_KEYS,
+                                    String.class, SETTING_INSERTABLE_OUTPUT_COMMANDS_REQUIRED_KEYS, SETTING_INSERTABLE_OUTPUT_COMMANDS_OPTIONAL_KEYS,
                                     Object.class, false));
                     for (Entry<String, Map<String, Object>> ent : m.entrySet()) {
                         String commandKey = ent.getKey();
                         Map<String, Object> outputCmdProps = ent.getValue();
                         InsertableOutputCommandProperties commandProps = new InsertableOutputCommandProperties(
                                 castSetting(
-                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY),
-                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_CLASS_KEY),
+                                        settingName.subKey(commandKey,
+                                                SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_CLASS_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_CLASS_KEY),
                                         String.class
                                 ),
                                 castSetting(
-                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY),
-                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_PREPENDED_ARGUMENTS_KEY),
+                                        settingName.subKey(commandKey,
+                                                SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_METHOD_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMANDS_MAIN_METHOD_KEY),
+                                        String.class
+                                ),
+                                castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMANDS_SYSTEM_PROPERTIES_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMANDS_SYSTEM_PROPERTIES_KEY),
+                                        new DefaultValue<>(Collections.emptyMap()),
+                                        Map.class, new MapEntryType(String.class, String.class)
+                                ),
+                                castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMANDS_PREPENDED_ARGUMENTS_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMANDS_PREPENDED_ARGUMENTS_KEY),
+                                        new DefaultValue<>(Collections.emptyList()),
                                         List.class
                                 ),
-                                Paths.get(castSetting(
-                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY),
-                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMADS_WORK_DIRECTORY_KEY),
-                                        String.class
-                                ))
+                                castSetting(
+                                        settingName.subKey(commandKey, SETTING_INSERTABLE_OUTPUT_COMMANDS_APPENDED_ARGUMENTS_KEY),
+                                        outputCmdProps.get(SETTING_INSERTABLE_OUTPUT_COMMANDS_APPENDED_ARGUMENTS_KEY),
+                                        new DefaultValue<>(Collections.emptyList()),
+                                        List.class
+                                ),
+                                Optional.ofNullable(
+                                        castSetting(
+                                                settingName.subKey(commandKey,
+                                                        SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY),
+                                                outputCmdProps.get(
+                                                        SETTING_INSERTABLE_OUTPUT_COMMANDS_DOCGEN_WD_REPLACED_WITH_KEY), DefaultValue.NULL,
+                                                String.class
+                                        )
+                                ).map(Paths::get).orElse(null)
                         );
                         insertableOutputCommands.put(commandKey, commandProps);
                     }
@@ -1304,7 +1336,7 @@ public final class Transform {
     private static Logo castMapToLogo(SettingName settingName, Object settingValue) {
         Map<String, String> logoMap = castSetting(
                 settingName,
-                settingValue, false,
+                settingValue, null,
                 Map.class,
                 new MapEntryType(String.class, SETTING_LOGO_MAP_KEYS, String.class));
         return new Logo(
@@ -2780,21 +2812,58 @@ public final class Transform {
 
     static class InsertableOutputCommandProperties {
         private final String mainClassName;
+        private final String mainMethodName;
+        private final Map<String, String> systemProperties;
         private final List<String> prependedArguments;
-        private final Path workDirectory;
+        private final List<String> appendedArguments;
+        private final Path wdSubstitution;
 
-        public InsertableOutputCommandProperties(String mainClassName, List<String> prependedArguments, Path workDirectory) {
+        public InsertableOutputCommandProperties(
+                String mainClassName, String mainMethodName,
+                Map<String, String> systemProperties,
+                List<String> prependedArguments, List<String> appendedArguments, Path wdSubstitution) {
             this.mainClassName = mainClassName;
+            this.mainMethodName = mainMethodName;
+            this.systemProperties = systemProperties;
             this.prependedArguments = prependedArguments;
-            this.workDirectory = workDirectory;
+            this.appendedArguments = appendedArguments;
+            this.wdSubstitution = wdSubstitution;
+        }
+
+        public String getMainClassName() {
+            return mainClassName;
+        }
+
+        public String getMainMethodName() {
+            return mainMethodName;
+        }
+
+        public Map<String, String> getSystemProperties() {
+            return systemProperties;
+        }
+
+        public List<String> getPrependedArguments() {
+            return prependedArguments;
+        }
+
+        public List<String> getAppendedArguments() {
+            return appendedArguments;
+        }
+
+        public Path getWdSubstitution() {
+            return wdSubstitution;
         }
 
         @Override
         public String toString() {
-            return "InsertableOutputCommandProperties{"
-                    + "mainClassName='" + mainClassName + '\''
-                    + ", prependedArguments=" + prependedArguments
-                    + ", workDirectory=" + workDirectory + '}';
+            return "InsertableOutputCommandProperties{" +
+                    "mainClassName='" + mainClassName + '\'' +
+                    ", mainMethodName='" + mainMethodName + '\'' +
+                    ", systemProperties=" + systemProperties +
+                    ", prependedArguments=" + prependedArguments +
+                    ", appendedArguments=" + appendedArguments +
+                    ", wdSubstitution=" + wdSubstitution +
+                    '}';
         }
     }
 
