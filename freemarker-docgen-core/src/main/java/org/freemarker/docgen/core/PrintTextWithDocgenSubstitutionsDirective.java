@@ -127,7 +127,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         new DocgenSubstitutionInterpreter(text, env).execute();
     }
 
-    private static final String DOCGEN_WD_TAG = "[docgen:wd]";
+    private static final String DOCGEN_WD_TAG = "[docgen.wd]";
     private static final Pattern DOCGEN_WD_TAG_AND_SLASH_PATTERN = Pattern.compile(Pattern.quote(DOCGEN_WD_TAG) +  "/?");
 
     private class DocgenSubstitutionInterpreter {
