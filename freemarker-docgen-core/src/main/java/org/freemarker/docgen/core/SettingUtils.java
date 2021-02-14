@@ -114,7 +114,6 @@ final class SettingUtils {
             throw newNullSettingValueException(settingName);
         }
         if (!valueType.isInstance(settingValue)) {
-            System.out.println("BAD VALUE: " + settingValue); //!!T
             throw newBadSettingValueTypeException(settingName, valueType, settingValue);
         }
 

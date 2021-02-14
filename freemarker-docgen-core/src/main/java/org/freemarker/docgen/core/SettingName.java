@@ -22,7 +22,11 @@ package org.freemarker.docgen.core;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import freemarker.ext.beans.NumberModel;
+import freemarker.template.utility.StringUtil;
 
 final class SettingName {
     private final File parentFile;
@@ -32,7 +36,11 @@ final class SettingName {
     public SettingName(File parentFile, SettingName parent, Object key) {
         this.parentFile = parentFile;
         this.parent = parent;
-        this.key = key;
+        this.key = Objects.requireNonNull(key);
+        if (!(key instanceof String) && !(key instanceof Number)) {
+            throw new IllegalArgumentException(
+                    "Key must be String or Number, but it was: " + key.getClass().getName());
+        }
     }
 
     static SettingName topLevel(File parentFile, String simpleName) {
@@ -44,7 +52,7 @@ final class SettingName {
     }
 
     SettingName subKey(Object... keys) {
-        return new SettingName(null,this, subKey(Arrays.asList(keys)));
+        return subKey(Arrays.asList(keys));
     }
 
     SettingName subKey(List<Object> keys) {
@@ -71,12 +79,36 @@ final class SettingName {
             parent.appendName(sb);
         }
         if (key instanceof String) {
-            if (sb.length() != 0) {
-                sb.append('.');
+            String strKey = (String) key;
+            if (isIdentifierLike(strKey)) {
+                if (sb.length() != 0) {
+                    sb.append('.');
+                }
+                sb.append(key);
+            } else {
+                if (sb.length() == 0) {
+                    sb.append("#ROOT");
+                }
+                sb.append('[').append(StringUtil.jQuote(key)).append(']');
             }
-            sb.append(key);
-        } else {
+        } else if (key instanceof Number) {
             sb.append('[').append(key).append(']');
         }
+    }
+
+    private boolean isIdentifierLike(String s) {
+        if (s.length() == 0) {
+            return false;
+        }
+        if (!Character.isJavaIdentifierStart(s.charAt(0))) {
+            return false;
+        }
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!Character.isJavaIdentifierPart(c) && c != '-') {
+                return false;
+            }
+        }
+        return true;
     }
 }

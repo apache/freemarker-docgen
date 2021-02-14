@@ -1056,6 +1056,9 @@ public final class Transform {
             fmConfig.setSharedVariable(
                     "printTextWithDocgenSubstitutions",
                     new PrintTextWithDocgenSubstitutionsDirective(this));
+            fmConfig.setSharedVariable(
+                    "chopLinebreak",
+                    ChopLinebreakDirective.INSTANCE);
 
             // Calculated data:
             {
@@ -2573,11 +2576,15 @@ public final class Transform {
         return insertableFiles;
     }
 
+    TOCNode getCurrentFileTOCNode() {
+        return currentFileTOCNode;
+    }
+
+    // -------------------------------------------------------------------------
+
     public Map<String, InsertableOutputCommandProperties> getInsertableOutputCommands() {
         return insertableOutputCommands;
     }
-
-// -------------------------------------------------------------------------
 
     public File getDestinationDirectory() {
         return destDir;

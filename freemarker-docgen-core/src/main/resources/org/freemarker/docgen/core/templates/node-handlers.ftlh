@@ -391,8 +391,7 @@
       <#if roleLabel != ''><div class="code-block-label">${roleLabel}</div></#if><#t>
       <pre class="code-block-body"><@Anchor/><#t>
         <#-- XXE and usual FO-stylesheet-compatible interpretation of inital line-breaks -->
-        <#local content><#recurse></#local>
-        ${content?markupString?chopLinebreak?noEsc}<#t>
+        <@chopLinebreak><#recurse></@><#t>
       </pre><#t>
     </div>
   </@CantBeNestedIntoP>

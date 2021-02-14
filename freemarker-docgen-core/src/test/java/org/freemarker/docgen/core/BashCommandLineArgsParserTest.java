@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class BashCommandLineArgsParserTest {
 
     @Test
-    void parse() {
+    void test1() {
         assertEquals(Arrays.asList(), BashCommandLineArgsParser.parse(""));
         assertEquals(Arrays.asList(), BashCommandLineArgsParser.parse( " "));
         assertEquals(Arrays.asList("cmd", "1", "2", "3"), BashCommandLineArgsParser.parse("cmd 1\t2\r\n3"));
@@ -38,6 +38,13 @@ class BashCommandLineArgsParserTest {
         assertEquals(Arrays.asList("a'bc", "d  e"), BashCommandLineArgsParser.parse("a\\'bc d\\ \\ e"));
         assertEquals(Arrays.asList("a\\b\\c\"$"), BashCommandLineArgsParser.parse("\"a\\b\\\\c\\\"\\$\""));
         assertEquals(Arrays.asList("a\\b\\\\c"), BashCommandLineArgsParser.parse("'a\\b\\\\c'"));
+    }
+
+    @Test
+    void testBackslashLineBreak() {
+        assertEquals(Arrays.asList("ab", "c"), BashCommandLineArgsParser.parse("a\\\nb\\\n c"));
+        assertEquals(Arrays.asList("ab", "c"), BashCommandLineArgsParser.parse("a\\\r\nb\\\r\n c"));
+        assertEquals(Arrays.asList("a ab", "c"), BashCommandLineArgsParser.parse("a\\ a\\\r\nb \\\r\n c"));
     }
 
 }

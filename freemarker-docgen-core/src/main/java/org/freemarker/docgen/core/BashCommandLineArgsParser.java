@@ -47,7 +47,7 @@ public class BashCommandLineArgsParser {
     }
 
     private String skipWSAndFetchArg() {
-        skipWS();
+        skipBashWS();
         return fetchArg();
     }
 
@@ -58,11 +58,24 @@ public class BashCommandLineArgsParser {
         boolean escaped = false;
         while (pos < src.length()) {
             char c = src.charAt(pos);
-            if (escaped) {
-                if (openedQuote == '"' && !(c == '"' || c == '\\' || c == '$')) {
-                    arg.append('\\');
+
+            // Get rid of Windows and Mac line-breaks:
+            if (c == '\r') {
+                if (pos + 1 < src.length()) {
+                    if (src.charAt(pos + 1) == '\n') {
+                        pos++;
+                    }
                 }
-                arg.append(c);
+                c = '\n';
+            }
+
+            if (escaped) {
+                if (openedQuote == '"' && !(c == '"' || c == '\\' || c == '$' || c == '\n')) {
+                    arg.append('\\');
+                    arg.append(c);
+                } else if (c != '\n') { // Otherwise it's an escaped line-break, so we just drop it to join lines.
+                    arg.append(c);
+                }
                 escaped = false;
             } else {
                 if (c == '"' || c == '\'') {
@@ -86,13 +99,32 @@ public class BashCommandLineArgsParser {
         return startPos != pos ? arg.toString() : null;
     }
 
-    private void skipWS() {
-        while (pos < src.length() && isWS(src.charAt(pos))) {
+    private void skipBashWS() {
+        while (pos < src.length()) {
+            char c = src.charAt(pos);
+
+            if (c == '\\') {
+                if (pos + 1 < src.length() && isLinebreak(src.charAt(pos + 1))) {
+                    // Skip escaped linebreak as whitespace
+                    if (src.charAt(pos + 1) == '\r' && pos + 2 < src.length() && src.charAt(pos + 2) == '\n') {
+                        pos++;
+                    }
+                } else {
+                    break;
+                }
+            } else if (!isWS(c)) {
+                break;
+            }
             pos++;
         }
     }
 
     private boolean isWS(char c) {
-        return c == ' ' || c == '\n' || c == '\r' || c == '\t';
+        return c == ' ' || c == '\t' || isLinebreak(c);
     }
+
+    private boolean isLinebreak(char c) {
+        return c == '\n' || c == '\r';
+    }
+
 }

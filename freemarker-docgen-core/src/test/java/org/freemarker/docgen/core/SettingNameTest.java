@@ -28,5 +28,7 @@ public class SettingNameTest {
     public void toStringTest() {
         assertEquals("a", SettingName.topLevel(null, "a").toString());
         assertEquals("a.b[1]", SettingName.topLevel(null, "a").subKey("b").subKey(1).toString());
+        assertEquals("a.b[1].c.d", SettingName.topLevel(null, "a").subKey("b", 1, "c", "d").toString());
+        assertEquals("a[\"a b\"].b1", SettingName.topLevel(null, "a").subKey("a b").subKey("b1").toString());
     }
 }
