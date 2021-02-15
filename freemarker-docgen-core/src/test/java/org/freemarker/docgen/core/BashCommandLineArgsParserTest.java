@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-class BashCommandLineArgsParserTest {
+public class BashCommandLineArgsParserTest {
 
     @Test
     void test1() {

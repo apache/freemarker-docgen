@@ -27,7 +27,7 @@ import java.io.Writer;
 
 import org.junit.jupiter.api.Test;
 
-class ChopLinebreakWriterTest {
+public class ChopLinebreakWriterTest {
 
     @Test
     public void testCharArg1() throws IOException {
