@@ -22,7 +22,7 @@
   xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <include location="xxe-config:docbook5/docbook5.xxe"/>
+  <include location="docbook5-config:docbook5.xxe"/>
 
   <detect>
     <and>
@@ -33,9 +33,9 @@
 
   <css name="DocBook for Docgen" location="docbook-for-docgen.css" />
 
-  <windowLayout>
+  <viewSettings>
     <center css="DocBook for Docgen" />
     <left css="Table of contents" size="0.25" />
-  </windowLayout>
+  </viewSettings>
 
 </configuration>

@@ -25,7 +25,7 @@ will be better for editing documentations conforming to the Docgen
 conventions. The customization will only affect the documents that has
 conformance="docgen" in their root element, not all DocBook documents.
 
-Requires at least XXE 4.2.1. Last tested on 7.4.1.
+Requires at least XXE 9.5.0. Last tested on 9.5.0.
 
 
 How to install
@@ -54,6 +54,6 @@ with this addon. Other DocBook documents are not affected.
 How to update the addon
 -----------------------
 
-Repeat the installation procedure (overwrite the files), then you have
+Repeat the installation procedure (overwrite the files), then you may have
 to clear the Quick Start cache through the XXE menu:
 "Options" -> "Preferences" -> "Advanced" -> "Cached data".
