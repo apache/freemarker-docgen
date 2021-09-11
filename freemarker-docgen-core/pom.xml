@@ -58,7 +58,8 @@
             <groupId>org.docbook</groupId>
             <artifactId>docbook-schemas</artifactId>
             <version>5.1-1</version>
-            <!-- We just need the docbook.rng resource from this artifact, so we exclude all dependencies: -->
+            <!-- We just need the docbook.rng resource from this artifact, so we exclude all dependencies. -->
+            <!-- These exclusions can be removed starting from 5.2. -->
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>

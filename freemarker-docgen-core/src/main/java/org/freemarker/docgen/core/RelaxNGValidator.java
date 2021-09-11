@@ -20,6 +20,8 @@ package org.freemarker.docgen.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -101,10 +103,11 @@ final class RelaxNGValidator {
         SchemaReader scemaReader = new AutoSchemaReader();
         Schema schema;
         try {
+            URL rngUrl = getRequiredResource(
+                    "/org/docbook/schemas/5.0/rng/docbook.rng",
+                    "/schema/5.0/rng/docbook.rng");
             schema = scemaReader.createSchema(
-                    ValidationDriver.uriOrFileInputSource(
-                            RelaxNGValidator.class.getResource(
-                                "/schema/5.0/rng/docbook.rng").toString()),
+                    ValidationDriver.uriOrFileInputSource(rngUrl.toString()),
                     schemaProps.toPropertyMap());
         } catch (IncorrectSchemaException e) {
             throw new BugException(
@@ -185,5 +188,15 @@ final class RelaxNGValidator {
         
         return domBuilder.getDocument();
     }
-    
+
+    private static URL getRequiredResource(String... resourceAndFallbacks) throws IOException {
+        for (String attemptedResource : resourceAndFallbacks) {
+            URL url = RelaxNGValidator.class.getResource(attemptedResource);
+            if (url != null) {
+                return url;
+            }
+        }
+        throw new IOException("Resource was not found on any of these locations: " + Arrays.asList(resourceAndFallbacks));
+    }
+
 }
