@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
@@ -33,12 +34,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -48,7 +53,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.io.output.WriterOutputStream;
-import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.common.collect.ImmutableList;
 
@@ -359,9 +363,11 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                         })
                         .collect(Collectors.toList());
 
-                Object cmdExitCode;
+                Map<String, String> systemPropertiesToRestore = new HashMap<>();
                 try {
-                    cmdExitCode = mainMethod.invoke(null, (Object) cmdArgs.toArray(new String[0]));
+                    Object cmdExitCode = withSystemPropertiesOverridden(
+                            Optional.ofNullable(args.systemProperties).orElse(Collections.emptyMap()),
+                            () -> mainMethod.invoke(null, (Object) cmdArgs.toArray(new String[0])));
                     if (cmdExitCode instanceof Integer && ((Integer) cmdExitCode) != 0) {
                         cmdRunExceptionShortMessage = "Command execution has returned with non-0 exit code " + cmdExitCode + ".";
                         cmdRunException = newErrorInInsertOutputCommandException(
@@ -401,6 +407,30 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                                 + "The output of the command (if any) until it failed:\n\n");
                 HTMLOutputFormat.INSTANCE.output(outCapturer.toString(), out);
                 throw cmdRunException;
+            }
+        }
+
+        private <T> T withSystemPropertiesOverridden(Map<String, String> systemPropertyOverrides, Callable<T> body)
+                throws Exception {
+            Map<String, String> systemPropertiesToRestore = new HashMap<>();
+            systemPropertyOverrides.forEach((key, value) -> {
+                systemPropertiesToRestore.put(key, System.getProperty(key));
+                if (value != null) {
+                    System.setProperty(key, value);
+                } else {
+                    System.clearProperty(key);
+                }
+            });
+            try {
+                return body.call();
+            } finally {
+                systemPropertiesToRestore.forEach((key, value) -> {
+                    if (value == null) {
+                        System.clearProperty(key);
+                    } else {
+                        System.setProperty(key, value);
+                    }
+                });
             }
         }
 
@@ -681,6 +711,33 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
             }
         }
 
+        private Map<String, String> fetchRequiredStringToStringMap() throws TemplateException {
+            Map<String, String> result = fetchOptionalStringToStringMap();
+            if (result == null) {
+                throw newUnexpectedTokenException("map", env);
+            }
+            return result;
+        }
+
+        private Map<String, String> fetchOptionalStringToStringMap() throws TemplateException {
+            Map<String, String> stringToStringMap = new LinkedHashMap<>();
+
+            skipRequiredToken("{");
+            fetchKeyValuePairs: do {
+                String key = fetchOptionalString();
+                if (key == null) {
+                    break fetchKeyValuePairs;
+                }
+                skipRequiredToken(":");
+                String value = fetchRequiredString();
+
+                stringToStringMap.put(key, value);
+            } while (skipOptionalToken(","));
+            skipRequiredToken("}");
+
+            return stringToStringMap;
+        }
+
         private char charAt(int index) {
             return index < text.length() ? text.charAt(index) : 0;
         }
@@ -744,6 +801,9 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
                     args.toOptional = fetchRequiredBoolean();
                 } else if (insertDirectiveType == INSERT_WITH_OUTPUT && paramName.equals("printCommand")) {
                     args.printCommand = fetchRequiredBoolean();
+                } else if ((insertDirectiveType == INSERT_WITH_OUTPUT || insertDirectiveType == CHECK_COMMAND)
+                        && paramName.equals("systemProperties")) {
+                    args.systemProperties = fetchRequiredStringToStringMap();
                 } else {
                     throw new DocgenTagException(
                             "Unsupported docgen." + subvarName +  " parameter " + StringUtil.jQuote(paramName) + ".",
@@ -855,6 +915,7 @@ public class PrintTextWithDocgenSubstitutionsDirective implements TemplateDirect
         private boolean fromOptional;
         private Pattern to;
         private boolean toOptional;
+        private Map<String, String> systemProperties;
         private String body;
         private int indexAfterDirective;
         private boolean printCommand;
