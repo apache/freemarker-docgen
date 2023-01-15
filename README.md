@@ -22,7 +22,7 @@ For some examples see:
 * `legacy-tests` in this project
 
 For editing DocBook, we are using [XXE](http://www.xmlmind.com/xmleditor/),
-with the `xxe-addon` installed, that you can find in this project.
+with the `xxe-addon` installed, which you can find in this project.
 
 
 ## Building
