@@ -32,7 +32,7 @@
     <packaging>maven-plugin</packaging>
     
     <properties>
-        <dependency.maven.version>3.5.2</dependency.maven.version>
+        <dependency.maven.version>3.8.2</dependency.maven.version>
     </properties>
 
     <dependencies>
@@ -54,5 +54,16 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <configuration>
+                    <mojoDependencies>org.apache.freemarker.docgen:freemarker-docgen</mojoDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
