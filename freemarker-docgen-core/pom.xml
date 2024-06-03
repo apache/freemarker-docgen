@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.freemarker.docgen</groupId>
         <artifactId>freemarker-docgen</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>freemarker-docgen-core</artifactId>
@@ -95,7 +95,7 @@
             <!-- Needed on Java 9+ -->
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.7.2</version>
+            <version>2.7.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
