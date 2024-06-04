@@ -39,7 +39,6 @@ To build, ensure that `npm` (from Node.js) is in the path, then in the top proje
    ```mvn install```
 
 
-
 ### Node.js troubleshooting
 
 Possible node.js related problems and solutions:

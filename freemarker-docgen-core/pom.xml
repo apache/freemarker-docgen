@@ -92,7 +92,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <!-- Needed on Java 9+ -->
+            <!-- xalan:xalan is needed on Java 9+ -->
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.3</version>
@@ -102,6 +102,20 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
+
+        </dependency>
+        <dependency>
+            <!-- Needed for xalan:xalan:2.7.3, as its pom.xml is wrong (XALANJ-2649) -->
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <!-- Needed for xalan:xalan:2.7.3, as its pom.xml is wrong (XALANJ-2649) -->
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.12.2</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
