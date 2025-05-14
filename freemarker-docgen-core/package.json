@@ -4,19 +4,22 @@
   "private": true,
   "scripts": {
     "build": "./node_modules/.bin/gulp",
+    "build-trace-deprecation": "node --trace-deprecation ./node_modules/gulp/bin/gulp.js default",
     "lint": "./node_modules/.bin/eslint  --ext .js ./src/main/org/freemarker/docgen/js/"
   },
   "dependencies": {
+    "gulp": "5.0.0",
+    "gulp-autoprefixer": "9.0.0",
     "gulp-clean-css": "4.3.0",
-    "gulp-eslint": "6.0.0",
-    "gulp": "4.0.2",
-    "gulp-autoprefixer": "7.0.1",
     "gulp-concat": "2.6.1",
-    "gulp-less": "4.0.1",
+    "gulp-eslint": "6.0.0",
+    "gulp-headerfooter": "1.0.3",
+    "gulp-less": "5.0.0",
+    // "[DEP0180] DeprecationWarning: fs.Stats constructor is deprecated": Gulp issue, can't yet fix it:
+    // https://github.com/gulpjs/vinyl-fs/issues/356
     "gulp-rename": "2.0.0",
     "gulp-uglify": "3.0.2",
-    "gulp-headerfooter": "1.0.3",
-    "less": "3.12.2"
+    "less": "4.3.0"
   },
   "engines": {
     "node": ">=12.0.0"

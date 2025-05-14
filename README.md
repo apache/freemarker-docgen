@@ -28,9 +28,9 @@ with the `xxe-addon` installed, which you can find in this project.
 ## Building
 
 These tools must be installed:
-* JDK 8, tested with Oracle 1.8.0_212
-* Apache Maven, tested with 3.6.1
-* [Node.js](https://nodejs.org/), tested with 12.18.2, 14.x.x maybe won't work.
+* JDK 8 (or later), was tested with Oracle 17.0.9
+* Apache Maven, was tested with 3.8.1
+* [Node.js](https://nodejs.org/) was tested with 22.15.0.
   (Node.js is only used to generate static content while building Docgen itself.) 
 
 To build, ensure that `npm` (from Node.js) is in the path, then in the top project directory

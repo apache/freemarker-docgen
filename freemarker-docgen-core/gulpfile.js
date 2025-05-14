@@ -24,9 +24,9 @@ var fs = require('fs');
 
 var gulp = require('gulp');
 var less = require('gulp-less');
-var rename = require('gulp-rename');
+var gulpRename = require('gulp-rename');
 var cleanCss = require('gulp-clean-css');
-var prefix = require('gulp-autoprefixer');
+var autoprefixer = require('gulp-autoprefixer').default; // .default because it's now an ES module
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var headerfooter = require('gulp-headerfooter');
@@ -41,18 +41,18 @@ var doNotEditHeader = "/*\n"
         + " * <#DO_NOT_UPDATE_COPYRIGHT>\n"
         + " */\n\n"
 
-gulp.task('styles', gulp.series(function(done) {
-  gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
+gulp.task('styles', gulp.series(function stylesTask() {
+  return gulp.src(path.join(BASE_DIR, 'less', 'styles.less'))
     .pipe(less({ paths: path.join(__dirname, 'node_modules') }))
 
     // rename and prefix
-    .pipe(rename({ basename: 'docgen' }))
-    .pipe(prefix({ cascade: false }))
+    .pipe(gulpRename({ basename: 'docgen' }))
+    .pipe(autoprefixer({ cascade: false }))
     .pipe(headerfooter.header(doNotEditHeader))
     .pipe(gulp.dest(OUT_DIR))
 
     // minify
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulpRename({ suffix: '.min' }))
     .pipe(cleanCss({
       advanced: false,
       restructuring: false,
@@ -60,10 +60,9 @@ gulp.task('styles', gulp.series(function(done) {
     }))
     .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
-	done();
 }));
 
-gulp.task('js', gulp.series(function(done) {
+gulp.task('js', gulp.series(function jsTask() {
   return gulp.src([
       path.join(BASE_DIR, 'js', 'use-strict.js'),
       path.join(BASE_DIR, 'js', 'make-toc.js'),
@@ -74,16 +73,14 @@ gulp.task('js', gulp.series(function(done) {
     .pipe(headerfooter.header(doNotEditHeader))
     .pipe(gulp.dest(OUT_DIR))
     .pipe(uglify())
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulpRename({ suffix: '.min' }))
     .pipe(headerfooter.header(copyrightHeader))
     .pipe(gulp.dest(OUT_DIR));
-	done();
 }));
 
-gulp.task('default', gulp.series(['styles', 'js']));
+gulp.task('default', gulp.series('styles', 'js'));
 
-gulp.task('watch-less', gulp.series(['styles'], function(done) {
-  // watch less files
-  gulp.watch([path.join(BASE_DIR, 'less', '**', '*')], ['styles']);
+gulp.task('watch-less', gulp.series('styles', function watchLessSetup(done) {
+  gulp.watch([path.join(BASE_DIR, 'less', '**', '*')], gulp.series('styles'));
   done();
 }));
