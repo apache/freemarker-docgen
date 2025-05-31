@@ -66,6 +66,7 @@ node_modules/**
 ide-dependencies/**
 archive
 .git/**
+.gitattributes
 .ivy/**
 .bin/**
 bin/**

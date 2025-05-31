@@ -32,116 +32,53 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.34</version>
         </dependency>
         <dependency>
             <groupId>com.thaiopensource</groupId>
             <artifactId>jing</artifactId>
-            <version>20091111</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- Apparently, it's not needed for what we do, so we avoid license complications. -->
-                    <groupId>net.sf.saxon</groupId>
-                    <artifactId>saxon</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.docbook</groupId>
             <artifactId>docbook-schemas</artifactId>
-            <version>5.1-1</version>
             <!-- We just need the docbook.rng resource from this artifact, so we exclude all dependencies. -->
             <!-- These exclusions can be removed starting from 5.2. -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-slf4j-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.sf.saxon</groupId>
-                    <artifactId>Saxon-HE</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.xmlresolver</groupId>
-                    <artifactId>xmlresolver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <!-- xalan:xalan is needed on Java 9+ -->
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.7.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-
         </dependency>
         <dependency>
             <!-- Needed for xalan:xalan:2.7.3, as its pom.xml is wrong (XALANJ-2649) -->
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>
-            <version>2.7.3</version>
         </dependency>
         <dependency>
             <!-- Needed for xalan:xalan:2.7.3, as its pom.xml is wrong (XALANJ-2649) -->
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>2.12.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.12.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.2.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
