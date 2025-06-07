@@ -72,6 +72,7 @@ import freemarker.template.SimpleHash;
 import freemarker.template.SimpleScalar;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -523,33 +524,83 @@ public final class Transform {
      */
     public void execute()
             throws DocgenException, IOException, SAXException {
+        checkNotYetExecuted();
+        validateJavaBeanProperties();
+        loadConfigurationFile();
+        validateAndDefaultSettings();
+        initializeStateFields();
+        configureFreeMarker();
+
+        // - Load and validate the book XML
+        final File docFile = findDocFile();
+        Document doc = XMLUtil.loadDocBook5XML(docFile, validate, validationOps, logger);
+        ignoredFilePathPatterns.add(FileUtil.globToRegexp(docFile.getName()));
+
+        preprocessDOM(doc);
+
+        resolveDocgenUrlsInSettings();
+
+        // - Create destination directory:
+        if (!destDir.isDirectory() && !destDir.mkdirs()) {
+            throw new IOException("Failed to create destination directory: " + destDir.getAbsolutePath());
+        }
+        logger.info("Output directory: " + destDir.getAbsolutePath());
+
+        checkInternalBookmarks();
+
+        insertableFiles = computeInsertableFiles();
+
+        setFreeMarkerSharedVariables(doc);
+
+        generateToJsons(doc);
+
+        generateSiteMapXML(doc);
+
+        int htmlFileCounter = generateBookContentHTMLFiles();
+
+        if (!offline && searchKey != null) {
+            generateSearchResultsHtmlFile(doc);
+            htmlFileCounter++;
+        }
+
+        copyStandardStatics();
+
+        int bookSpecStaticFileCounter = copyCustomStatics();
+
+        if (generateEclipseTOC) {
+            generateEclipseTOC(doc);
+        }
+
+        logger.info(
+                "Done: "
+                + htmlFileCounter + " HTML-s + "
+                + bookSpecStaticFileCounter + " custom statics + commons"
+                + (generateEclipseTOC ? " + Eclipse ToC" : ""));
+    }
+
+    private void checkNotYetExecuted() {
         if (executed) {
             throw new DocgenException(
-                    "This transformation was alrady executed; "
-                    + "use a new " + Transform.class.getName() + ".");
+                    "This transformation was already executed; use a new " + Transform.class.getName() + ".");
         }
         executed  = true;
+    }
 
-        // Check Java Bean properties:
-
+    private void validateJavaBeanProperties() throws IOException {
         if (srcDir == null) {
-            throw new DocgenException(
-                    "The source directory (the DocBook XML) wasn't specified.");
+            throw new DocgenException("The source directory (the DocBook XML) wasn't specified.");
         }
         if (!srcDir.isDirectory()) {
-            throw new IOException(
-                    "Source directory doesn't exist: "
-                    + srcDir.getAbsolutePath());
+            throw new IOException("Source directory doesn't exist: " + srcDir.getAbsolutePath());
         }
 
         if (destDir == null) {
-            throw new DocgenException(
-                    "The destination directory wasn't specified.");
+            throw new DocgenException("The destination directory wasn't specified.");
         }
         // Note: This directory will be created automatically if missing.
+    }
 
-        // Load configuration file:
-
+    private void loadConfigurationFile() throws IOException {
         File templatesDir = null;
 
         cfgFile = new File(srcDir, FILE_SETTINGS);
@@ -802,10 +853,10 @@ public final class Transform {
                         String msg;
                         if (strRank.equalsIgnoreCase("article")) {
                             msg = "\"article\" is not a rank, since articles "
-                                + "can have various ranks depending on their "
-                                + "context. (Hint: if the article is the "
-                                + "top-level element then it has \"chapter\" "
-                                + "rank.)";
+                                    + "can have various ranks depending on their "
+                                    + "context. (Hint: if the article is the "
+                                    + "top-level element then it has \"chapter\" "
+                                    + "rank.)";
                         } else {
                             msg = "Unknown rank: " + strRank;
                         }
@@ -835,33 +886,35 @@ public final class Transform {
                     throw newCfgFileException(settingName, "Unknown setting name.");
                 }
             } // for each cfg settings
+        }
+    }
 
-            if (deployUrl == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_DEPLOY_URL + "\" setting wasn't specified");
-            }
-            if (offline == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_OFFLINE
-                        + "\" setting wasn't specified; it must be set to true or false");
-            }
-            if (logo == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_LOGO
-                        + "\" setting wasn't specified; it must be set currently, as the layout reserves space for it.");
-            }
-            if (copyrightHolder == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_COPYRIGHT_HOLDER + "\" setting wasn't specified.");
-            }
-            if (copyrightHolderSite == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_COPYRIGHT_HOLDER_SITE + "\" setting wasn't specified.");
-            }
-            if (copyrightStartYear == null) {
-                throw new DocgenException(
-                        "The \"" + SETTING_COPYRIGHT_START_YEAR + "\" setting wasn't specified.");
-            }
+    private void validateAndDefaultSettings() {
+        if (deployUrl == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_DEPLOY_URL + "\" setting wasn't specified");
+        }
+        if (offline == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_OFFLINE
+                            + "\" setting wasn't specified; it must be set to true or false");
+        }
+        if (logo == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_LOGO
+                            + "\" setting wasn't specified; it must be set currently, as the layout reserves space for it.");
+        }
+        if (copyrightHolder == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_COPYRIGHT_HOLDER + "\" setting wasn't specified.");
+        }
+        if (copyrightHolderSite == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_COPYRIGHT_HOLDER_SITE + "\" setting wasn't specified.");
+        }
+        if (copyrightStartYear == null) {
+            throw new DocgenException(
+                    "The \"" + SETTING_COPYRIGHT_START_YEAR + "\" setting wasn't specified.");
         }
 
         // Ensure proper rank relations:
@@ -874,25 +927,20 @@ public final class Transform {
             maxMainTOFDisplayDepth = maxTOFDisplayDepth;
         }
 
-        templatesDir = new File(srcDir, DIR_TEMPLATES);
-        if (!templatesDir.exists()) {
-            templatesDir = null;
-        }
-
         if (contentDir == null) {
             contentDir = srcDir;
         }
+    }
 
-        // Initialize state fields
-
+    private void initializeStateFields() {
         primaryIndexTermLookup = new HashMap<>();
         secondaryIndexTermLookup = new HashMap<>();
         elementsById = new HashMap<>();
         tocNodes = new ArrayList<>();
         indexEntries = new ArrayList<>();
+    }
 
-        // Setup FreeMarker:
-
+    private void configureFreeMarker() throws IOException {
         try {
             Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
         } catch (ClassNotFoundException e) {
@@ -900,11 +948,12 @@ public final class Transform {
         }
 
         logger.info("Using FreeMarker " + Configuration.getVersion());
-        fmConfig = new Configuration(Configuration.VERSION_2_3_25);
+        fmConfig = new Configuration(Configuration.VERSION_2_3_34);
 
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
-        if (templatesDir != null) {
+        File templatesDir = new File(srcDir, DIR_TEMPLATES);
+        if (!templatesDir.exists()) {
             templateLoader = new MultiTemplateLoader(
                     new TemplateLoader[] { new FileTemplateLoader(templatesDir), templateLoader });
         }
@@ -916,9 +965,14 @@ public final class Transform {
         fmConfig.setDefaultEncoding(UTF_8.name());
         fmConfig.setOutputEncoding(UTF_8.name());
 
-        // Do the actual job:
+        fmConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        fmConfig.setLogTemplateExceptions(false);
+        fmConfig.setWrapUncheckedExceptions(true);
 
-        // - Load and validate the book XML
+        fmConfig.setFallbackOnNullLoopVariable(false);
+    }
+
+    private File findDocFile() {
         final File docFile;
         {
             final File docFile1 = new File(contentDir, FILE_BOOK);
@@ -934,14 +988,24 @@ public final class Transform {
                 }
             }
         }
-        Document doc = XMLUtil.loadDocBook5XML(
-                docFile, validate, validationOps, logger);
-        ignoredFilePathPatterns.add(FileUtil.globToRegexp(docFile.getName()));
+        return docFile;
+    }
 
-        // - Post-edit and examine the DOM:
-        preprocessDOM(doc);
+    /**
+     * Adds attribute <tt>id</tt> to elements that are in
+     * <code>idAttrElements</code>, but has no id attribute yet.
+     * Adding id-s is useful to create more precise HTML cross-links later.
+     */
+    private void preprocessDOM(Document doc)
+            throws SAXException, DocgenException {
+        NodeModel.simplify(doc);
+        preprocessDOM_applyRemoveNodesWhenOnlineSetting(doc);
+        preprocessDOM_addRanks(doc);
+        preprocessDOM_misc(doc);
+        preprocessDOM_buildTOC(doc);
+    }
 
-        // Resolve Docgen URL schemes in setting values:
+    private void resolveDocgenUrlsInSettings() {
         // Olinks must come first:
         if (olinks != null) {
             for (Entry<String, String> olinkEnt : olinks.entrySet()) {
@@ -965,7 +1029,7 @@ public final class Transform {
             tab.put("href", resolveDocgenURL(SETTING_SOCIAL_LINKS, tab.get("href")));
         }
         for (Map<String, String> links : footerSiteMap.values()) {
-            for (Map.Entry<String, String> link : links.entrySet()) {
+            for (Entry<String, String> link : links.entrySet()) {
                 link.setValue(resolveDocgenURL(SETTING_FOOTER_SITEMAP, link.getValue()));
             }
         }
@@ -975,14 +1039,9 @@ public final class Transform {
         for (Logo logo : sideTOCLogos) {
             resolveLogoHref(logo);
         }
+    }
 
-        // - Create destination directory:
-        if (!destDir.isDirectory() && !destDir.mkdirs()) {
-            throw new IOException("Failed to create destination directory: "
-                    + destDir.getAbsolutePath());
-        }
-        logger.info("Output directory: " + destDir.getAbsolutePath());
-
+    private void checkInternalBookmarks() {
         // - Check internal book-marks:
         for (Entry<String, String> ent : internalBookmarks.entrySet()) {
             String id = ent.getValue();
@@ -992,258 +1051,6 @@ public final class Transform {
                         "No element with id \"" + id + "\" exists in the book.");
             }
         }
-
-        insertableFiles = computeInsertableFiles();
-
-        // - Setup common data-model variables:
-        try {
-            // Settings:
-            fmConfig.setSharedVariable(
-                    VAR_OFFLINE, offline);
-            fmConfig.setSharedVariable(
-                    VAR_SIMPLE_NAVIGATION_MODE, simpleNavigationMode);
-            fmConfig.setSharedVariable(
-                    VAR_DEPLOY_URL, deployUrl);
-            fmConfig.setSharedVariable(
-                    VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
-            fmConfig.setSharedVariable(
-                    VAR_COOKIE_CONSENT_SCRIPT_URL, cookieConstentScriptURL);
-            fmConfig.setSharedVariable(
-                    VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
-            fmConfig.setSharedVariable(
-                    VAR_SHOW_XXE_LOGO, showXXELogo);
-            fmConfig.setSharedVariable(
-                    VAR_SEARCH_KEY, searchKey);
-            fmConfig.setSharedVariable(
-                    VAR_DISABLE_JAVASCRIPT, disableJavaScript);
-            fmConfig.setSharedVariable(
-                    VAR_OLINKS, olinks);
-            fmConfig.setSharedVariable(
-                    VAR_NUMBERED_SECTIONS, numberedSections);
-            fmConfig.setSharedVariable(
-                    VAR_LOGO, logo);
-            fmConfig.setSharedVariable(
-                    VAR_SIDE_TOC_LOGOS, sideTOCLogos);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_HOLDER, copyrightHolder);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_HOLDER_SITE, copyrightHolderSite);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_SUFFIX, copyrightSuffix);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_START_YEAR, copyrightStartYear);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_COMMENT, copyrightComment);
-            fmConfig.setSharedVariable(
-                    VAR_COPYRIGHT_JAVA_COMMENT, copyrightJavaComment);
-            fmConfig.setSharedVariable(
-                    VAR_TABS, tabs);
-            fmConfig.setSharedVariable(
-                    VAR_SECONDARY_TABS, secondaryTabs);
-            fmConfig.setSharedVariable(
-                    VAR_SOCIAL_LINKS, socialLinks);
-            fmConfig.setSharedVariable(
-                    VAR_FOOTER_SITEMAP, footerSiteMap);
-            fmConfig.setSharedVariable(
-                    VAR_EXTERNAL_BOOKMARDS, externalBookmarks);
-            fmConfig.setSharedVariable(
-                    VAR_INTERNAL_BOOKMARDS, internalBookmarks);
-            fmConfig.setSharedVariable(
-                    VAR_ROOT_ELEMENT, doc.getDocumentElement());
-            fmConfig.setSharedVariable(
-                    VAR_CUSTOM_VARIABLES, computeCustomVariables());
-
-            fmConfig.setSharedVariable(
-                    "printTextWithDocgenSubstitutions",
-                    new PrintTextWithDocgenSubstitutionsDirective(this));
-            fmConfig.setSharedVariable(
-                    "chopLinebreak",
-                    ChopLinebreakDirective.INSTANCE);
-
-            // Calculated data:
-            {
-                Date generationTime;
-                String generationTimeStr = System.getProperty(SYSPROP_GENERATION_TIME);
-                if (generationTimeStr == null) {
-                    generationTime = new Date();
-                } else {
-                    try {
-                        generationTime = DateUtil.parseISO8601DateTime(generationTimeStr, DateUtil.UTC,
-                                new DateUtil.TrivialCalendarFieldsToDateConverter());
-                    } catch (DateParseException e) {
-                        throw new DocgenException(
-                                "Malformed \"" + SYSPROP_GENERATION_TIME
-                                + "\" system property value: " + generationTimeStr, e);
-                    }
-                }
-                fmConfig.setSharedVariable(VAR_TRANSFORM_START_TIME, generationTime);
-            }
-            fmConfig.setSharedVariable(
-                    VAR_INDEX_ENTRIES, indexEntries);
-            int tofCntLv1 = countTOFEntries(tocNodes.get(0), 1);
-            int tofCntLv2 = countTOFEntries(tocNodes.get(0), 2);
-            fmConfig.setSharedVariable(
-                    VAR_SHOW_NAVIGATION_BAR,
-                    tofCntLv1 != 0
-                            || internalBookmarks.size() != 0
-                            || externalBookmarks.size() != 0);
-            fmConfig.setSharedVariable(
-                    VAR_SHOW_BREADCRUMB, tofCntLv1 != tofCntLv2);
-
-            // Helper methods and directives:
-            fmConfig.setSharedVariable(
-                    "NodeFromID", nodeFromID);
-            fmConfig.setSharedVariable(
-                    "CreateLinkFromID", createLinkFromID);
-            fmConfig.setSharedVariable(
-                    "primaryIndexTermLookup", primaryIndexTermLookup);
-            fmConfig.setSharedVariable(
-                    "secondaryIndexTermLookup", secondaryIndexTermLookup);
-            fmConfig.setSharedVariable(
-                    "CreateLinkFromNode", createLinkFromNode);
-        } catch (TemplateModelException e) {
-            throw new BugException(e);
-        }
-
-        // - Generate ToC JSON-s:
-        {
-            logger.info("Generating ToC JSON...");
-            Template template = fmConfig.getTemplate(FILE_TOC_JSON_TEMPLATE);
-            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_TOC_JSON_OUTPUT))) {
-                try {
-                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-                    dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
-                    template.process(dataModel, wr, null, NodeModel.wrap(doc));
-                } catch (TemplateException e) {
-                    throw new BugException("Failed to generate ToC JSON "
-                            + "(see cause exception).", e);
-                }
-            }
-        }
-
-        // - Generate Sitemap XML:
-        {
-            logger.info("Generating Sitemap XML...");
-            Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
-            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_SITEMAP_XML_OUTPUT))) {
-                try {
-                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-                    dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
-                    template.process(dataModel, wr, null, NodeModel.wrap(doc));
-                } catch (TemplateException e) {
-                    throw new BugException("Failed to generate Sitemap XML"
-                            + "(see cause exception).", e);
-                }
-            }
-        }
-
-
-        // - Generate the HTML-s:
-        logger.info("Generating HTML files...");
-        int htmlFileCounter = 0;
-        for (TOCNode tocNode : tocNodes) {
-            if (tocNode.getOutputFileName() != null) {
-                try {
-                    currentFileTOCNode = tocNode;
-                    try {
-                        // All output-file-specific processing comes here.
-                        htmlFileCounter += generateHTMLFile();
-                    } finally {
-                        currentFileTOCNode = null;
-                    }
-                } catch (freemarker.core.StopException e) {
-                    throw new DocgenException(e.getMessage());
-                } catch (DocgenTagException e) {
-                    throw new DocgenException("Docgen tag evaluation in document text failed; see cause exception", e);
-                } catch (TemplateException e) {
-                    throw new BugException(e);
-                }
-            }
-        }
-
-        if (!offline && searchKey != null) {
-            try {
-                generateSearchResultsHTMLFile(doc);
-                htmlFileCounter++;
-            } catch (freemarker.core.StopException e) {
-                throw new DocgenException(e.getMessage());
-            } catch (TemplateException e) {
-                throw new BugException(e);
-            }
-        }
-
-        // - Copy the standard statics:
-        logger.info("Copying common static files...");
-        copyCommonStatic("docgen.min.css");
-        copyCommonStatic("img/patterned-bg.png");
-
-        copyCommonStatic("fonts/icomoon.eot");
-        copyCommonStatic("fonts/icomoon.svg");
-        copyCommonStatic("fonts/icomoon.ttf");
-        copyCommonStatic("fonts/icomoon.woff");
-        copyCommonStatic("fonts/NOTICE");
-
-        if (showXXELogo) {
-            copyCommonStatic("img/xxe.png");
-        }
-        if (!disableJavaScript) {
-          copyCommonStatic("main.min.js");
-        }
-
-        // - Copy the custom statics:
-        logger.info("Copying custom static files...");
-        int bookSpecStaticFileCounter = FileUtil.copyDir(contentDir, destDir, ignoredFilePathPatterns);
-
-        // - Eclipse ToC:
-        if (generateEclipseTOC) {
-            if (simpleNavigationMode) {
-                throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
-            }
-
-            logger.info("Generating Eclipse ToC...");
-            Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
-            try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_ECLIPSE_TOC_OUTPUT))) {
-                try {
-                    SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
-                    if (eclipseLinkTo != null) {
-                        dataModel.put(VAR_ECLIPSE_LINK_TO, eclipseLinkTo);
-                    }
-                    template.process(dataModel, wr, null, NodeModel.wrap(doc));
-                } catch (TemplateException e) {
-                    throw new BugException("Failed to generate Eclipse ToC "
-                            + "(see cause exception).", e);
-                }
-            }
-        }
-
-        // - Report summary:
-        logger.info(
-                "Done: "
-                + htmlFileCounter + " HTML-s + "
-                + bookSpecStaticFileCounter + " custom statics + commons"
-                + (generateEclipseTOC ? " + Eclipse ToC" : ""));
-    }
-
-    private Map<String, Object> computeCustomVariables() throws DocgenException {
-        for (String varName : customVariableOverrides.keySet()) {
-            if (!customVariablesFromSettingsFile.containsKey(varName)) {
-                throw new DocgenException("Attempt to override custom variable " + StringUtil.jQuote(varName)
-                        + ", when it was not set in the settings file (" + cfgFile + ").");
-            }
-        }
-
-        Map<String, Object> customVariables = new HashMap<>();
-        customVariables.putAll(customVariablesFromSettingsFile);
-        customVariables.putAll(customVariableOverrides);
-
-        for (Entry<String, Object> entry : customVariables.entrySet()) {
-            if (entry.getValue() == null) {
-                throw new DocgenException("The custom variable " + StringUtil.jQuote(entry.getKey())
-                        + " was set to null, which is not allowed. Probably you are supposed to override its value.");
-            }
-        }
-
-        return customVariables;
     }
 
     private Map<String, Path> computeInsertableFiles() throws DocgenException {
@@ -1278,7 +1085,7 @@ public final class Transform {
                 if (!Files.isDirectory(path)) {
                     throw new DocgenException(
                             "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
-                            + " points to a directory that doesn't exist: " + StringUtil.jQuote(path));
+                                    + " points to a directory that doesn't exist: " + StringUtil.jQuote(path));
                 }
             } else {
                 path = srcDir.toPath().resolve(unresolvedPath);
@@ -1286,8 +1093,8 @@ public final class Transform {
                     if (Files.isDirectory(path)) {
                         throw new DocgenException(
                                 "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
-                                + " points to a directory, not a file: " + StringUtil.jQuote(path) + "."
-                                + " If you want to point to a directory, end the path with \"/**\".");
+                                        + " points to a directory, not a file: " + StringUtil.jQuote(path) + "."
+                                        + " If you want to point to a directory, end the path with \"/**\".");
                     } else {
                         throw new DocgenException(
                                 "Insertable file with symbolic name " + StringUtil.jQuote(symbolicName)
@@ -1302,68 +1109,183 @@ public final class Transform {
         return insertableFiles;
     }
 
-    private void resolveLogoHref(Logo logo) throws DocgenException {
-        String logoHref = logo.getHref();
-        if (logoHref != null) {
-            logo.setHref(resolveDocgenURL(SETTING_LOGO, logoHref));
-        }
-    }
-
-    /**
-     * Resolves the URL if it uses the {@code "olink:"} or {@code "id:"} schema, returns it as if otherwise.
-     */
-    private String resolveDocgenURL(String settingName, String url) throws DocgenException {
-        if (url.startsWith(OLINK_SCHEMA_START)) {
-            String oLinkName = url.substring(OLINK_SCHEMA_START.length());
-            String resolvedOLink = olinks.get(oLinkName);
-            if (resolvedOLink == null) {
-                throw new DocgenException("Undefined olink used inside configuration setting "
-                        + StringUtil.jQuote(settingName)
-                        + ": " + StringUtil.jQuote(oLinkName));
-            }
-            return resolveDocgenURL(settingName, resolvedOLink);
-        } else if (url.startsWith(ID_SCHEMA_START)) {
-            String id = url.substring(ID_SCHEMA_START.length());
-            try {
-                return createLinkFromId(id);
-            } catch (DocgenException e) {
-                throw new DocgenException("Can't resolve id inside configuration setting "
-                        + StringUtil.jQuote(settingName)
-                        + ": " + StringUtil.jQuote(id),
-                        e);
-            }
-        } else {
-            return url;
-        }
-    }
-
-    private static Logo castMapToLogo(SettingName settingName, Object settingValue) {
-        Map<String, String> logoMap = castSetting(
-                settingName,
-                settingValue, null,
-                Map.class,
-                new MapEntryType(String.class, SETTING_LOGO_MAP_KEYS, String.class));
-        return new Logo(
-                logoMap.get(SETTING_LOGO_KEY_SRC),
-                logoMap.get(SETTING_LOGO_KEY_HREF),
-                logoMap.get(SETTING_LOGO_KEY_ALT));
-    }
-
-    private String getFileContentForSetting(SettingName settingName, Object settingValue) {
-        String settingValueStr = castSetting(settingName, settingValue, String.class);
-        File f = new File(getSourceDirectory(), settingValueStr);
-        if (!f.exists()) {
-            throw newCfgFileException(
-                    settingName,
-                    "File not found: " + f.toPath());
-        }
+    private void setFreeMarkerSharedVariables(Document doc) {
         try {
-            return FileUtil.loadString(f, UTF_8);
-        } catch (IOException e) {
-            throw newCfgFileException(
-                    settingName,
-                    "Error while reading file: " + f.toPath(),
-                    e);
+            // Settings:
+            fmConfig.setSharedVariable(VAR_OFFLINE, offline);
+            fmConfig.setSharedVariable(VAR_SIMPLE_NAVIGATION_MODE, simpleNavigationMode);
+            fmConfig.setSharedVariable(VAR_DEPLOY_URL, deployUrl);
+            fmConfig.setSharedVariable(VAR_ONLINE_TRACKER_HTML, onlineTrackerHTML);
+            fmConfig.setSharedVariable(VAR_COOKIE_CONSENT_SCRIPT_URL, cookieConstentScriptURL);
+            fmConfig.setSharedVariable(VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
+            fmConfig.setSharedVariable(VAR_SHOW_XXE_LOGO, showXXELogo);
+            fmConfig.setSharedVariable(VAR_SEARCH_KEY, searchKey);
+            fmConfig.setSharedVariable(VAR_DISABLE_JAVASCRIPT, disableJavaScript);
+            fmConfig.setSharedVariable(VAR_OLINKS, olinks);
+            fmConfig.setSharedVariable(VAR_NUMBERED_SECTIONS, numberedSections);
+            fmConfig.setSharedVariable(VAR_LOGO, logo);
+            fmConfig.setSharedVariable(VAR_SIDE_TOC_LOGOS, sideTOCLogos);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_HOLDER, copyrightHolder);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_HOLDER_SITE, copyrightHolderSite);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_SUFFIX, copyrightSuffix);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_START_YEAR, copyrightStartYear);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_COMMENT, copyrightComment);
+            fmConfig.setSharedVariable(VAR_COPYRIGHT_JAVA_COMMENT, copyrightJavaComment);
+            fmConfig.setSharedVariable(VAR_TABS, tabs);
+            fmConfig.setSharedVariable(VAR_SECONDARY_TABS, secondaryTabs);
+            fmConfig.setSharedVariable(VAR_SOCIAL_LINKS, socialLinks);
+            fmConfig.setSharedVariable(VAR_FOOTER_SITEMAP, footerSiteMap);
+            fmConfig.setSharedVariable(VAR_EXTERNAL_BOOKMARDS, externalBookmarks);
+            fmConfig.setSharedVariable(VAR_INTERNAL_BOOKMARDS, internalBookmarks);
+            fmConfig.setSharedVariable(VAR_ROOT_ELEMENT, doc.getDocumentElement());
+            fmConfig.setSharedVariable(VAR_CUSTOM_VARIABLES, computeCustomVariables());
+
+            fmConfig.setSharedVariable(
+                    "printTextWithDocgenSubstitutions",
+                    new PrintTextWithDocgenSubstitutionsDirective(this));
+            fmConfig.setSharedVariable("chopLinebreak", ChopLinebreakDirective.INSTANCE);
+
+            // Calculated data:
+            {
+                Date generationTime;
+                String generationTimeStr = System.getProperty(SYSPROP_GENERATION_TIME);
+                if (generationTimeStr == null) {
+                    generationTime = new Date();
+                } else {
+                    try {
+                        generationTime = DateUtil.parseISO8601DateTime(generationTimeStr, DateUtil.UTC,
+                                new DateUtil.TrivialCalendarFieldsToDateConverter());
+                    } catch (DateParseException e) {
+                        throw new DocgenException(
+                                "Malformed \"" + SYSPROP_GENERATION_TIME + "\" system property value: " + generationTimeStr,
+                                e);
+                    }
+                }
+                fmConfig.setSharedVariable(VAR_TRANSFORM_START_TIME, generationTime);
+            }
+            fmConfig.setSharedVariable(VAR_INDEX_ENTRIES, indexEntries);
+            int tofCntLv1 = countTOFEntries(tocNodes.get(0), 1);
+            int tofCntLv2 = countTOFEntries(tocNodes.get(0), 2);
+            fmConfig.setSharedVariable(
+                    VAR_SHOW_NAVIGATION_BAR,
+                    tofCntLv1 != 0 || !internalBookmarks.isEmpty() || !externalBookmarks.isEmpty());
+            fmConfig.setSharedVariable(VAR_SHOW_BREADCRUMB, tofCntLv1 != tofCntLv2);
+
+            // Helper methods and directives:
+            fmConfig.setSharedVariable("NodeFromID", nodeFromID);
+            fmConfig.setSharedVariable("CreateLinkFromID", createLinkFromID);
+            fmConfig.setSharedVariable("primaryIndexTermLookup", primaryIndexTermLookup);
+            fmConfig.setSharedVariable("secondaryIndexTermLookup", secondaryIndexTermLookup);
+            fmConfig.setSharedVariable("CreateLinkFromNode", createLinkFromNode);
+        } catch (TemplateModelException e) {
+            throw new BugException(e);
+        }
+    }
+
+    private Map<String, Object> computeCustomVariables() throws DocgenException {
+        for (String varName : customVariableOverrides.keySet()) {
+            if (!customVariablesFromSettingsFile.containsKey(varName)) {
+                throw new DocgenException("Attempt to override custom variable " + StringUtil.jQuote(varName)
+                        + ", when it was not set in the settings file (" + cfgFile + ").");
+            }
+        }
+
+        Map<String, Object> customVariables = new HashMap<>();
+        customVariables.putAll(customVariablesFromSettingsFile);
+        customVariables.putAll(customVariableOverrides);
+
+        for (Entry<String, Object> entry : customVariables.entrySet()) {
+            if (entry.getValue() == null) {
+                throw new DocgenException("The custom variable " + StringUtil.jQuote(entry.getKey())
+                        + " was set to null, which is not allowed. Probably you are supposed to override its value.");
+            }
+        }
+
+        return customVariables;
+    }
+
+    private void generateToJsons(Document doc) throws IOException {
+        logger.info("Generating ToC JSON...");
+        Template template = fmConfig.getTemplate(FILE_TOC_JSON_TEMPLATE);
+        try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_TOC_JSON_OUTPUT))) {
+            try {
+                SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+                dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                template.process(dataModel, wr, null, NodeModel.wrap(doc));
+            } catch (TemplateException e) {
+                throw new BugException("Failed to generate ToC JSON "
+                        + "(see cause exception).", e);
+            }
+        }
+    }
+
+    private void generateSiteMapXML(Document doc) throws IOException {
+        logger.info("Generating Sitemap XML...");
+        Template template = fmConfig.getTemplate(FILE_SITEMAP_XML_TEMPLATE);
+        try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_SITEMAP_XML_OUTPUT))) {
+            try {
+                SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+                dataModel.put(VAR_JSON_TOC_ROOT, tocNodes.get(0));
+                template.process(dataModel, wr, null, NodeModel.wrap(doc));
+            } catch (TemplateException e) {
+                throw new BugException("Failed to generate Sitemap XML"
+                        + "(see cause exception).", e);
+            }
+        }
+    }
+
+    private int generateBookContentHTMLFiles() throws IOException {
+        logger.info("Generating HTML files...");
+
+        int htmlFileCounter = 0;
+        for (TOCNode tocNode : tocNodes) {
+            if (tocNode.getOutputFileName() != null) {
+                try {
+                    currentFileTOCNode = tocNode;
+                    try {
+                        // All output-file-specific processing comes here.
+                        htmlFileCounter += generateHTMLFile();
+                    } finally {
+                        currentFileTOCNode = null;
+                    }
+                } catch (freemarker.core.StopException e) {
+                    throw new DocgenException(e.getMessage());
+                } catch (DocgenTagException e) {
+                    throw new DocgenException("Docgen tag evaluation in document text failed; see cause exception", e);
+                } catch (TemplateException e) {
+                    throw new BugException(e);
+                }
+            }
+        }
+        return htmlFileCounter;
+    }
+
+    private void generateSearchResultsHtmlFile(Document doc) throws IOException {
+        try {
+            generateSearchResultsHtmlFileInner(doc);
+        } catch (freemarker.core.StopException e) {
+            throw new DocgenException(e.getMessage());
+        } catch (TemplateException e) {
+            throw new BugException(e);
+        }
+    }
+
+    private void copyStandardStatics() throws IOException {
+        logger.info("Copying common static files...");
+        copyCommonStatic("docgen.min.css");
+        copyCommonStatic("img/patterned-bg.png");
+
+        copyCommonStatic("fonts/icomoon.eot");
+        copyCommonStatic("fonts/icomoon.svg");
+        copyCommonStatic("fonts/icomoon.ttf");
+        copyCommonStatic("fonts/icomoon.woff");
+        copyCommonStatic("fonts/NOTICE");
+
+        if (showXXELogo) {
+            copyCommonStatic("img/xxe.png");
+        }
+        if (!disableJavaScript) {
+            copyCommonStatic("main.min.js");
         }
     }
 
@@ -1436,18 +1358,96 @@ public final class Transform {
         }
     }
 
+    private int copyCustomStatics() throws IOException {
+        logger.info("Copying custom static files...");
+        int bookSpecStaticFileCounter = FileUtil.copyDir(contentDir, destDir, ignoredFilePathPatterns);
+        return bookSpecStaticFileCounter;
+    }
+
+    private void generateEclipseTOC(Document doc) throws IOException {
+        if (simpleNavigationMode) {
+            throw new DocgenException("Eclipse ToC generation is untested/unsupported with simpleNavigationMode=true.");
+        }
+
+        logger.info("Generating Eclipse ToC...");
+        Template template = fmConfig.getTemplate(FILE_ECLIPSE_TOC_TEMPLATE);
+        try (Writer wr = FileUtil.newFileWriter(new File(destDir, FILE_ECLIPSE_TOC_OUTPUT))) {
+            try {
+                SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
+                if (eclipseLinkTo != null) {
+                    dataModel.put(VAR_ECLIPSE_LINK_TO, eclipseLinkTo);
+                }
+                template.process(dataModel, wr, null, NodeModel.wrap(doc));
+            } catch (TemplateException e) {
+                throw new BugException("Failed to generate Eclipse ToC "
+                        + "(see cause exception).", e);
+            }
+        }
+    }
+
     /**
-     * Adds attribute <tt>id</tt> to elements that are in
-     * <code>idAttrElements</code>, but has no id attribute yet.
-     * Adding id-s is useful to create more precise HTML cross-links later.
+     * Resolves the URL if it uses the {@code "olink:"} or {@code "id:"} schema, returns it as if otherwise.
      */
-    private void preprocessDOM(Document doc)
-            throws SAXException, DocgenException {
-        NodeModel.simplify(doc);
-        preprocessDOM_applyRemoveNodesWhenOnlineSetting(doc);
-        preprocessDOM_addRanks(doc);
-        preprocessDOM_misc(doc);
-        preprocessDOM_buildTOC(doc);
+    private String resolveDocgenURL(String settingName, String url) throws DocgenException {
+        if (url.startsWith(OLINK_SCHEMA_START)) {
+            String oLinkName = url.substring(OLINK_SCHEMA_START.length());
+            String resolvedOLink = olinks.get(oLinkName);
+            if (resolvedOLink == null) {
+                throw new DocgenException("Undefined olink used inside configuration setting "
+                        + StringUtil.jQuote(settingName)
+                        + ": " + StringUtil.jQuote(oLinkName));
+            }
+            return resolveDocgenURL(settingName, resolvedOLink);
+        } else if (url.startsWith(ID_SCHEMA_START)) {
+            String id = url.substring(ID_SCHEMA_START.length());
+            try {
+                return createLinkFromId(id);
+            } catch (DocgenException e) {
+                throw new DocgenException("Can't resolve id inside configuration setting "
+                        + StringUtil.jQuote(settingName)
+                        + ": " + StringUtil.jQuote(id),
+                        e);
+            }
+        } else {
+            return url;
+        }
+    }
+
+    private void resolveLogoHref(Logo logo) throws DocgenException {
+        String logoHref = logo.getHref();
+        if (logoHref != null) {
+            logo.setHref(resolveDocgenURL(SETTING_LOGO, logoHref));
+        }
+    }
+
+    private static Logo castMapToLogo(SettingName settingName, Object settingValue) {
+        Map<String, String> logoMap = castSetting(
+                settingName,
+                settingValue, null,
+                Map.class,
+                new MapEntryType(String.class, SETTING_LOGO_MAP_KEYS, String.class));
+        return new Logo(
+                logoMap.get(SETTING_LOGO_KEY_SRC),
+                logoMap.get(SETTING_LOGO_KEY_HREF),
+                logoMap.get(SETTING_LOGO_KEY_ALT));
+    }
+
+    private String getFileContentForSetting(SettingName settingName, Object settingValue) {
+        String settingValueStr = castSetting(settingName, settingValue, String.class);
+        File f = new File(getSourceDirectory(), settingValueStr);
+        if (!f.exists()) {
+            throw newCfgFileException(
+                    settingName,
+                    "File not found: " + f.toPath());
+        }
+        try {
+            return FileUtil.loadString(f, UTF_8);
+        } catch (IOException e) {
+            throw newCfgFileException(
+                    settingName,
+                    "Error while reading file: " + f.toPath(),
+                    e);
+        }
     }
 
     private static final class PreprocessDOMMisc_GlobalState {
@@ -2328,7 +2328,7 @@ public final class Transform {
         }
     }
 
-    private void generateSearchResultsHTMLFile(Document doc) throws TemplateException, IOException, DocgenException {
+    private void generateSearchResultsHtmlFileInner(Document doc) throws TemplateException, IOException, DocgenException {
         SimpleHash dataModel = new SimpleHash(fmConfig.getObjectWrapper());
 
         dataModel.put(VAR_PAGE_TYPE, PAGE_TYPE_SEARCH_RESULTS);
