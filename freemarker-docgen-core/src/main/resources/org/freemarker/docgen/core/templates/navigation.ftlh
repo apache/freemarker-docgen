@@ -157,7 +157,7 @@
 <#macro pagers class="">
   <#-- Render pager panel only if it's not a single-HTML-file output: -->
   <#if nextFileElement?? || previousFileElement?? || parentFileElement??>
-    <div class="${('pagers ' + class)?trim}"><#t>
+    <div class="${('pagers ' + class)?trim}" data-pagefind-ignore="all"><#t>
       <@pagerButton text="Previous" element=previousFileElement! class="previous" /><#t>
       <@pagerButton text="Next" element=nextFileElement! class="next" /><#t>
     </div><#t>

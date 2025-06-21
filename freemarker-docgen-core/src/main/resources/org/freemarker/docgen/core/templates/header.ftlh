@@ -23,7 +23,7 @@
 
 <#macro header>
   <#if logo?? || tabs?hasContent || secondaryTabs?hasContent>
-    <div class="header-top-bg"><#t>
+    <div class="header-top-bg" data-pagefind-ignore="all"><#t>
       <div class="site-width header-top"><#t>
         <div id="hamburger-menu" role="button"></div><#t>
         <#if logo??>
@@ -60,7 +60,7 @@
 </#macro>
 
 <#macro navigationHeader>
-  <div class="header-bottom-bg">
+  <div class="header-bottom-bg" data-pagefind-ignore="all">
     <#if hasSearch && pagefindBasedSearch>
       <div class="site-width" id="pagefind-panel"></div>
     </#if>

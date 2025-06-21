@@ -22,7 +22,7 @@
 
 <#macro footer>
   <#compress>
-    <div class="site-footer"><#t>
+    <div class="site-footer" data-pagefind-ignore="all"><#t>
       <#-- keep site-width inside so background extends -->
       <div class="site-width"><#t>
         <#if footerSiteMap?hasContent || socialLinks?hasContent || showXXELogo>
