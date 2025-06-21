@@ -142,6 +142,7 @@ public final class Transform {
     static final String SETTING_GENERATE_ECLIPSE_TOC = "generateEclipseTOC";
     static final String SETTING_SHOW_XXE_LOGO = "showXXELogo";
     static final String SETTING_SEARCH_KEY = "searchKey";
+    static final String SETTING_PAGEFIND_BASED_SEARCH = "pagefindBasedSearch";
     static final String SETTING_DISABLE_JAVASCRIPT = "disableJavaScript";
     static final String SETTING_TIME_ZONE = "timeZone";
     static final String SETTING_LOCALE = "locale";
@@ -226,6 +227,10 @@ public final class Transform {
             = SETTING_SHOW_XXE_LOGO;
     private static final String VAR_SEARCH_KEY
             = SETTING_SEARCH_KEY;
+    private static final String VAR_PAGEFIND_BASED_SEARCH
+            = SETTING_PAGEFIND_BASED_SEARCH;
+    private static final String VAR_SHOW_SEARCH_FORM
+            = "hasSearch";
     private static final String VAR_DISABLE_JAVASCRIPT
             = SETTING_DISABLE_JAVASCRIPT;
     private static final String VAR_ECLIPSE_LINK_TO = SETTING_ECLIPSE_LINK_TO;
@@ -426,7 +431,11 @@ public final class Transform {
 
     private String searchKey;
 
+    private boolean hasSearch;
+
     private boolean disableJavaScript;
+
+    private boolean pagefindBasedSearch;
 
     private boolean validate = true;
 
@@ -561,6 +570,7 @@ public final class Transform {
         if (!offline && searchKey != null) {
             generateSearchResultsHtmlFile(doc);
             htmlFileCounter++;
+            pagefindBasedSearch = true;
         }
 
         copyStandardStatics();
@@ -569,6 +579,12 @@ public final class Transform {
 
         if (generateEclipseTOC) {
             generateEclipseTOC(doc);
+        }
+
+        // Unfortunately, Pagefind doesn't work offline, as it uses ES6 modules.
+        if (!offline && pagefindBasedSearch) {
+            PageFindRunner.run(destDir.toPath());
+            pagefindBasedSearch = true;
         }
 
         logger.info(
@@ -832,6 +848,8 @@ public final class Transform {
                     showXXELogo = castSetting(settingName, settingValue, Boolean.class);
                 } else if (topSettingName.equals(SETTING_SEARCH_KEY)) {
                     searchKey = castSetting(settingName, settingValue, String.class);
+                }else if (topSettingName.equals(SETTING_PAGEFIND_BASED_SEARCH)) {
+                    pagefindBasedSearch = castSetting(settingName, settingValue, Boolean.class);
                 }else if (topSettingName.equals(SETTING_DISABLE_JAVASCRIPT)) {
                     disableJavaScript = castSetting(settingName, settingValue, Boolean.class);
                 } else if (topSettingName.equals(SETTING_CONTENT_DIRECTORY)) {
@@ -953,7 +971,7 @@ public final class Transform {
         TemplateLoader templateLoader = new ClassTemplateLoader(
                 Transform.class, "templates");
         File templatesDir = new File(srcDir, DIR_TEMPLATES);
-        if (!templatesDir.exists()) {
+        if (templatesDir.exists()) {
             templateLoader = new MultiTemplateLoader(
                     new TemplateLoader[] { new FileTemplateLoader(templatesDir), templateLoader });
         }
@@ -1120,6 +1138,8 @@ public final class Transform {
             fmConfig.setSharedVariable(VAR_SHOW_EDITORAL_NOTES, showEditoralNotes);
             fmConfig.setSharedVariable(VAR_SHOW_XXE_LOGO, showXXELogo);
             fmConfig.setSharedVariable(VAR_SEARCH_KEY, searchKey);
+            fmConfig.setSharedVariable(VAR_PAGEFIND_BASED_SEARCH, pagefindBasedSearch);
+            fmConfig.setSharedVariable(VAR_SHOW_SEARCH_FORM, pagefindBasedSearch);
             fmConfig.setSharedVariable(VAR_DISABLE_JAVASCRIPT, disableJavaScript);
             fmConfig.setSharedVariable(VAR_OLINKS, olinks);
             fmConfig.setSharedVariable(VAR_NUMBERED_SECTIONS, numberedSections);
@@ -1286,6 +1306,9 @@ public final class Transform {
         }
         if (!disableJavaScript) {
             copyCommonStatic("main.min.js");
+            if (pagefindBasedSearch) {
+                copyCommonStatic("js/pagefind.js");
+            }
         }
     }
 
@@ -1348,8 +1371,9 @@ public final class Transform {
                 }
 
                 Path destSubdir = destDir.toPath().resolve("docgen-resources");
-                Files.createDirectories(destSubdir);
-                Files.write(destSubdir.resolve(staticFileName), content.getBytes(fileCharset));
+                Path destFile = destSubdir.resolve(staticFileName);
+                Files.createDirectories(destFile.getParent());
+                Files.write(destFile, content.getBytes(fileCharset));
             } else {
                 FileUtil.copyResourceIntoFile(
                         Transform.class, "statics", staticFileName,

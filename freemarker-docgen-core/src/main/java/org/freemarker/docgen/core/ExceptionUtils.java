@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,40 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// determines the max-width of the site at various resolutions
-.site-width {
-  padding-left: (@gutter-width / 4 * 3);
-  padding-right: (@gutter-width / 4 * 3);
 
-  @media (min-width: @screen-sm-min) {
-    padding-left: @gutter-width;
-    padding-right: @gutter-width;
-  }
+package org.freemarker.docgen.core;
 
-  @media (min-width: @screen-lg-min) {
-    margin-left: auto;
-    margin-right: auto;
-    width: @container-lg;
-  }
-}
+final class ExceptionUtils {
+    private ExceptionUtils() {
+        throw new AssertionError();
+    }
 
-// Only display content to screen readers
-// See: http://a11yproject.com/posts/how-to-hide-content/
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  border: 0;
-}
+    static String toCauseTrace(Throwable e) {
+        StringBuilder sb = new StringBuilder();
+        Throwable currentE = e;
+        while (currentE != null) {
+            if (sb.length() != 0) {
+                sb.append("\nCaused by: ");
+            }
+            sb.append(currentE);
 
-.center-img {
-  text-align: center;
-
-  img {
-    max-width: 100%;
-  }
+            currentE = currentE.getCause();
+        }
+        return sb.toString();
+    }
 }

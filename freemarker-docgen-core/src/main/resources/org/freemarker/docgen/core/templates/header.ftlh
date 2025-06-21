@@ -60,7 +60,10 @@
 </#macro>
 
 <#macro navigationHeader>
-  <div class="header-bottom-bg"><#t>
+  <div class="header-bottom-bg">
+    <#if hasSearch && pagefindBasedSearch>
+      <div class="site-width" id="pagefind-panel"></div>
+    </#if>
     <div class="site-width search-row"><#t>
       <#local book = .node?root.*>
       <a href="${CreateLinkFromNode(book)}" class="navigation-header"><#t>
@@ -68,24 +71,33 @@
       </a><#t>
       <#-- empty div to maintain layout -->
       <div class="navigation-header"></div><#t>
-      <@searchForm /><#t>
-    </div><#t>
+      <@searchAccessor /><#t>
+    </div>
     <div class="site-width breadcrumb-row"><#t>
       <@nav.breadcrumb /><#t>
       <@nav.bookmarks /><#t>
-    </div><#t>
-  </div><#t>
+    </div>
+  </div>
 </#macro>
 
-<#macro searchForm>
-  <#if searchKey?? && !offline>
-    <form method="get" class="search-form<#if offline> offline</#if>" action="search-results.html"><#t>
-      <fieldset><#t>
-        <legend class="sr-only">Search form</legend><#t>
-        <label for="search-field" class="sr-only">Search query</label><#t>
-        <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off" autocomplete="off"><#t>
-        <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
-      </fieldset><#t>
-    </form><#t>
+<#macro searchAccessor>
+  <#if hasSearch>
+    <#if pagefindBasedSearch>
+      <div id="pagefind-panel-toggler"><#t>
+        <button onclick="togglePagefindPanel()" id="pagefind-panel-toggle-button" class="search-btn"><span class="sr-only">Search</span></button>
+      </div>
+    <#else>
+      <div class="search-form"><#t>
+        <div id="search-field"></div>
+        <form method="get" action="search-results.html"><#t>
+          <fieldset><#t>
+            <legend class="sr-only">Search form</legend><#t>
+            <label for="search-field" class="sr-only">Search query</label><#t>
+            <input id="search-field" name="q" type="search" class="search-input" placeholder="Search" spellcheck="false" autocorrect="off" autocomplete="off"><#t>
+            <button type="submit" class="search-btn"><span class="sr-only">Search</span></button><#t>
+          </fieldset><#t>
+        </form><#t>
+      </div>
+    </#if>
   </#if>
 </#macro>

@@ -80,6 +80,12 @@
       <#if !offline && cookieConsentScriptURL??>
         <script type="text/javascript" src="${cookieConsentScriptURL}"></script>
       </#if>
+
+      <#if hasSearch && pagefindBasedSearch>
+        <link href="pagefind/pagefind-ui.css" rel="stylesheet">
+        <script src="pagefind/pagefind-ui.js"></script>
+        <script src="docgen-resources/js/pagefind.js"></script>
+      </#if>
     </head>
   </#compress>
 </#macro>
