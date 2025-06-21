@@ -229,7 +229,7 @@ public final class Transform {
             = SETTING_SEARCH_KEY;
     private static final String VAR_PAGEFIND_BASED_SEARCH
             = SETTING_PAGEFIND_BASED_SEARCH;
-    private static final String VAR_SHOW_SEARCH_FORM
+    private static final String VAR_HAS_SEARCH
             = "hasSearch";
     private static final String VAR_DISABLE_JAVASCRIPT
             = SETTING_DISABLE_JAVASCRIPT;
@@ -559,6 +559,9 @@ public final class Transform {
 
         insertableFiles = computeInsertableFiles();
 
+        // Unfortunately, not even Pagefind works offline, as it uses ES6 modules.
+        hasSearch = !offline && (searchKey != null || pagefindBasedSearch);
+
         setFreeMarkerSharedVariables(doc);
 
         generateToJsons(doc);
@@ -567,10 +570,9 @@ public final class Transform {
 
         int htmlFileCounter = generateBookContentHTMLFiles();
 
-        if (!offline && searchKey != null) {
+        if (hasSearch && searchKey != null) {
             generateSearchResultsHtmlFile(doc);
             htmlFileCounter++;
-            pagefindBasedSearch = true;
         }
 
         copyStandardStatics();
@@ -581,10 +583,8 @@ public final class Transform {
             generateEclipseTOC(doc);
         }
 
-        // Unfortunately, Pagefind doesn't work offline, as it uses ES6 modules.
-        if (!offline && pagefindBasedSearch) {
+        if (hasSearch && pagefindBasedSearch) {
             PageFindRunner.run(destDir.toPath());
-            pagefindBasedSearch = true;
         }
 
         logger.info(
@@ -1139,7 +1139,7 @@ public final class Transform {
             fmConfig.setSharedVariable(VAR_SHOW_XXE_LOGO, showXXELogo);
             fmConfig.setSharedVariable(VAR_SEARCH_KEY, searchKey);
             fmConfig.setSharedVariable(VAR_PAGEFIND_BASED_SEARCH, pagefindBasedSearch);
-            fmConfig.setSharedVariable(VAR_SHOW_SEARCH_FORM, pagefindBasedSearch);
+            fmConfig.setSharedVariable(VAR_HAS_SEARCH, hasSearch);
             fmConfig.setSharedVariable(VAR_DISABLE_JAVASCRIPT, disableJavaScript);
             fmConfig.setSharedVariable(VAR_OLINKS, olinks);
             fmConfig.setSharedVariable(VAR_NUMBERED_SECTIONS, numberedSections);
