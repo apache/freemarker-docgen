@@ -88,10 +88,6 @@ search functionality will only work if you visit via HTTP(S), and not via a `fil
 When `pagefindBasedSearch` is `true`, Node.js has to be available where Docgen generates its output (the HTML-s), and
 not just when building Docgen itself! That's because Pagefind indexing depends on Node.js.
 
-\[TODO]:
-- TOC hierarchy of pages aren't correctly detected
-- Lower `data-pagefind-weight` for the marked sections (typically for Version History, Alphabetical Index)
-
 
 ## Releasing a new Docgen version
 
