@@ -33,7 +33,7 @@ These tools must be installed:
 * [Node.js](https://nodejs.org/) was tested with 22.15.0.
   (Node.js is only used to generate static content while building Docgen itself.) 
 
-To build, ensure that `npm` (from Node.js) is in the path, then in the top project directory
+To build, ensure that `npm` and `bpx` (from Node.js) are in the path, then in the top project directory
 (`freemarker-docgen`) issue this:
 
    ```mvn install```
@@ -74,6 +74,24 @@ for the last modification with a java argument like this:
 This happens automatically during build, in the `generate-resources` Maven phase.
 The generated output is in `target\resources-gulp`, which will be included in
 the core jar artifact.
+
+
+### Pagefind (search) support
+
+Can be enabled in the `docgen.cjson` (a file that's normally next to the DocBook XML) via `pagefindBasedSearch: true`.
+
+Pagefind indexing is done when generating the docgen output from the DocBook XML. The output is fully static HTML, with
+purely cline-side JavaScript that generates the search results. However, due to browser security restrictions, the
+search functionality will only work if you visit via HTTP(S), and not via a `file:` URL. For local testing you can use
+`npx http-server` for example.
+
+When `pagefindBasedSearch` is `true`, Node.js has to be available where Docgen generates its output (the HTML-s), and
+not just when building Docgen itself! That's because Pagefind indexing depends on Node.js.
+
+\[TODO]:
+- TOC hierarchy of pages aren't correctly detected
+- Lower `data-pagefind-weight` for the marked sections (typically for Version History, Alphabetical Index)
+
 
 ## Releasing a new Docgen version
 
