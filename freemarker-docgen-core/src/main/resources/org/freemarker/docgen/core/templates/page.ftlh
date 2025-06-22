@@ -57,6 +57,17 @@
       <meta charset="utf-8">
       <title>${fullTitle}</title>
 
+      <#if hasSearch && pagefindBasedSearch>
+        <template data-pagefind-meta="title"><#t>
+          <#local pagefindPageTitlePath = nav.breadCrumbPathToNode(.node)>
+          <#-- Skip the book title in Pagefind search hits, except if that's all we have: -->
+          <#if pagefindPageTitlePath?size gt 1>
+            <#local pagefindPageTitlePath = pagefindPageTitlePath[1..]>
+          </#if>
+          <#list pagefindPageTitlePath as step>${u.getRequiredTitleAsString(step)}<#sep> / </#list><#t>
+        </template>
+      </#if>
+
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta name="format-detection" content="telephone=no">
@@ -161,23 +172,14 @@
 <#macro pageContent>
   <#local pageType = getPageType()>
   <div class="col-right"><#t>
-    <div class="page-content" data-pagefind-body><#t>
+    <#local pageFindWeight = tryGetPagePagefindWeight()>
+    <div class="page-content" data-pagefind-body<#if pageFindWeight != -1> data-pagefind-weight="${pageFindWeight?c}"</#if>><#t>
       <#compress>
         <div class="page-title"><#t>
           <#if !simpleNavigationMode>
             <@nav.pagers class="top" /><#t>
           </#if>
-          <#if hasSearch && pagefindBasedSearch>
-            <div style="display: none" data-pagefind-meta="title"><#t>
-              <#local pagefindPageTitlePath = nav.breadCrumbPathToNode(.node)>
-              <#-- Skip the book title in Pagefind search hits, except if that's all we have: -->
-              <#if pagefindPageTitlePath?size gt 1>
-                <#local pagefindPageTitlePath = pagefindPageTitlePath[1..]>
-              </#if>
-              <#list pagefindPageTitlePath as step>${u.getRequiredTitleAsString(step)}<#sep> / </#list><#t>
-            </div><#t>
-          </#if>
-          <div class="title-wrapper" data-pagefind-ignore="all"><#t>
+          <div class="title-wrapper"><#t>
             <#visit titleElement using nodeHandlers><#t>
           </div><#t>
         </div><#t>
@@ -233,7 +235,7 @@
   <#compress>
     <#local tocElems = .node["*[@${att}]"]>
     <#if (tocElems?size >= minLength)>
-      <div class="page-menu">
+      <div class="page-menu" data-pagefind-ignore="all">
         <#if title != ''>
           <div class="page-menu-title">${title}</div>
         </#if>
@@ -266,4 +268,30 @@
 
 <#function getPageType>
   <#return pageType!.node?nodeName>
+</#function>
+
+<#-- Return -1 if there's no override, otherwise return the pagefind weight. -->
+<#function tryGetPagePagefindWeight(node = .node)>
+  <#list 1..999 as _>
+    <#local result = tryGetPagePagefindWeightDirect(node)!-1>
+    <#if result != -1>
+      <#return result>
+    </#if>
+
+    <#if node?parent??>
+      <#local node = node?parent>
+    <#else>
+      <#return -1>
+    </#if>
+  </#list>
+</#function>
+
+<#function tryGetPagePagefindWeightDirect node>
+  <#if node?nodeName == "index" || node.@role[0]! == 'index'>
+    <#return 0.25>
+  </#if>
+  <#if node.@role[0]! == "changelog">
+    <#return 0.67>
+  </#if>
+  <#-- Return with no result -->
 </#function>
