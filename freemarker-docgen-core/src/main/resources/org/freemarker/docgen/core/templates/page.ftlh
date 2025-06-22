@@ -167,7 +167,17 @@
           <#if !simpleNavigationMode>
             <@nav.pagers class="top" /><#t>
           </#if>
-          <div class="title-wrapper"><#t>
+          <#if hasSearch && pagefindBasedSearch>
+            <div style="display: none" data-pagefind-meta="title"><#t>
+              <#local pagefindPageTitlePath = nav.breadCrumbPathToNode(.node)>
+              <#-- Skip the book title in Pagefind search hits, except if that's all we have: -->
+              <#if pagefindPageTitlePath?size gt 1>
+                <#local pagefindPageTitlePath = pagefindPageTitlePath[1..]>
+              </#if>
+              <#list pagefindPageTitlePath as step>${u.getRequiredTitleAsString(step)}<#sep> / </#list><#t>
+            </div><#t>
+          </#if>
+          <div class="title-wrapper" data-pagefind-ignore="all"><#t>
             <#visit titleElement using nodeHandlers><#t>
           </div><#t>
         </div><#t>

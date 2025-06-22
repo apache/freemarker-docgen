@@ -49,12 +49,9 @@
   </#if>
 </#macro>
 
-<#macro breadcrumb>
-  <#if !showBreadCrumb>
-    <#return>
-  </#if>
+<#function breadCrumbPathToNode target>
   <#local path = []>
-  <#local curNode = .node>
+  <#local curNode = target>
   <#list 1.. as _>
     <#local path = [curNode] + path>
     <#if curNode.@docgen_root_element?size != 0>
@@ -62,6 +59,14 @@
     </#if>
     <#local curNode = curNode?parent>
   </#list>
+  <#return path>
+</#function>
+
+<#macro breadcrumb>
+  <#if !showBreadCrumb>
+    <#return>
+  </#if>
+  <#local path = breadCrumbPathToNode(.node)>
   <div class="breadcrumbs">
     <#if (path?size > 1)>
       <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList"><#t>
