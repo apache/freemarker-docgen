@@ -139,6 +139,7 @@ class DocgenRestrictionsValidator implements ContentHandler {
         supportedElements.add("quote");
         supportedElements.add("remark");
         supportedElements.add("replaceable");
+        supportedElements.add("superscript");
         supportedElements.add(E_SECONDARY);
         supportedElements.add(E_SECTION);
         supportedElements.add(E_SIMPLESECT);

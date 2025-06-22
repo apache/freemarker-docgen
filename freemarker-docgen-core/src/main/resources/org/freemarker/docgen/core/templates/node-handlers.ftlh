@@ -74,6 +74,10 @@
     </#if>
 </#macro>
 
+<#macro superscript>
+    <sup><#recurse></sup><#t>
+</#macro>
+
 <#macro glossentry><#recurse></#macro>
 
 <#macro glossdef>

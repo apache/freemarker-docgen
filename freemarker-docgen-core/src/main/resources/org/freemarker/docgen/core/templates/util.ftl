@@ -77,10 +77,10 @@
     <#elseIf child?nodeType == "element">
       <#local name = child?nodeName>
       <#if ["literal", "classname", "methodname", "package", "replaceable", "emphasis", "phrase",
-            "olink", "link"]?seqContains(name)>
+            "olink", "link", "superscript"]?seqContains(name)>
         <#local res += titleToString(child)>
       <#elseIf name == "quote">
-        <#local res = "\x201C" + titleToString(child) + "\x201D">
+        <#local res += "\x201C" + titleToString(child) + "\x201D">
       <#elseIf name != "subtitle">
         <#stop 'The "${name}" in titles is not supported by Docgen.'>
       </#if>
