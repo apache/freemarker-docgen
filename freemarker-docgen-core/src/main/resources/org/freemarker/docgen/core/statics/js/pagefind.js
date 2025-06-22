@@ -65,14 +65,38 @@ function getPagefindPanelToggleButton() {
     return memoizedPagefindPanelToggleButton;
 }
 
+var memoizedPagefindCloseButton = null;
+function getPagefindCloseButton() {
+    if (memoizedPagefindCloseButton == null) {
+        const button = getPagefindPanel().querySelector('button.pagefind-ui__search-clear');
+        if (!button) {
+            window.alert('Pagefind close button not found!');
+            throw new Error('Pagefind close button not found!');
+        }
+        memoizedPagefindCloseButton = button;
+    }
+    return memoizedPagefindCloseButton;
+}
+
 function hidePagefindPanel() {
     getPagefindPanel().style.display = 'none';
+    getPagefindPanelToggleButton().style.visibility = 'visible';
     getPagefindInput().blur();
 }
 
 function showPagefindPanel() {
+    if (location.protocol === 'file:') {
+        window.alert('PLEASE NOTE: ' +
+            'Due to the security restrictions of browsers (same origin policy), search is only expected to work ' +
+            'if you visit via HTTP(S), and not via a "file:" URL. For local testing, use something like ' +
+            '"npx http-server"!');
+    }
+
     getPagefindPanel().style.display = 'block';
+    getPagefindPanelToggleButton().style.visibility = 'hidden';
     getPagefindInput().focus();
+
+    getPagefindCloseButton().style.visibility = 'visible';
 }
 
 function togglePagefindPanel() {
@@ -97,6 +121,11 @@ function addDocgenPagefindCustomizations() {
         if (event.key === 'Escape') {
             hidePagefindPanel();
         }
+    });
+
+    const closeButton = getPagefindCloseButton();
+    closeButton.addEventListener('click', (event) => {
+        hidePagefindPanel();
     });
 
     hidePagefindPanel();

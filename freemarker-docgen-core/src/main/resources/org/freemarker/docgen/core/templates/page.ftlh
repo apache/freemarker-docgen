@@ -82,9 +82,9 @@
       </#if>
 
       <#if hasSearch && pagefindBasedSearch>
-        <link href="pagefind/pagefind-ui.css" rel="stylesheet">
-        <script src="pagefind/pagefind-ui.js"></script>
-        <script src="docgen-resources/js/pagefind.js"></script>
+        <link href="pagefind/pagefind-ui.css?${transformStartTime?long?c}" rel="stylesheet">
+        <script src="pagefind/pagefind-ui.js?${transformStartTime?long?c}"></script>
+        <script src="docgen-resources/js/pagefind.js?${transformStartTime?long?c}"></script>
       </#if>
     </head>
   </#compress>
