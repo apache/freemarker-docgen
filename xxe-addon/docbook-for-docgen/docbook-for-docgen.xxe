@@ -38,4 +38,5 @@
     <left css="Table of contents" size="0.25" />
   </viewSettings>
 
+  <saveOptions predeclarePrefixPreferences="true" />
 </configuration>
